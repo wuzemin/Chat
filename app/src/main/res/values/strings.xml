@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">SmallTalk</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="prompt_user">账号</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in_short">登录</string>
+
+    <string name="no_network">网络连接不可用</string>
+    <string name="error_network">网络连接错误</string>
+    <string name="enter">确定</string>
+    <string name="de_actionbar_system">系统消息</string>
+    <string name="main_customer">意见反馈</string>
+    <string name="de_actionbar_sub_defult">聊天</string>
+    <string name="all_group_member">全体群员</string>
+    <string name="search_message">查看聊天记录</string>
+    <string name="group_portrait">群头像</string>
+    <string name="group_name">群名</string>
+    <string name="group_activity">群活动</string>
+    <string name="group_announcement">群公告</string>
+    <string name="message_notice">消息免打扰</string>
+    <string name="set_top">会话置顶</string>
+    <string name="clean_message">清除聊天记录</string>
+    <string name="quit_group">删除并退出</string>
+    <string name="dismiss_group">解散并退出</string>
+    <string name="group_code">群二维码</string>
+    <string name="empty_group_notice">请编辑群公告</string>
+    <string name="group_notice_prefix">\@所有人\n</string>
+    <string name="join_activity">参加</string>
+    <string name="email">邮箱</string>
+    <string name="message">消息</string>
+    <string name="add">添加</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="agree">同意</string>
+    <string name="refuse">拒绝</string>
+    <string name="ignore">拒绝</string>
+</resources>

@@ -9,7 +9,6 @@ import com.zhy.http.okhttp.cookie.store.CookieStore;
 import com.zhy.http.okhttp.cookie.store.PersistentCookieStore;
 
 import java.io.File;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 
@@ -19,6 +18,8 @@ import okhttp3.OkHttpClient;
 public class HttpUtils {
     private static final String LOCAL_RUL ="http://192.168.0.178:8080";
     private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+    public static final String IMAGE_RUL ="http://192.168.0.209:80";
+
 
 
     /**
@@ -39,7 +40,7 @@ public class HttpUtils {
 
     //好友列表
     public static void postRequest(String url, String userid, StringCallback callback){
-        OkHttpUtils.post().url(LOCAL_RUL +url).addParams("userid",userid).build().execute(callback);
+        OkHttpUtils.post().url(BASE_RUL +url).addParams("userid",userid).build().execute(callback);
     }
 
     public static void postListRequest(String url, String text, StringCallback callback){
@@ -60,6 +61,13 @@ public class HttpUtils {
     //好友请求列表
     public static void postAddFriendsRequest(String url, String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url).addParams("userid",userId).build().execute(callback);
+    }
+    //确认好友添加请求
+    public static void postEnterFriendRequest(String url,String userid,String friendid, int status, StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL +url)
+                .addParams("userid",userid)
+                .addParams("f_userid",friendid)
+                .addParams("status", String.valueOf(status)).build().execute(callback);
     }
 
     //普通Post上传----用户登录
@@ -117,11 +125,11 @@ public class HttpUtils {
     }
 
     //创建群组
-    public static void sendPostListRequest(String url,String userid, String text, List<String> list, File file, StringCallback callback){
+    public static void sendPostListRequest(String url,String userid, String text, String aaa, File file, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
                 .addParams("groupName",text)
-                .addParams("userid",userid)
-                .addParams("groupUser", String.valueOf(list))
+                .addParams("userId",userid)
+                .addParams("groupUser", aaa)
                 .addFile("file","crop_file.jpg",file)
                 .build()
                 .execute(callback);

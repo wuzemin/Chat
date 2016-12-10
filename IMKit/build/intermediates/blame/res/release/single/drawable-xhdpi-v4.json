@@ -1,11 +1,11 @@
 [
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ext_plugin_toggle.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ext_plugin_toggle.png"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\u1f612.png",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\u1f612.png"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ext_plugin_toggle.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ext_plugin_toggle.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ext_realtime_default_avatar.png",
@@ -16,12 +16,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ic_bubble_no_right.9.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ad_list_file_checked.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ad_list_file_checked.png"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_no.png",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_no.png"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ad_list_file_checked.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ad_list_file_checked.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\u1f4aa.png",
@@ -76,16 +76,16 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_notification_connecting.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\u26c4.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\u26c4.png"
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ic_no.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ic_no.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_rt_loc_myself.png",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_rt_loc_myself.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_ic_no.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ic_no.png"
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\u26c4.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\u26c4.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable-xhdpi-v4\\rc_file_icon_file.png",

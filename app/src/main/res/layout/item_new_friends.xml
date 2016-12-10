@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="11dp"
         android:layout_marginEnd="11dp"
-        android:id="@+id/btn_agree"
+        android:id="@+id/tv_agree"
         android:layout_alignBaseline="@+id/textView5"
         android:layout_alignBottom="@+id/textView5"
         android:layout_alignParentRight="true"
@@ -58,9 +58,9 @@
         android:text="@string/refuse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_agree"
-        android:layout_toLeftOf="@+id/btn_agree"
-        android:layout_toStartOf="@+id/btn_agree"
+        android:layout_alignTop="@+id/tv_agree"
+        android:layout_toLeftOf="@+id/tv_agree"
+        android:layout_toStartOf="@+id/tv_agree"
         android:id="@+id/tv_refuse" />
 
     <TextView

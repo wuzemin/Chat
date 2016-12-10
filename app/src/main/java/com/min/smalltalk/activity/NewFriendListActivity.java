@@ -2,9 +2,9 @@ package com.min.smalltalk.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -13,9 +13,8 @@ import com.min.mylibrary.util.CommonUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
+import com.min.smalltalk.adapter.NewFriendListAdapter;
 import com.min.smalltalk.base.BaseActivity;
-import com.min.smalltalk.base.BaseRecyclerAdapter;
-import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.AllAddFriends;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.constant.Const;
@@ -25,6 +24,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class NewFriendListActivity extends BaseActivity {
+public class NewFriendListActivity extends BaseActivity implements  NewFriendListAdapter.OnItemButtonClick {
 
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -45,12 +45,16 @@ public class NewFriendListActivity extends BaseActivity {
     ImageView ivTitleRight;
     @BindView(R.id.isData)
     TextView isData;
-    @BindView(R.id.rv_new_friends)
-    RecyclerView rvNewFriends;
+    @BindView(R.id.listView)
+    ListView mListView;
 
-    private BaseRecyclerAdapter<AllAddFriends> adapter;
+    //    private BaseRecyclerAdapter<AllAddFriends> adapter;
     private AllAddFriends allAddFriends;
     private String userid;
+    private String friendId;
+    private List<AllAddFriends> list=new ArrayList<>();
+
+    private NewFriendListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +66,11 @@ public class NewFriendListActivity extends BaseActivity {
             T.showShort(mContext,R.string.no_network);
             return;
         }
-        userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
         LoadDialog.show(mContext);
+        userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
         initData();
+        adapter=new NewFriendListAdapter(mContext);
+        mListView.setAdapter(adapter);
     }
 
     private void initData() {
@@ -80,7 +86,7 @@ public class NewFriendListActivity extends BaseActivity {
                 Type type=new TypeToken<Code<List<AllAddFriends>>>(){}.getType();
                 Code<List<AllAddFriends>> code=gson.fromJson(response,type);
                 if(code.getCode()==200){
-                    List<AllAddFriends> list=code.getMsg();
+                    list=code.getMsg();
                     if(list.size()==0){
                         isData.setVisibility(View.VISIBLE);
                         LoadDialog.dismiss(mContext);
@@ -97,24 +103,74 @@ public class NewFriendListActivity extends BaseActivity {
                             return -1;
                         }
                     });
-                    initAdapter(list);
+                    adapter.removeAll();
+                    adapter.addData(list);
+
+                    adapter.notifyDataSetChanged();
+                    adapter.setOnItemButtonClick(NewFriendListActivity.this);
+                    LoadDialog.dismiss(mContext);
 
                 }else {
                     LoadDialog.dismiss(mContext);
                     isData.setVisibility(View.VISIBLE);
-//                    T.showShort(mContext,"未知错误");
+                }
+            }
+        });
+    }
+
+    private int index;
+    @Override
+    public boolean onButtonClick(int position, View view, int status) {
+        index = position;
+        switch (status) {
+            case 3: //收到了好友邀请
+                if (!CommonUtils.isNetConnect(mContext)) {
+                    T.showShort(mContext,R.string.error_network);
+                    break;
+                }
+                LoadDialog.show(mContext);
+//                friendId = null;
+                friendId = list.get(position).getUserid();
+                initRequest(friendId,status);
+                break;
+            case 0: // 发出了好友邀请
+                break;
+            case 1: // 忽略好友邀请
+                break;
+            case 2: // 已是好友
+                break;
+        }
+        return false;
+    }
+
+    private void initRequest(String friendId,int status) {
+        HttpUtils.postEnterFriendRequest("/confirm_friend", userid, friendId, status, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/confirm_friend------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<Integer>>(){}.getType();
+                Code<Integer> code=gson.fromJson(response,type);
+                if(code.getCode()==200){
+                    T.showShort(mContext,"请求成功");
+                }else {
+                    T.showShort(mContext,"请求失败");
                 }
             }
         });
     }
 
     //数据
-    private void initAdapter(List<AllAddFriends> list) {
+    /*private void initAdapter(List<AllAddFriends> list) {
         adapter = new BaseRecyclerAdapter<AllAddFriends>(mContext,list,R.layout.item_new_friends) {
             @Override
             public void convert(BaseRecyclerHolder holder, AllAddFriends item, int position, boolean isScrolling) {
                 holder.setImageByUrl(R.id.civ_icon,item.getPortraitUri());
-                holder.setText(R.id.tv_nickname,item.getNickname());
+                holder.setText(R.id.tv_nickname,item.getName());
                 holder.setText(R.id.tv_message,item.getAddFriendMessage());
                 int status=item.getStatus();
                 switch (status){
@@ -128,13 +184,13 @@ public class NewFriendListActivity extends BaseActivity {
                         holder.setText(R.id.btn_agree,"已忽略");
                         break;
                     case 3:
-                        holder.setText(R.id.btn_agree,"添加");
+                        holder.setText(R.id.btn_agree,"同意");
                         break;
                 }
             }
-
         };
-    }
+        adapter.setOnButtonClickListener(this);
+    }*/
 
     private Date stringToDate(AllAddFriends allAddFriends) {
         String updatedAt = allAddFriends.getUpdatedAt();
@@ -168,4 +224,5 @@ public class NewFriendListActivity extends BaseActivity {
                 break;
         }
     }
+
 }

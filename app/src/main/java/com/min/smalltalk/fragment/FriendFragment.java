@@ -172,7 +172,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                     if (list != null && list.size() > 0) {
                         for (FriendInfo friend : list) {
                             Log.e("===========", friend.getUserId());
-                            mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), friend.getPortraitUri(),
+                            mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), HttpUtils.IMAGE_RUL+friend.getPortraitUri(),
                                     friend.getDisplayName(), friend.getPhone(), friend.getEmail()));
                         }
                     }
@@ -220,8 +220,14 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         final String header=sp.getString(Const.LOGIN_PORTRAIT,"");
         //自己信息
         tvMe.setText(mCacheName);
-        ImageLoader.getInstance().displayImage(TextUtils.isEmpty(header) ?
-                Generate.generateDefaultAvatar(mCacheName,mId):header,sivMe, App.getOptions());
+        if(!TextUtils.isEmpty(header)){
+            ImageLoader.getInstance().displayImage(header,sivMe);
+        }else {
+            sivMe.setImageResource(R.mipmap.default_portrait);
+        }
+//        ImageLoader.getInstance().displayImage();
+        /*ImageLoader.getInstance().displayImage(TextUtils.isEmpty(header) ?
+                Generate.generateDefaultAvatar(mCacheName,mId):header,sivMe, App.getOptions());*/
 
         rlMeItem.setOnClickListener(this);  //me
         rlNewfriends.setOnClickListener(this);

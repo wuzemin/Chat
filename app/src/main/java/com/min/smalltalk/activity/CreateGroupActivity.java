@@ -74,10 +74,11 @@ public class CreateGroupActivity extends BaseActivity {
 
         setPortraitChangListener();
 
-        groupIds.add(getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,""));
+//        groupIds.add(getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,""));
         if(null!=memberList && memberList.size()>0) {
             for (FriendInfo friendInfo : memberList) {
                 groupIds.add(friendInfo.getUserId());
+
             }
         }
     }
@@ -110,20 +111,6 @@ public class CreateGroupActivity extends BaseActivity {
 //        L.e("----------",imageFile+" "+selectUri+" "+imageUrl);
     }
 
-    @OnClick({R.id.iv_title_back, R.id.img_Group_portrait, R.id.btn_create_group})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_title_back:
-                CreateGroupActivity.this.finish();
-                break;
-            case R.id.img_Group_portrait:
-                ShowPhotoDialog();
-                break;
-            case R.id.btn_create_group:
-                createGroup();
-                break;
-        }
-    }
 
     private void createGroup() {
         final String groupName=etGroupName.getText().toString().trim();
@@ -131,27 +118,15 @@ public class CreateGroupActivity extends BaseActivity {
             T.showShort(mContext,"群组图片和群组名称不能为空");
             return;
         }
-        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-//        if(groupIds.size() > 1){
-            /*HttpUtils.sendPostTestRequest("/create_group", groupName,imageFile, new StringCallback() {
-                @Override
-                public void onError(Call call, Exception e, int id) {
-                    T.showShort(mContext,"sssssssssssss");
-                }
 
-                @Override
-                public void onResponse(String response, int id) {
-                    Gson gson=new Gson();
-                    Type type=new TypeToken<GroupMember>(){}.getType();
-                    GroupMember code = gson.fromJson(response,type);
-                    String image=code.getPortraitUri();
-                    L.e("------------===",image);
-                }
-            });*/
-            HttpUtils.sendPostListRequest("/create_group", userid,groupName, groupIds,imageFile, new StringCallback() {
+        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        if(groupIds.size() >= 1){
+            Gson gson=new Gson();
+            String sss=gson.toJson(groupIds);
+            HttpUtils.sendPostListRequest("/create_group", userid,groupName, sss,imageFile, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    T.showShort(mContext,R.string.error_network);
+                    T.showShort(mContext,"/create_group-----"+e);
                 }
 
                 @Override
@@ -169,7 +144,22 @@ public class CreateGroupActivity extends BaseActivity {
                     }
                 }
             });
-//        }
+        }
+    }
+
+    @OnClick({R.id.iv_title_back, R.id.img_Group_portrait, R.id.btn_create_group})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_title_back:
+                CreateGroupActivity.this.finish();
+                break;
+            case R.id.img_Group_portrait:
+                ShowPhotoDialog();
+                break;
+            case R.id.btn_create_group:
+                createGroup();
+                break;
+        }
     }
 
     private void ShowPhotoDialog() {

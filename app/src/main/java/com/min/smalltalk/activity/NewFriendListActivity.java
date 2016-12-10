@@ -62,8 +62,8 @@ public class NewFriendListActivity extends BaseActivity {
             T.showShort(mContext,R.string.no_network);
             return;
         }
-        LoadDialog.show(mContext);
         userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        LoadDialog.show(mContext);
         initData();
     }
 
@@ -100,7 +100,9 @@ public class NewFriendListActivity extends BaseActivity {
                     initAdapter(list);
 
                 }else {
-                    T.showShort(mContext,"未知错误");
+                    LoadDialog.dismiss(mContext);
+                    isData.setVisibility(View.VISIBLE);
+//                    T.showShort(mContext,"未知错误");
                 }
             }
         });

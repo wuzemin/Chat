@@ -22,7 +22,7 @@
         android:maxLines="1"
         android:textSize="16sp"
         android:imeOptions="actionSearch"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <View
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <include layout="@layout/item_friend_list_header"/>
+            <!--<include layout="@layout/item_friend_list_header"/>-->
             <ListView
                 android:id="@+id/lv_friends"
                 android:layout_width="match_parent"

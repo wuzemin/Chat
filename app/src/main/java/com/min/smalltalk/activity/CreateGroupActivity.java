@@ -131,8 +131,24 @@ public class CreateGroupActivity extends BaseActivity {
             T.showShort(mContext,"群组图片和群组名称不能为空");
             return;
         }
-        if(groupIds.size() > 1){
-            HttpUtils.sendPostListRequest("/group/create", groupName, groupIds,imageFile, new StringCallback() {
+        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+//        if(groupIds.size() > 1){
+            /*HttpUtils.sendPostTestRequest("/create_group", groupName,imageFile, new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    T.showShort(mContext,"sssssssssssss");
+                }
+
+                @Override
+                public void onResponse(String response, int id) {
+                    Gson gson=new Gson();
+                    Type type=new TypeToken<GroupMember>(){}.getType();
+                    GroupMember code = gson.fromJson(response,type);
+                    String image=code.getPortraitUri();
+                    L.e("------------===",image);
+                }
+            });*/
+            HttpUtils.sendPostListRequest("/create_group", userid,groupName, groupIds,imageFile, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(mContext,R.string.error_network);
@@ -153,7 +169,7 @@ public class CreateGroupActivity extends BaseActivity {
                     }
                 }
             });
-        }
+//        }
     }
 
     private void ShowPhotoDialog() {

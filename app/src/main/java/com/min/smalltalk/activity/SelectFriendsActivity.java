@@ -26,6 +26,7 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.CharacterParser;
 import com.min.smalltalk.wedget.Generate;
@@ -135,7 +136,8 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initData(){
-        HttpUtils.postRequest("/friends", new StringCallback() {
+        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postRequest("/friends", userid,new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,R.string.error_network);

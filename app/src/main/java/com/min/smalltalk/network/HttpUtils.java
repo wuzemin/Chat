@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient;
  * Created by Min on 2016/9/10.
  */
 public class HttpUtils {
-//    private static final String BASE_RUL ="http://192.168.0.178:8080";
+    private static final String LOCAL_RUL ="http://192.168.0.178:8080";
     private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
 
 
@@ -37,9 +37,9 @@ public class HttpUtils {
         OkHttpUtils.get().url(BASE_RUL +url).build().execute(callback);
     }
 
-    //普通的POST请求，根据泛型Bean返回值也是Bean
-    public static void postRequest(String url, StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL +url).build().execute(callback);
+    //好友列表
+    public static void postRequest(String url, String userid, StringCallback callback){
+        OkHttpUtils.post().url(LOCAL_RUL +url).addParams("userid",userid).build().execute(callback);
     }
 
     public static void postListRequest(String url, String text, StringCallback callback){
@@ -59,7 +59,7 @@ public class HttpUtils {
 
     //好友请求列表
     public static void postAddFriendsRequest(String url, String userId,StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL +url).addParams("userId",userId).build().execute(callback);
+        OkHttpUtils.post().url(BASE_RUL +url).addParams("userid",userId).build().execute(callback);
     }
 
     //普通Post上传----用户登录
@@ -75,6 +75,7 @@ public class HttpUtils {
     public static void sendPostStringRequest(String url,Object object,StringCallback callback){
         OkHttpUtils.postString().url(BASE_RUL +url).content(object.toString()).build().execute(callback);
     }
+
 
     //搜索好友
     public static void PostSearchFriendRequest(String url, String string, StringCallback callback){
@@ -116,14 +117,25 @@ public class HttpUtils {
     }
 
     //创建群组
-    public static void sendPostListRequest(String url, String text, List<String> list, File file, StringCallback callback){
+    public static void sendPostListRequest(String url,String userid, String text, List<String> list, File file, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
                 .addParams("groupName",text)
-                .addParams("groupIds", String.valueOf(list))
+                .addParams("userid",userid)
+                .addParams("groupUser", String.valueOf(list))
                 .addFile("file","crop_file.jpg",file)
                 .build()
                 .execute(callback);
     }
+
+    public static void sendPostTestRequest(String url, String groupName, File file, StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL +url)
+                .addParams("groupName",groupName)
+                .addFile("file","crop_file.jpg",file)
+                .build()
+                .execute(callback);
+    }
+
+
     //群组列表
     public static void postGroupListRequest(String url, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url).build().execute(callback);

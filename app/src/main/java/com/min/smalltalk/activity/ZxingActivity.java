@@ -30,7 +30,7 @@ public class ZxingActivity extends BaseActivity {
         setContentView(R.layout.activity_zxing);
         ButterKnife.bind(this);
         Intent intent=getIntent();
-        String input=intent.getStringExtra("groupId");
+        String input=intent.getStringExtra("Id");
 
         Bitmap bitmap= EncodingUtils.createQRCode(input,500,500,
                 BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));

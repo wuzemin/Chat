@@ -381,8 +381,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 break;
             case R.id.ll_group_code:   //二维码
                 Intent intent1=new Intent(mContext,ZxingActivity.class);
-                intent1.putExtra("groupId",fromConversationId);
-                intent1.putExtra("groupHead",bitmap);
+                intent1.putExtra("Id",fromConversationId);
+                intent1.putExtra("Head",bitmap);
                 startActivity(intent1);
                 break;
             case R.id.btn_group_quit:   //退出群

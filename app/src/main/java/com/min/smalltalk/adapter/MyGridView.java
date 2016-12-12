@@ -34,26 +34,27 @@ import io.rong.imlib.model.UserInfo;
 public class MyGridView extends BaseAdapter {
     private Context context;
     private List<GroupMember> list=new ArrayList<>();
-    private String isCreator;
+//    private String isCreator;
+    private boolean isCreated;
     private LayoutInflater inflater;
     private String groupId;
     private String groupName;
     private String groupPortraitUri;
 
-    public MyGridView(Context context, List<GroupMember> list,String isCreator) {
+    public MyGridView(Context context, List<GroupMember> list,boolean isCreated) {
         this.context = context;
         if (list.size() >= 20) {
             this.list = list.subList(0, 19);
         } else {
             this.list = list;
         }
-        this.isCreator=isCreator;
+        this.isCreated=isCreated;
         this.inflater=inflater.from(context);
     }
 
     @Override
     public int getCount() {
-        if (isCreator=="1") {
+        if (isCreated) {
             return list.size() + 2;
         } else {
             return list.size() + 1;
@@ -92,7 +93,7 @@ public class MyGridView extends BaseAdapter {
         }*/
 
         //
-        if(position==getCount()-1 && isCreator=="1"){
+        if(position==getCount()-1 && isCreated){
             holder.tvGroupDetailsName.setText("");
             holder.sivGroupDetails.setImageResource(R.mipmap.icon_btn_deleteperson);
             holder.sivGroupDetails.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +105,7 @@ public class MyGridView extends BaseAdapter {
                     context.startActivity(intent);
                 }
             });
-        }else if ((isCreator=="1" && position == getCount() - 2) || (isCreator!="1" && position == getCount() - 1)) {
+        }else if ((isCreated && position == getCount() - 2) || (!isCreated && position == getCount() - 1)) {
             holder.tvGroupDetailsName.setText("");
             holder.sivGroupDetails.setImageResource(R.mipmap.jy_drltsz_btn_addperson);
 

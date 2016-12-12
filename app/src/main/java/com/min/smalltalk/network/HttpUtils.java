@@ -171,14 +171,14 @@ public class HttpUtils {
     public static void postQuitGroup(String url,String groupId,String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addParams("groupId",groupId)
-                .addParams("userId",userId)
+                .addParams("groupUser",userId)
                 .build().execute(callback);
     }
     //解散群
     public static void postDismissGroup(String url,String groupId,String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addParams("groupId",groupId)
-                .addParams("userId",userId)
+                .addParams("groupUser",userId)
                 .build().execute(callback);
     }
     //群活动

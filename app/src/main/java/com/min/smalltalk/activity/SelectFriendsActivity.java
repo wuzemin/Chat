@@ -92,18 +92,28 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
     private ArrayList<UserInfo> addDisList, deleDisList;
     private List<FriendInfo> data_list = new ArrayList<>();
-    private List<GroupMember> addGroupMemberList;
     private List<String> startDisList;
     private List<FriendInfo> createGroupList;
+    private List<GroupMember> addGroupMemberList;
+    private List<GroupMember> deleteGroupMemberList;
+    private boolean isAddGroupMember;
+    private boolean isDeleteGroupMember;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_friends);
         ButterKnife.bind(this);
-        mSelectedFriend=new ArrayList<>();
-        isCreateGroup=getIntent().getBooleanExtra("createGroup",false);
-        groupId=getIntent().getStringExtra("GroupId");
+        userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        mSelectedFriend = new ArrayList<>();
+        isCreateGroup = getIntent().getBooleanExtra("createGroup", false);
+        groupId = getIntent().getStringExtra("GroupId");
+        isAddGroupMember = getIntent().getBooleanExtra("isAddGroupMember", false);
+        isDeleteGroupMember = getIntent().getBooleanExtra("isDeleteGroupMember", false);
+        if (isAddGroupMember || isDeleteGroupMember) {
+            initGroupMemberList();
+        }
         LoadDialog.show(mContext);
         initView();
         /**
@@ -115,52 +125,76 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         initData();
     }
 
+    //群成员
+    private void initGroupMemberList() {
+        HttpUtils.postGroupsRequest("/group_member", groupId,userId, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext, "group_member------" + "网络连接错误");
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<GroupMember>>>() {}.getType();
+                Code<List<GroupMember>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    if(isAddGroupMember){
+                        addGroupMemberList=code.getMsg();
+                    }
+
+                }
+            }
+        });
+    }
+
     private void initView() {
         tvTitle.setText("选择群成员");
         ivBack.setOnClickListener(this);
         tvEnter.setOnClickListener(this);
         //实例化汉字转拼音
-        mCharacterParser=CharacterParser.getInstance();
-        pinyinComparator=PinyinComparator.getInstance();
+        mCharacterParser = CharacterParser.getInstance();
+        pinyinComparator = PinyinComparator.getInstance();
         sidrbar.setTextView(tvDialog);
         //设置右侧触摸监听
         sidrbar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChanged(String s) {
                 int position = adapter.getPositionForSection(s.charAt(0));
-                if(position!=-1){
+                if (position != -1) {
                     mListView.setSelection(position);
                 }
             }
         });
-        adapter=new SelectFriendAdapter(mContext,sourceDataList);
+        adapter = new SelectFriendAdapter(mContext, sourceDataList);
         mListView.setAdapter(adapter);
     }
 
-    private void initData(){
-        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        HttpUtils.postRequest("/friends", userid,new StringCallback() {
+    private void initData() {
+        String userid = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+        HttpUtils.postRequest("/friends", userid, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/friends-------"+e);
+                T.showShort(mContext, "/friends-------" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<List<FriendInfo>>>(){}.getType();
-                Code<List<FriendInfo>> code=gson.fromJson(response,type);
-                if(code.getCode()==200){
-                    List<FriendInfo> friendInfo=code.getMsg();
-                    for(int i=0;i<friendInfo.size();i++) {
-                        data_list.add(new FriendInfo(friendInfo.get(i).getUserId(), friendInfo.get(i).getName(), HttpUtils.IMAGE_RUL+friendInfo.get(i).getPortraitUri()));
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<FriendInfo>>>() {
+                }.getType();
+                Code<List<FriendInfo>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    List<FriendInfo> friendInfo = code.getMsg();
+                    for (int i = 0; i < friendInfo.size(); i++) {
+                        data_list.add(new FriendInfo(friendInfo.get(i).getUserId(), friendInfo.get(i).getName(), HttpUtils.IMAGE_RUL + friendInfo.get(i).getPortraitUri()));
                     }
                     LoadDialog.dismiss(mContext);
                     fillSourceDataList();
                     filterSourceDataList();
                     updateAdapter();
-                }else {
-                    T.showShort(mContext,"数据请求错误");
+                } else {
+                    T.showShort(mContext, "数据请求错误");
                 }
             }
         });
@@ -168,7 +202,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_back:
                 SelectFriendsActivity.this.finish();
                 break;
@@ -179,6 +213,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 break;
         }
     }
+
     private void initEnter() {
         if (mCBFlag != null && sourceDataList != null && sourceDataList.size() > 0) {
             startDisList = new ArrayList<>();
@@ -294,26 +329,27 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
     //adapter
     public Map<Integer, Boolean> mCBFlag;
-    public List<FriendInfo> adapterList=new ArrayList<>();
+    public List<FriendInfo> adapterList = new ArrayList<>();
 
     class SelectFriendAdapter extends BaseAdapter implements SectionIndexer {
         private Context context;
-        private List<CheckBox> checkBoxList=new ArrayList<>();
+        private List<CheckBox> checkBoxList = new ArrayList<>();
 
         public SelectFriendAdapter(Context context, List<FriendInfo> list) {
             this.context = context;
-            adapterList=list;
-            mCBFlag=new HashMap<>();
-            init();
-        }
-        public void setData(List<FriendInfo> friends){
-            adapterList=friends;
+            adapterList = list;
+            mCBFlag = new HashMap<>();
             init();
         }
 
-        void init(){
-            for(int i=0;i<adapterList.size();i++){
-                mCBFlag.put(i,false);
+        public void setData(List<FriendInfo> friends) {
+            adapterList = friends;
+            init();
+        }
+
+        void init() {
+            for (int i = 0; i < adapterList.size(); i++) {
+                mCBFlag.put(i, false);
             }
         }
 
@@ -335,46 +371,46 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         @Override
         public View getView(final int position, View convertView, final ViewGroup viewGroup) {
             final ViewHolder viewHolder;
-            final FriendInfo friendInfo=adapterList.get(position);
-            if(convertView==null){
-                viewHolder=new ViewHolder();
-                convertView= LayoutInflater.from(context).inflate(R.layout.item_selected_freinds,viewGroup,false);
-                viewHolder.tvTitle= (TextView) convertView.findViewById(R.id.tv_friendname);
-                viewHolder.tvLetter= (TextView) convertView.findViewById(R.id.tv_catalog);
-                viewHolder.mImageView= (SelectableRoundedImageView) convertView.findViewById(R.id.siv_frienduri);
-                viewHolder.isSelect= (CheckBox) convertView.findViewById(R.id.sb_select);
+            final FriendInfo friendInfo = adapterList.get(position);
+            if (convertView == null) {
+                viewHolder = new ViewHolder();
+                convertView = LayoutInflater.from(context).inflate(R.layout.item_selected_freinds, viewGroup, false);
+                viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_friendname);
+                viewHolder.tvLetter = (TextView) convertView.findViewById(R.id.tv_catalog);
+                viewHolder.mImageView = (SelectableRoundedImageView) convertView.findViewById(R.id.siv_frienduri);
+                viewHolder.isSelect = (CheckBox) convertView.findViewById(R.id.sb_select);
                 convertView.setTag(viewHolder);
-            }else {
-                viewHolder= (ViewHolder) convertView.getTag();
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
             //根据position获取分类的首字母的Char ascii值
-            int section=getSectionForPosition(position);
+            int section = getSectionForPosition(position);
             //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
-            if(position==getPositionForSection(section)){
+            if (position == getPositionForSection(section)) {
                 viewHolder.tvLetter.setVisibility(View.VISIBLE);
                 viewHolder.tvLetter.setText(friendInfo.getLetters());
-            }else {
+            } else {
                 viewHolder.tvLetter.setVisibility(View.GONE);
             }
 
             viewHolder.isSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCBFlag.put(position,viewHolder.isSelect.isChecked());
+                    mCBFlag.put(position, viewHolder.isSelect.isChecked());
                     updateSelectedSizeView(mCBFlag);
-                    if(mSelectedFriend.contains(friendInfo)){
-                        int index=adapterList.indexOf(friendInfo);
-                        if(index > -1){
+                    if (mSelectedFriend.contains(friendInfo)) {
+                        int index = adapterList.indexOf(friendInfo);
+                        if (index > -1) {
                             llSelectedFriends.removeViewAt(index);
                         }
                         mSelectedFriend.remove(friendInfo);
-                    }else {
+                    } else {
                         mSelectedFriend.add(friendInfo);
-                        LinearLayout linearLayout= (LinearLayout) View.inflate(SelectFriendsActivity.this,R.layout.item_selected_friends_iv,null);
-                        SelectableRoundedImageView iv= (SelectableRoundedImageView) linearLayout.findViewById(R.id.iv_selected_friends);
+                        LinearLayout linearLayout = (LinearLayout) View.inflate(SelectFriendsActivity.this, R.layout.item_selected_friends_iv, null);
+                        SelectableRoundedImageView iv = (SelectableRoundedImageView) linearLayout.findViewById(R.id.iv_selected_friends);
                         ImageLoader.getInstance().displayImage(TextUtils.isEmpty(friendInfo.getPortraitUri())
-                                ? Generate.generateDefaultAvatar(friendInfo.getName(),friendInfo.getUserId())
-                                : friendInfo.getPortraitUri(),iv);
+                                ? Generate.generateDefaultAvatar(friendInfo.getName(), friendInfo.getUserId())
+                                : friendInfo.getPortraitUri(), iv);
                         linearLayout.removeView(iv);
                         llSelectedFriends.addView(iv);
                     }
@@ -382,16 +418,16 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             });
 
             viewHolder.isSelect.setChecked(mCBFlag.get(position));
-            if(TextUtils.isEmpty(adapterList.get(position).getDisplayName())){
+            if (TextUtils.isEmpty(adapterList.get(position).getDisplayName())) {
                 viewHolder.tvTitle.setText(adapterList.get(position).getName());
-            }else {
+            } else {
                 viewHolder.tvTitle.setText(adapterList.get(position).getDisplayName());
             }
 
-            String url=adapterList.get(position).getPortraitUri();
-            if(!TextUtils.isEmpty(url)){
-                ImageLoader.getInstance().displayImage(url,viewHolder.mImageView, App.getOptions());
-            }else {
+            String url = adapterList.get(position).getPortraitUri();
+            if (!TextUtils.isEmpty(url)) {
+                ImageLoader.getInstance().displayImage(url, viewHolder.mImageView, App.getOptions());
+            } else {
                 ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(
                         adapterList.get(position).getName(), adapterList.get(position).getUserId()),
                         viewHolder.mImageView, App.getOptions());
@@ -400,7 +436,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             return convertView;
         }
 
-        private void updateSelectedSizeView(Map<Integer, Boolean> mCBFlag){
+        private void updateSelectedSizeView(Map<Integer, Boolean> mCBFlag) {
             if (mCBFlag != null) {
                 int size = 0;
                 for (int i = 0; i < mCBFlag.size(); i++) {
@@ -453,7 +489,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             return adapterList.get(i).getLetters().charAt(0);
         }
 
-        final class ViewHolder{
+        final class ViewHolder {
             /**
              * 首字母
              */

@@ -137,7 +137,6 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         if (isFromConversation) {  //群主会话页进入
             LoadDialog.show(mContext);
             getGroups();  //群组信息
-            getGroupMembers(); //成员信息
             LoadDialog.dismiss(mContext);
         }
     }
@@ -187,9 +186,10 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Gson gson = new Gson();
                 Type type = new TypeToken<Code<Groups>>() {}.getType();
                 Code<Groups> code = gson.fromJson(response, type);
+                Groups groups=code.getMsg();
                 if (code.getCode() == 200) {
-                    mGroup = new Groups(code.getMsg().getGroupId(), code.getMsg().getGroupName(),
-                            code.getMsg().getGroupPortraitUri(), code.getMsg().getRole());
+                    mGroup = new Groups(groups.getGroupId(), groups.getGroupName(),
+                            HttpUtils.IMAGE_RUL+groups.getGroupPortraitUri(), groups.getRole());
                     initGroupData();
                 }
             }
@@ -251,12 +251,23 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     });
         }
 
-        //成员角色---0：群主
-        if (mGroup.getRole().equals("0")) {
+        //成员角色---1：群主
+        if (mGroup.getRole().equals("1")) {
             isCreated = true;
-            isCreator=mGroup.getRole();
+//            isCreator=mGroup.getRole();
         }
-        /*if (!isCreated) {
+        if (!isCreated) {
+            llGroupAnnouncementDivider.setVisibility(View.GONE);
+            llGroupAnnouncement.setVisibility(View.GONE);
+        } else {
+            llGroupAnnouncementDivider.setVisibility(View.VISIBLE);
+            llGroupAnnouncement.setVisibility(View.VISIBLE);
+            btnGroupDismiss.setVisibility(View.VISIBLE);
+            btnGroupQuit.setVisibility(View.GONE);
+        }
+        getGroupMembers(isCreated); //成员信息
+//        if("1".equals(isCreator)){
+        /*if(isCreated){
             llGroupAnnouncementDivider.setVisibility(View.GONE);
             llGroupAnnouncement.setVisibility(View.GONE);
         } else {
@@ -265,21 +276,12 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             btnGroupDismiss.setVisibility(View.VISIBLE);
             btnGroupQuit.setVisibility(View.GONE);
         }*/
-        if(isCreator!="1"){
-            llGroupAnnouncementDivider.setVisibility(View.GONE);
-            llGroupAnnouncement.setVisibility(View.GONE);
-        } else {
-            llGroupAnnouncementDivider.setVisibility(View.VISIBLE);
-            llGroupAnnouncement.setVisibility(View.VISIBLE);
-            btnGroupDismiss.setVisibility(View.VISIBLE);
-            btnGroupQuit.setVisibility(View.GONE);
-        }
     }
 
     /**
      * 群组成员
      */
-    private void getGroupMembers() {
+    private void getGroupMembers(final boolean isCreator) {
         HttpUtils.postGroupsRequest("/group_member", groupId,userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -336,7 +338,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 startActivity(intent);
                 break;
             case R.id.ll_group_port:   //群头像
-                if(isCreator=="1"){
+                if(isCreated){
                     if(dialog!=null && dialog.isShowing()){
                         dialog.dismiss();
                     }
@@ -366,7 +368,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 }
                 break;
             case R.id.ll_group_name:   //群名称
-                if(isCreator=="1"){
+                if(isCreated){
                     final EditText editText=new EditText(mContext);
                     AlertDialog dialog = new AlertDialog.Builder(mContext)
                             .setTitle("修改群名称")
@@ -447,10 +449,10 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //退出群
     private void quitGroup() {
-        HttpUtils.postQuitGroup("/group/quit_group", groupId, userId, new StringCallback() {
+        HttpUtils.postQuitGroup("/GroupPullUser", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/group/quit_group---------网络连接错误");
+                T.showShort(mContext,"/quit_group------"+e);
             }
 
             @Override
@@ -494,10 +496,10 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //解散群
     private void dismissGroup(){
-        HttpUtils.postDismissGroup("/group/dismiss_group", groupId, userId, new StringCallback() {
+        HttpUtils.postDismissGroup("/GroupPullUser", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/group/quit_group---------网络连接错误");
+                T.showShort(mContext, "/dismiss_group------"+e);
             }
 
             @Override
@@ -534,6 +536,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
                     T.showShort(mContext, "退出成功");
                     finish();
+                }else {
+                    T.showShort(mContext,"解散群失败");
                 }
             }
         });

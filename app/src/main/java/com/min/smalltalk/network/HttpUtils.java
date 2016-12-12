@@ -193,4 +193,15 @@ public class HttpUtils {
                 .addParams("userId",userId).addParams("f_userid",friendId).build().execute(callback);
     }
 
+    //删除群成员
+    public static void postDelGroupMember(String url,String groupId,String userIds,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url).addParams("groupId",groupId)
+                .addParams("userIds",userIds).build().execute(callback);
+    }
+    //添加群成员
+    public static void postAddGroupMember(String url,String groupId,String userIds,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url).addParams("groupId",groupId)
+                .addParams("userIds",userIds).build().execute(callback);
+    }
+
 }

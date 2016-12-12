@@ -1,6 +1,8 @@
 package com.min.smalltalk.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -114,7 +116,9 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         if (isAddGroupMember || isDeleteGroupMember) {
             initGroupMemberList();
         }
-        LoadDialog.show(mContext);
+        addDisList = (ArrayList<UserInfo>) getIntent().getSerializableExtra("AddDiscuMember");
+        deleDisList = (ArrayList<UserInfo>) getIntent().getSerializableExtra("DeleteDiscuMember");
+//        LoadDialog.show(mContext);
         initView();
         /**
          * 根据进行的操作初始化数据,添加删除群成员和获取好友信息是异步操作,所以做了很多额外的处理
@@ -142,11 +146,31 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     if(isAddGroupMember){
                         addGroupMemberList=code.getMsg();
                         fillSourceDataListWithFriendsInfo();
+                    }else {
+                        deleteGroupMemberList = code.getMsg();
+                        fillSourceDataListForDeleteGroupMember();
                     }
-
+                }else {
+                    T.showShort(mContext,"group_member----selectFriendsAct---");
                 }
             }
         });
+    }
+
+    private void fillSourceDataListForDeleteGroupMember() {
+        if (deleteGroupMemberList != null && deleteGroupMemberList.size() > 0) {
+            for (GroupMember deleteMember : deleteGroupMemberList) {
+                if (deleteMember.getUserId().contains(getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, ""))) {
+                    continue;
+                }
+                data_list.add(new FriendInfo(deleteMember.getUserId(),
+                        deleteMember.getUserName(), deleteMember.getUserPortraitUri(),
+                        null //TODO displayName 需要处理 暂为 null
+                ));
+            }
+            fillSourceDataList();
+            updateAdapter();
+        }
     }
 
     private void fillSourceDataListWithFriendsInfo() {
@@ -165,10 +189,14 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     List<FriendInfo> friendInfos=code.getMsg();
                     if(mListView!=null){
                         for(FriendInfo friendInfo:friendInfos){
-                            data_list.add(new FriendInfo(friendInfo.getUserId(),friendInfo.getName(),friendInfo.getPortraitUri(),friendInfo.getDisplayName()));
+                            data_list.add(new FriendInfo(friendInfo.getUserId(),friendInfo.getName(),
+                                    friendInfo.getPortraitUri(),friendInfo.getDisplayName()));
 //                            data_list.add(new FriendInfo(friendInfo.getUserId(), friendInfo.getName(),
 //                                    friendInfo.getPortraitUri(), friendInfo.getDisplayName(), null, null));
                         }
+                        fillSourceDataList();
+                        filterSourceDataList();
+                        updateAdapter();
                     }
 
                 }
@@ -199,7 +227,30 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initData() {
-        String userid = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+        if (deleDisList != null && deleDisList.size() > 0) {
+            for (int i = 0; i < deleDisList.size(); i++) {
+                if (deleDisList.get(i).getUserId().contains(getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, ""))) {
+                    continue;
+                }
+                data_list.add(new FriendInfo(deleDisList.get(i).getUserId(),
+                        deleDisList.get(i).getName(),
+                        deleDisList.get(i).getPortraitUri().toString(),
+                        null //TODO displayName 需要处理 暂为 null
+                ));
+            }
+            /**
+             * 以下3步是标准流程
+             * 1.填充数据sourceDataList
+             * 2.过滤数据,邀请新成员时需要过滤掉已经是成员的用户,但做删除操作时不需要这一步
+             * 3.设置adapter显示
+             */
+            fillSourceDataList();
+            filterSourceDataList();
+            updateAdapter();
+        } else if (!isDeleteGroupMember && !isAddGroupMember) {
+            fillSourceDataListWithFriendsInfo();
+        }
+        /*String userid = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
         HttpUtils.postRequest("/friends", userid, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -225,7 +276,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     T.showShort(mContext, "数据请求错误");
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -254,6 +305,30 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     createGroupList.add(sourceDataList.get(i));
                 }
             }
+            //删除群成员
+            if (deleteGroupMemberList != null && startDisList != null && sourceDataList.size() > 0) {
+                AlertDialog dialog=new AlertDialog.Builder(mContext)
+                        .setTitle("删除该成员")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteGroupMember();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+            } else if (addGroupMemberList != null && startDisList != null && startDisList.size() > 0) {
+                //TODO 选中添加成员的数据添加到服务端数据库  返回本地也需要更改
+                LoadDialog.show(mContext);
+//                request(ADD_GROUP_MEMBER);
+                addGroupMember();
+
+            } else
             if (isCreateGroup) {
                 if (createGroupList.size() > 0) {
                     Intent intent = new Intent(SelectFriendsActivity.this, CreateGroupActivity.class);
@@ -267,6 +342,70 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         } else {
             Toast.makeText(SelectFriendsActivity.this, "无数据", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * 添加群组成员
+     */
+    private void addGroupMember() {
+        /*AddGroupMemberResponse res = (AddGroupMemberResponse) result;
+        if (res.getCode() == 200) {
+            Intent data = new Intent();
+            data.putExtra("newAddMember", (Serializable) createGroupList);
+            setResult(101, data);
+            LoadDialog.dismiss(mContext);
+            NToast.shortToast(mContext, getString(R.string.add_successful));
+            finish();
+        }*/
+        final Gson gson=new Gson();
+        String dd=gson.toJson(addGroupMemberList);
+        HttpUtils.postAddGroupMember("/add_group_member", groupId, dd, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/add_group_member-----"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Type type=new TypeToken<Code<Integer>>(){}.getType();
+                Code<Integer> code=gson.fromJson(response,type);
+                if(code.getCode()==200){
+                    Intent data = new Intent();
+                    data.putExtra("newAddMember", (Serializable) createGroupList);
+                    setResult(101, data);
+                    LoadDialog.dismiss(mContext);
+                    T.showShort(mContext,"添加成功");
+                    finish();
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 删除群组成员
+     */
+    private void deleteGroupMember() {
+        Gson gson=new Gson();
+        String sss=gson.toJson(deleteGroupMemberList);
+        HttpUtils.postDelGroupMember("/delete_group_member", groupId, sss, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/delete_group_member--------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson1=new Gson();
+                Type type=new TypeToken<Code<Integer>>(){}.getType();
+                Code<Integer> code=gson1.fromJson(response,type);
+                if(code.getCode()==200){
+                    T.showShort(mContext,"删除成功");
+                }else {
+                    T.showShort(mContext,"删除失败");
+                }
+            }
+        });
     }
 
     private void fillSourceDataList() {

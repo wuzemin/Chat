@@ -190,7 +190,7 @@ public class HttpUtils {
     //删除好友
     public static void postDelFriendRequest(String url, String userId, String friendId, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
-                .addParams("userId",userId).addParams("friendId",friendId).build().execute(callback);
+                .addParams("userId",userId).addParams("f_userid",friendId).build().execute(callback);
     }
 
 }

@@ -496,7 +496,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //解散群
     private void dismissGroup(){
-        HttpUtils.postDismissGroup("/GroupPullUser", groupId, userId, new StringCallback() {
+        HttpUtils.postDismissGroup("/dissolutionGroup", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/dismiss_group------"+e);
@@ -533,8 +533,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
                                 }
                             });
+                    T.showShort(mContext, "解散群成功");
                     BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
-                    T.showShort(mContext, "退出成功");
                     finish();
                 }else {
                     T.showShort(mContext,"解散群失败");

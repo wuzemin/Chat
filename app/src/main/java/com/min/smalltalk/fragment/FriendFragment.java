@@ -303,10 +303,10 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
 
     //删除好友
     private void deleteFriends(FriendInfo friendInfo) {
-        HttpUtils.postDelFriendRequest("friend/delete", mId, friendInfo.getUserId(), new StringCallback() {
+        HttpUtils.postDelFriendRequest("/deleteUser", mId, friendInfo.getUserId(), new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(getActivity(), "friend/delete--------onError");
+                T.showShort(getActivity(), "deleteUser-----"+e);
             }
 
             @Override

@@ -141,6 +141,34 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 if (code.getCode() == 200) {
                     if(isAddGroupMember){
                         addGroupMemberList=code.getMsg();
+                        fillSourceDataListWithFriendsInfo();
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void fillSourceDataListWithFriendsInfo() {
+        HttpUtils.postFriendsRequest("/friends", userId, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/friends-----"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<FriendInfo>>>() {}.getType();
+                Code<List<FriendInfo>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    List<FriendInfo> friendInfos=code.getMsg();
+                    if(mListView!=null){
+                        for(FriendInfo friendInfo:friendInfos){
+                            data_list.add(new FriendInfo(friendInfo.getUserId(),friendInfo.getName(),friendInfo.getPortraitUri(),friendInfo.getDisplayName()));
+//                            data_list.add(new FriendInfo(friendInfo.getUserId(), friendInfo.getName(),
+//                                    friendInfo.getPortraitUri(), friendInfo.getDisplayName(), null, null));
+                        }
                     }
 
                 }

@@ -35,7 +35,6 @@ import com.min.smalltalk.wedget.Wheel.ScreenInfo;
 import com.min.smalltalk.wedget.Wheel.WheelMain;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 

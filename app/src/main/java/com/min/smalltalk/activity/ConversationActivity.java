@@ -99,7 +99,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         //10000 为 Demo Server 加好友的 id，若 targetId 为 10000，则为加好友消息，默认跳转到 NewFriendListActivity
         // Demo 逻辑
         if (mTargetId != null){
-            if(mTargetId.equals("13025304562") || mTargetId.equals("18819493906") ) {
+            if(mTargetId.equals("13025304562") || mTargetId.equals("18819493906") || mTargetId.equals("18819493603") ) {
                 startActivity(new Intent(mContext, NewFriendListActivity.class));
                 return;
             }

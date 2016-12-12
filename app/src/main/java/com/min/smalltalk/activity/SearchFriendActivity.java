@@ -71,6 +71,7 @@ public class SearchFriendActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_friend);
         ButterKnife.bind(this);
+        sp=getSharedPreferences("config",MODE_PRIVATE);
         myUserId=sp.getString(Const.LOGIN_ID,"");
         myNickname=sp.getString(Const.LOGIN_NICKNAME,"");
         tvTitle.setText("添加好友");

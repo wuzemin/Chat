@@ -121,6 +121,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
         ButterKnife.bind(this);
+        userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
         initView();
         setPortraitChangListener();
         //群组会话界面点进群组详情---groupId
@@ -174,7 +175,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
      * 群组信息
      */
     private void getGroups() {
-        HttpUtils.postGroupsRequest("/group/group_data", fromConversationId, new StringCallback() {
+        HttpUtils.postGroupsRequest("/group_info", fromConversationId,userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "group_data------" + "网络连接错误");
@@ -268,7 +269,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
      * 群组成员
      */
     private void getGroupMembers() {
-        HttpUtils.postGroupsRequest("/group/group_member",fromConversationId, new StringCallback() {
+        HttpUtils.postGroupsRequest("/group_member",fromConversationId,userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "group_member------" + "网络连接错误");
@@ -290,7 +291,6 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     }
                     for (GroupMember member : mGroupMember) {
                         String s = member.getUserId();
-                        userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
                         if (userId.equals(s)) {
                             if (!TextUtils.isEmpty(member.getDisplayName())) {
                                 tvGroupName.setText(member.getDisplayName());

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
@@ -74,7 +75,7 @@ public class CreateGroupActivity extends BaseActivity {
 
         setPortraitChangListener();
 
-//        groupIds.add(getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,""));
+        groupIds.add(getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,""));
         if(null!=memberList && memberList.size()>0) {
             for (FriendInfo friendInfo : memberList) {
                 groupIds.add(friendInfo.getUserId());
@@ -123,6 +124,10 @@ public class CreateGroupActivity extends BaseActivity {
         if(groupIds.size() >= 1){
             Gson gson=new Gson();
             String sss=gson.toJson(groupIds);
+            String dd=sss.toString();
+
+//            JSONArray jsonArr = JSONArray.fromObject(list);
+            L.e("-----------",sss+"------"+dd);
             HttpUtils.sendPostListRequest("/create_group", userid,groupName, sss,imageFile, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {

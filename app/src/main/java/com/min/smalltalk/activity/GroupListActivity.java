@@ -10,12 +10,14 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.Groups;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -45,7 +47,7 @@ public class GroupListActivity extends BaseActivity {
     TextView tvNoGroup;
 
     private BaseRecyclerAdapter<Groups> adapter;
-    private List<Groups> list=new ArrayList<>();
+    private List<Groups> list = new ArrayList<>();
     private String groupName;
     private String groupId;
     private String groupPortraitUri;
@@ -56,53 +58,58 @@ public class GroupListActivity extends BaseActivity {
         setContentView(R.layout.activity_group_list);
         ButterKnife.bind(this);
         tvTitle.setText("我的群组");
+        LoadDialog.show(mContext);
         initData();
     }
 
     private void initData() {
-        HttpUtils.postGroupListRequest("/group/grouplist", new StringCallback() {
+        String userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+        HttpUtils.postGroupListRequest("/group_data", userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,R.string.error_network);
+                T.showShort(mContext, "/group_data-----" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<List<Groups>>>(){}.getType();
-                Code<List<Groups>> code=gson.fromJson(response,type);
-                if(code.getCode()==200){
-                    List<Groups> groups=code.getMsg();
-                    if(groups!=null && groups.size()>1) {
-                        for (Groups groups1 : groups)
-                            list.add(new Groups(groups1.getGroupId(), groups1.getGroupName(), groups1.getGroupPortraitUri()));
-                    }else{
-                        tvNoGroup.setVisibility(View.VISIBLE);
-                        return;
-                    }
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<Groups>>>() {
+                }.getType();
+                Code<List<Groups>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    List<Groups> groups = code.getMsg();
+                    for (Groups groups1 : groups)
+                        list.add(new Groups(groups1.getGroupId(), groups1.getGroupName(), groups1.getGroupPortraitUri()));
+
+                    LoadDialog.dismiss(mContext);
                     initAdapter();
+                } else {
+                    rvGroupList.setVisibility(View.GONE);
+                    tvNoGroup.setVisibility(View.VISIBLE);
+                    tvNoGroup.setText("你暂时未加入任何一个群组");
+                    LoadDialog.dismiss(mContext);
                 }
             }
         });
     }
 
     private void initAdapter() {
-        adapter = new BaseRecyclerAdapter<Groups>(mContext,list,R.layout.item_group) {
+        adapter = new BaseRecyclerAdapter<Groups>(mContext, list, R.layout.item_group) {
             @Override
             public void convert(BaseRecyclerHolder holder, Groups item, int position, boolean isScrolling) {
 //                groupPortraitUri=list.get(position).getGroupPortraitUri();
-                if(list.get(position).getGroupPortraitUri()!=null){
+                if (list.get(position).getGroupPortraitUri() != null) {
                     holder.setImageByUrl(R.id.siv_group_head, list.get(position).getGroupPortraitUri());
-                }else {
-                    holder.setImageResource(R.id.siv_group_head,R.mipmap.default_chatroom);
+                } else {
+                    holder.setImageResource(R.id.siv_group_head, R.mipmap.default_chatroom);
                 }
-                holder.setText(R.id.tv_group_name,list.get(position).getGroupName());
+                holder.setText(R.id.tv_group_name, list.get(position).getGroupName());
             }
         };
         rvGroupList.setAdapter(adapter);
-        LinearLayoutManager lm=new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvGroupList.setLayoutManager(lm);
-        rvGroupList.addItemDecoration(new ItemDivider(this,ItemDivider.VERTICAL_LIST));
+        rvGroupList.addItemDecoration(new ItemDivider(this, ItemDivider.VERTICAL_LIST));
         adapter.notifyDataSetChanged();
         initListItemClick();
     }
@@ -111,11 +118,10 @@ public class GroupListActivity extends BaseActivity {
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
-                RongIM.getInstance().startGroupChat(mContext,list.get(position).getGroupId(),list.get(position).getGroupName());
+                RongIM.getInstance().startGroupChat(mContext, list.get(position).getGroupId(), list.get(position).getGroupName());
             }
         });
     }
-
 
 
     @OnClick(R.id.iv_title_back)

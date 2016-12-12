@@ -20,6 +20,7 @@ import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -51,6 +52,8 @@ public class GroupMemberActivity extends BaseActivity {
     private List<GroupMember> list=new ArrayList<>();
     private List<FriendInfo> friendInfoList=new ArrayList<>();
     private GroupMember groupMembers;
+    private String fromConversationId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +65,11 @@ public class GroupMemberActivity extends BaseActivity {
     }
 
     private void initList() {
-        HttpUtils.postGroupsRequest("/group/group_member", groupId, new StringCallback() {
+        fromConversationId = getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postGroupsRequest("/group_member", groupId, fromConversationId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/group/group_member----------连接失败");
+                T.showShort(mContext,"/group_member----------连接失败");
             }
 
             @Override

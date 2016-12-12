@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -171,16 +170,18 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                     List<FriendInfo> list = code.getMsg();
                     if (list != null && list.size() > 0) {
                         for (FriendInfo friend : list) {
-                            Log.e("===========", friend.getUserId());
+//                            Log.e("===========", friend.getUserId());
                             mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), HttpUtils.IMAGE_RUL+friend.getPortraitUri(),
                                     friend.getDisplayName(), friend.getPhone(), friend.getEmail()));
                         }
+                        //实例化汉字转拼音类
+                        mCharacterParser = CharacterParser
+                                .getInstance();
+                        mPinyinComparator = PinyinComparator.getInstance();
+                        initList();
+                    }else {
+                        tvShowNoFriend.setVisibility(View.VISIBLE);
                     }
-                    //实例化汉字转拼音类
-                    mCharacterParser = CharacterParser
-                            .getInstance();
-                    mPinyinComparator = PinyinComparator.getInstance();
-                    initList();
                 } else {
                     T.showShort(getActivity(), "数据获取错误");
                 }
@@ -460,7 +461,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 T.showShort(getActivity(), "PublicServiceActivity.class");
                 break;
             case R.id.rl_me_item:
-                T.showShort(getActivity(),"不能自己聊天");
+                T.showShort(getActivity(),"这是自己");
 //                RongIM.getInstance().startPrivateChat(getActivity(), mId, mCacheName);
                 break;
         }

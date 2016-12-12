@@ -142,6 +142,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 editor.apply();
 
                 RongIM.getInstance().logout();
+                context.unregisterReceiver(this);
                 MainActivity.this.finish();
                 try {
                     Thread.sleep(500);

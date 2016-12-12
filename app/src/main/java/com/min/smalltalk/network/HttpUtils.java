@@ -95,7 +95,7 @@ public class HttpUtils {
     public static void senddPostRequest(String url,String userid, String nickname, String f_userid,String message,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
                 .addParams("userid",userid)
-                .addParams("nickname",nickname)
+                .addParams("vsername",nickname)
                 .addParams("f_userid",f_userid)
                 .addParams("addFriendMessage",message)
                 .build()
@@ -145,13 +145,13 @@ public class HttpUtils {
 
 
     //群组列表
-    public static void postGroupListRequest(String url, StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL +url).build().execute(callback);
+    public static void postGroupListRequest(String url, String userId, StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL +url).addParams("userId",userId).build().execute(callback);
     }
     //群组信息---群组成员
-    public static void postGroupsRequest(String url,String groupId,StringCallback callback){
+    public static void postGroupsRequest(String url,String groupId, String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
-                .addParams("groupId",groupId).build().execute(callback);
+                .addParams("groupId",groupId).addParams("userId",userId).build().execute(callback);
     }
     //修改群头像
     public static void postChangeGroupHead(String url,String groupId,File file,StringCallback callback){

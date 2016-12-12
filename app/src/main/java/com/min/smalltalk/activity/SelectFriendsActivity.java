@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.mylibrary.widget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
@@ -103,6 +104,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         mSelectedFriend=new ArrayList<>();
         isCreateGroup=getIntent().getBooleanExtra("createGroup",false);
         groupId=getIntent().getStringExtra("GroupId");
+        LoadDialog.show(mContext);
         initView();
         /**
          * 根据进行的操作初始化数据,添加删除群成员和获取好友信息是异步操作,所以做了很多额外的处理
@@ -153,6 +155,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     for(int i=0;i<friendInfo.size();i++) {
                         data_list.add(new FriendInfo(friendInfo.get(i).getUserId(), friendInfo.get(i).getName(), friendInfo.get(i).getPortraitUri()));
                     }
+                    LoadDialog.dismiss(mContext);
                     fillSourceDataList();
                     filterSourceDataList();
                     updateAdapter();

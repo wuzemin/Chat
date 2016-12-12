@@ -118,7 +118,7 @@ public class SearchFriendActivity extends BaseActivity {
                 Code<LoginBean> beanCode = gson.fromJson(response,type);
                 int code=beanCode.getCode();
                 f_userid=beanCode.getMsg().getUserid();
-                headUri = beanCode.getMsg().getPortrait();
+                headUri = HttpUtils.IMAGE_RUL+beanCode.getMsg().getPortrait();
                 userName = beanCode.getMsg().getNickname();
                 if (code == 200) {
                     LoadDialog.dismiss(mContext);

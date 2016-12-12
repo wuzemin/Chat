@@ -10,7 +10,8 @@ import com.min.mylibrary.widget.image.CircleImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseAdapters;
-import com.min.smalltalk.bean.UserRelationshipResponse;
+import com.min.smalltalk.bean.AllAddFriends;
+import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.Generate;
 
 import io.rong.imageloader.core.ImageLoader;
@@ -41,14 +42,14 @@ public class NewFriendListAdapter  extends BaseAdapters {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final UserRelationshipResponse.ResultEntity bean = (UserRelationshipResponse.ResultEntity) dataSet.get(position);
-        holder.mName.setText(bean.getUser().getNickname());
-        if (TextUtils.isEmpty(bean.getUser().getPortraitUri())) {
-            ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getUser().getNickname(), bean.getUser().getId()), holder.mHead, App.getOptions());
+        final AllAddFriends bean = (AllAddFriends) dataSet.get(position);
+        holder.mName.setText(bean.getNickname());
+        if (TextUtils.isEmpty(bean.getPortraitUri())) {
+            ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getNickname(), bean.getUserid()), holder.mHead, App.getOptions());
         } else {
-            ImageLoader.getInstance().displayImage(bean.getUser().getPortraitUri(), holder.mHead, App.getOptions());
+            ImageLoader.getInstance().displayImage(HttpUtils.IMAGE_RUL+bean.getPortraitUri(), holder.mHead, App.getOptions());
         }
-        holder.mMessage.setText(bean.getMessage());
+        holder.mMessage.setText(bean.getAddFriendMessage());
         holder.tvAgree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

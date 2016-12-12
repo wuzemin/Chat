@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class NewFriendListActivity extends BaseActivity implements  NewFriendListAdapter.OnItemButtonClick {
+public class NewFriendListActivity extends BaseActivity implements NewFriendListAdapter.OnItemButtonClick {
 
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -45,16 +45,18 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
     ImageView ivTitleRight;
     @BindView(R.id.isData)
     TextView isData;
-    @BindView(R.id.listView)
-    ListView mListView;
+        @BindView(R.id.listView)
+        ListView mListView;
+//    @BindView(R.id.rv_new_friends)
+//    RecyclerView rv_new_friends;
 
-    //    private BaseRecyclerAdapter<AllAddFriends> adapter;
-    private AllAddFriends allAddFriends;
     private String userid;
     private String friendId;
-    private List<AllAddFriends> list=new ArrayList<>();
+    private List<AllAddFriends> list = new ArrayList<>();
+    private AllAddFriends allAddFriends;
 
-    private NewFriendListAdapter adapter;
+        private NewFriendListAdapter adapter;
+//    private BaseRecyclerAdapter<AllAddFriends> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,31 +65,31 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
         ButterKnife.bind(this);
         initView();
         if (!CommonUtils.isNetConnect(mContext)) {
-            T.showShort(mContext,R.string.no_network);
+            T.showShort(mContext, R.string.no_network);
             return;
         }
         LoadDialog.show(mContext);
-        userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        userid = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
         initData();
         adapter=new NewFriendListAdapter(mContext);
         mListView.setAdapter(adapter);
     }
 
     private void initData() {
-        HttpUtils.postAddFriendsRequest("/all_addfriend_request",userid ,new StringCallback() {
+        HttpUtils.postAddFriendsRequest("/all_addfriend_request", userid, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/all_addfriend_request--------"+e);
+                T.showShort(mContext, "/all_addfriend_request--------" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<List<AllAddFriends>>>(){}.getType();
-                Code<List<AllAddFriends>> code=gson.fromJson(response,type);
-                if(code.getCode()==200){
-                    list=code.getMsg();
-                    if(list.size()==0){
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<AllAddFriends>>>() {}.getType();
+                Code<List<AllAddFriends>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    list = code.getMsg();
+                    if (list.size() == 0) {
                         isData.setVisibility(View.VISIBLE);
                         LoadDialog.dismiss(mContext);
                         return;
@@ -95,9 +97,9 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
                     Collections.sort(list, new Comparator<AllAddFriends>() {
                         @Override
                         public int compare(AllAddFriends allAddFriends, AllAddFriends t1) {
-                            Date date1=stringToDate(allAddFriends);
-                            Date date2=stringToDate(t1);
-                            if(date1.before(date2)){
+                            Date date1 = stringToDate(allAddFriends);
+                            Date date2 = stringToDate(t1);
+                            if (date1.before(date2)) {
                                 return 1;
                             }
                             return -1;
@@ -109,8 +111,8 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
                     adapter.notifyDataSetChanged();
                     adapter.setOnItemButtonClick(NewFriendListActivity.this);
                     LoadDialog.dismiss(mContext);
-
-                }else {
+//                    initAdapter(list);
+                } else {
                     LoadDialog.dismiss(mContext);
                     isData.setVisibility(View.VISIBLE);
                 }
@@ -119,19 +121,20 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
     }
 
     private int index;
+
     @Override
     public boolean onButtonClick(int position, View view, int status) {
         index = position;
         switch (status) {
             case 3: //收到了好友邀请
                 if (!CommonUtils.isNetConnect(mContext)) {
-                    T.showShort(mContext,R.string.error_network);
+                    T.showShort(mContext, R.string.error_network);
                     break;
                 }
                 LoadDialog.show(mContext);
 //                friendId = null;
                 friendId = list.get(position).getUserid();
-                initRequest(friendId,status);
+                initRequest(friendId, 1);
                 break;
             case 0: // 发出了好友邀请
                 break;
@@ -143,22 +146,25 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
         return false;
     }
 
-    private void initRequest(String friendId,int status) {
+    private void initRequest(String friendId, int status) {
         HttpUtils.postEnterFriendRequest("/confirm_friend", userid, friendId, status, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/confirm_friend------"+e);
+                T.showShort(mContext, "/confirm_friend------" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<Integer>>(){}.getType();
-                Code<Integer> code=gson.fromJson(response,type);
-                if(code.getCode()==200){
-                    T.showShort(mContext,"请求成功");
-                }else {
-                    T.showShort(mContext,"请求失败");
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Integer>>() {
+                }.getType();
+                Code<Integer> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    T.showShort(mContext, "请求成功");
+                    LoadDialog.dismiss(mContext);
+                } else {
+                    T.showShort(mContext, "请求失败");
+                    LoadDialog.dismiss(mContext);
                 }
             }
         });
@@ -166,34 +172,38 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
 
     //数据
     /*private void initAdapter(List<AllAddFriends> list) {
-        adapter = new BaseRecyclerAdapter<AllAddFriends>(mContext,list,R.layout.item_new_friends) {
+        adapter = new BaseRecyclerAdapter<AllAddFriends>(mContext, list, R.layout.item_new_friends) {
             @Override
             public void convert(BaseRecyclerHolder holder, AllAddFriends item, int position, boolean isScrolling) {
-                holder.setImageByUrl(R.id.civ_icon,item.getPortraitUri());
-                holder.setText(R.id.tv_nickname,item.getName());
-                holder.setText(R.id.tv_message,item.getAddFriendMessage());
-                int status=item.getStatus();
-                switch (status){
+                holder.setImageByUrl(R.id.civ_icon, HttpUtils.IMAGE_RUL+item.getPortraitUri());
+                holder.setText(R.id.tv_nickname, item.getNickname());
+                holder.setText(R.id.tv_message, item.getAddFriendMessage());
+                int status = item.getStatus();
+                switch (status) {
                     case 0:
-                        holder.setText(R.id.btn_agree,"已拒绝");
+                        holder.setText(R.id.tv_agree, "已拒绝");
                         break;
                     case 1:
-                        holder.setText(R.id.btn_agree,"已同意");
+                        holder.setText(R.id.tv_agree, "已同意");
                         break;
                     case 2:
-                        holder.setText(R.id.btn_agree,"已忽略");
+                        holder.setText(R.id.tv_agree, "已忽略");
                         break;
                     case 3:
-                        holder.setText(R.id.btn_agree,"同意");
+                        holder.setText(R.id.tv_agree, "同意");
                         break;
                 }
             }
         };
-        adapter.setOnButtonClickListener(this);
+        rv_new_friends.setAdapter(adapter);
+        LinearLayoutManager lm=new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
+        rv_new_friends.setLayoutManager(lm);
+        LoadDialog.dismiss(mContext);
+
     }*/
 
     private Date stringToDate(AllAddFriends allAddFriends) {
-        String updatedAt = allAddFriends.getUpdatedAt();
+        String updatedAt = allAddFriends.getAddtime();
         String updatedAtDateStr = updatedAt.substring(0, 10) + " " + updatedAt.substring(11, 16);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date updateAtDate = null;
@@ -204,7 +214,6 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
         }
         return updateAtDate;
     }
-
 
 
     private void initView() {
@@ -220,7 +229,7 @@ public class NewFriendListActivity extends BaseActivity implements  NewFriendLis
                 finish();
                 break;
             case R.id.iv_title_right:
-                startActivity(new Intent(mContext,SearchFriendActivity.class));
+                startActivity(new Intent(mContext, SearchFriendActivity.class));
                 break;
         }
     }

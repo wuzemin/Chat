@@ -13,15 +13,15 @@ public class AllAddFriends implements Parcelable{
     private String addFriendMessage;
     private String portraitUri;
     private int status;
-    private String updatedAt;
+    private String addtime;
 
-    public AllAddFriends(String userid, String nickname,String portraitUri, String addFriendMessage, int status, String updatedAt) {
+    public AllAddFriends(String userid, String nickname,String portraitUri, String addFriendMessage, int status, String addtime) {
         this.userid = userid;
         this.nickname = nickname;
         this.portraitUri=portraitUri;
         this.addFriendMessage = addFriendMessage;
         this.status = status;
-        this.updatedAt = updatedAt;
+        this.addtime = addtime;
     }
 
     public String getUserid() {
@@ -64,12 +64,12 @@ public class AllAddFriends implements Parcelable{
         this.status = status;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public String getAddtime() {
+        return addtime;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setAddtime(String addtime) {
+        this.addtime = addtime;
     }
 
     public static Creator<AllAddFriends> getCREATOR() {
@@ -82,7 +82,7 @@ public class AllAddFriends implements Parcelable{
         portraitUri=in.readString();
         addFriendMessage = in.readString();
         status = in.readInt();
-        updatedAt = in.readString();
+        addtime = in.readString();
     }
 
     public static final Creator<AllAddFriends> CREATOR = new Creator<AllAddFriends>() {
@@ -109,6 +109,6 @@ public class AllAddFriends implements Parcelable{
         parcel.writeString(portraitUri);
         parcel.writeString(addFriendMessage);
         parcel.writeInt(status);
-        parcel.writeString(updatedAt);
+        parcel.writeString(addtime);
     }
 }

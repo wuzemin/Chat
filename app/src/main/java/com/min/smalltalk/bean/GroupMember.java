@@ -12,8 +12,8 @@ public class GroupMember implements Parcelable{
     private String groupId;
     /** Not-null value. */
     private String userId;
-    private String name;
-    private String portraitUri;
+    private String userName;
+    private String userPortraitUri;
     private String displayName;
     private String nameSpelling;
     private String displayNameSpelling;
@@ -22,56 +22,27 @@ public class GroupMember implements Parcelable{
     private String groupPortraitUri;
     private String phone;
     private String email;
+    private String role;
 
-    public GroupMember() {
+    public GroupMember(String userId, String userName, String userPortraitUri) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPortraitUri = userPortraitUri;
     }
 
-    public GroupMember(String userId, String name, String portraitUri) {
+    public GroupMember(String userId, String userName, String userPortraitUri, String phone, String email) {
         this.userId = userId;
-        this.name = name;
-        this.portraitUri = portraitUri;
-    }
-
-
-
-    public GroupMember(String groupId, String userId, String name, String portraitUri, String displayName, String nameSpelling, String displayNameSpelling, String groupName, String groupNameSpelling, String groupPortraitUri) {
-        this.groupId = groupId;
-        this.userId = userId;
-        this.name = name;
-        this.portraitUri = portraitUri;
-        this.displayName = displayName;
-        this.nameSpelling = nameSpelling;
-        this.displayNameSpelling = displayNameSpelling;
-        this.groupName = groupName;
-        this.groupNameSpelling = groupNameSpelling;
-        this.groupPortraitUri = groupPortraitUri;
-    }
-
-    public GroupMember(String groupId, String userId, String name, String portraitUri, String displayName, String nameSpelling, String displayNameSpelling, String groupName, String groupNameSpelling) {
-        this.groupId = groupId;
-        this.userId = userId;
-        this.name = name;
-        this.portraitUri = portraitUri;
-        this.displayName = displayName;
-        this.nameSpelling = nameSpelling;
-        this.displayNameSpelling = displayNameSpelling;
-        this.groupName = groupName;
-        this.groupNameSpelling = groupNameSpelling;
-    }
-
-    public GroupMember(String groupId, String userId, String name, String portraitUri, String displayName) {
-        this.groupId = groupId;
-        this.userId = userId;
-        this.name = name;
-        this.portraitUri = portraitUri;
-        this.displayName = displayName;
+        this.userName = userName;
+        this.userPortraitUri = userPortraitUri;
+        this.phone = phone;
+        this.email = email;
     }
 
     protected GroupMember(Parcel in) {
         groupId = in.readString();
         userId = in.readString();
-        name = in.readString();
-        portraitUri = in.readString();
+        userName = in.readString();
+        userPortraitUri = in.readString();
         displayName = in.readString();
         nameSpelling = in.readString();
         displayNameSpelling = in.readString();
@@ -80,6 +51,7 @@ public class GroupMember implements Parcelable{
         groupPortraitUri = in.readString();
         phone = in.readString();
         email = in.readString();
+        role = in.readString();
     }
 
     public static final Creator<GroupMember> CREATOR = new Creator<GroupMember>() {
@@ -94,40 +66,36 @@ public class GroupMember implements Parcelable{
         }
     };
 
-    /** Not-null value. */
     public String getGroupId() {
         return groupId;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
-    /** Not-null value. */
     public String getUserId() {
         return userId;
     }
 
-    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getPortraitUri() {
-        return portraitUri;
+    public String getUserPortraitUri() {
+        return userPortraitUri;
     }
 
-    public void setPortraitUri(String portraitUri) {
-        this.portraitUri = portraitUri;
+    public void setUserPortraitUri(String userPortraitUri) {
+        this.userPortraitUri = userPortraitUri;
     }
 
     public String getDisplayName() {
@@ -194,6 +162,14 @@ public class GroupMember implements Parcelable{
         this.email = email;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -203,8 +179,8 @@ public class GroupMember implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(groupId);
         parcel.writeString(userId);
-        parcel.writeString(name);
-        parcel.writeString(portraitUri);
+        parcel.writeString(userName);
+        parcel.writeString(userPortraitUri);
         parcel.writeString(displayName);
         parcel.writeString(nameSpelling);
         parcel.writeString(displayNameSpelling);
@@ -213,5 +189,6 @@ public class GroupMember implements Parcelable{
         parcel.writeString(groupPortraitUri);
         parcel.writeString(phone);
         parcel.writeString(email);
+        parcel.writeString(role);
     }
 }

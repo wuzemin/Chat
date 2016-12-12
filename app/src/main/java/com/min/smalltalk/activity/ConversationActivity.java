@@ -98,11 +98,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         mTargetId = intent.getData().getQueryParameter("targetId");
         //10000 为 Demo Server 加好友的 id，若 targetId 为 10000，则为加好友消息，默认跳转到 NewFriendListActivity
         // Demo 逻辑
-        if (mTargetId != null){
-            if(mTargetId.equals("13025304562") || mTargetId.equals("18819493906") || mTargetId.equals("18819493603") ) {
-                startActivity(new Intent(mContext, NewFriendListActivity.class));
-                return;
-            }
+        if (mTargetId != null && mTargetId.equals("10000")) {
+            startActivity(new Intent(ConversationActivity.this, NewFriendListActivity.class));
+            return;
         }
         setActionBarTitle(mConversationType, mTargetId);
         //展示如何从 Intent 中得到 融云会话页面传递的 Uri

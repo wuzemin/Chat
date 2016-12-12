@@ -269,7 +269,7 @@ public class CharacterParser {
                 nameList.append(spannableStringBuilder)
                         .append(",");
             } else {
-                SpannableStringBuilder spannableStringBuilder = getColored(filterStr, groupMember.getName());
+                SpannableStringBuilder spannableStringBuilder = getColored(filterStr, groupMember.getUserName());
                 nameList.append(spannableStringBuilder)
                         .append(",");
             }

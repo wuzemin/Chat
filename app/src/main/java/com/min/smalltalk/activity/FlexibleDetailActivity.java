@@ -81,7 +81,7 @@ public class FlexibleDetailActivity extends BaseActivity {
             @Override
             public void convert(BaseRecyclerHolder holder, GroupMember item, int position, boolean isScrolling) {
                 holder.setImageByUrl(R.id.siv_group_head,item.getGroupPortraitUri());
-                holder.setText(R.id.tv_group_name,item.getName());
+                holder.setText(R.id.tv_group_name,item.getUserName());
             }
         };
         rvActivityUser.setAdapter(adapter);

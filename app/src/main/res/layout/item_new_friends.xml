@@ -14,6 +14,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="18dp"
+        android:layout_marginBottom="18dp"
         android:id="@+id/civ_icon" />
 
     <TextView
@@ -36,7 +37,7 @@
         android:layout_alignBottom="@+id/civ_icon"
         android:layout_alignLeft="@+id/tv_nickname"
         android:layout_alignStart="@+id/tv_nickname"
-        android:id="@+id/textView5" />
+        android:id="@+id/tv_message" />
 
     <TextView
         android:text="@string/agree"
@@ -46,8 +47,8 @@
         android:layout_marginRight="11dp"
         android:layout_marginEnd="11dp"
         android:id="@+id/tv_agree"
-        android:layout_alignBaseline="@+id/textView5"
-        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignBaseline="@+id/tv_message"
+        android:layout_alignBottom="@+id/tv_message"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

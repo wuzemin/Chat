@@ -81,8 +81,8 @@ public class GroupMemberActivity extends BaseActivity {
                     List<GroupMember> groupMember=code.getMsg();
                     for(GroupMember member:groupMember) {
                         userId = member.getUserId();
-                        userName = member.getName();
-                        userPort = member.getPortraitUri();
+                        userName = member.getUserName();
+                        userPort = member.getUserPortraitUri();
                         userPhone=member.getPhone();
                         userEmail=member.getEmail();
                         list.add(new GroupMember(userId, userName, userPort));
@@ -103,13 +103,13 @@ public class GroupMemberActivity extends BaseActivity {
         adapter=new BaseRecyclerAdapter<GroupMember>(mContext,list,R.layout.item_group) {
             @Override
             public void convert(BaseRecyclerHolder holder, GroupMember item, int position, boolean isScrolling) {
-                String siv=item.getPortraitUri();
+                String siv=item.getUserPortraitUri();
                 if(!TextUtils.isEmpty(siv)){
                     holder.setImageByUrl(R.id.siv_group_head,siv);
                 }else {
                     holder.setImageResource(R.id.siv_group_head,R.mipmap.default_portrait);
                 }
-                holder.setText(R.id.tv_group_name,item.getName());
+                holder.setText(R.id.tv_group_name,item.getUserName());
             }
         };
         rvGroupMember.setAdapter(adapter);
@@ -122,7 +122,7 @@ public class GroupMemberActivity extends BaseActivity {
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
-                L.e("-------------",list.get(position).getUserId()+list.get(position).getName()+list.get(position).getPortraitUri());
+                L.e("-------------",list.get(position).getUserId()+list.get(position).getUserName()+list.get(position).getUserPortraitUri());
                 FriendInfo friend=friendInfoList.get(position);
                 Intent intent=new Intent(mContext,UserDetailActivity.class);
                 intent.putExtra("friends",friend);

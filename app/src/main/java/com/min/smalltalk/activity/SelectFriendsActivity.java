@@ -142,7 +142,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         HttpUtils.postRequest("/friends", userid,new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,R.string.error_network);
+                T.showShort(mContext,"/friends-------"+e);
             }
 
             @Override
@@ -153,7 +153,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 if(code.getCode()==200){
                     List<FriendInfo> friendInfo=code.getMsg();
                     for(int i=0;i<friendInfo.size();i++) {
-                        data_list.add(new FriendInfo(friendInfo.get(i).getUserId(), friendInfo.get(i).getName(), friendInfo.get(i).getPortraitUri()));
+                        data_list.add(new FriendInfo(friendInfo.get(i).getUserId(), friendInfo.get(i).getName(), HttpUtils.IMAGE_RUL+friendInfo.get(i).getPortraitUri()));
                     }
                     LoadDialog.dismiss(mContext);
                     fillSourceDataList();

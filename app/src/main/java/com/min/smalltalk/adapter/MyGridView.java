@@ -34,26 +34,26 @@ import io.rong.imlib.model.UserInfo;
 public class MyGridView extends BaseAdapter {
     private Context context;
     private List<GroupMember> list=new ArrayList<>();
-    private boolean isCreated;
+    private String isCreator;
     private LayoutInflater inflater;
     private String groupId;
     private String groupName;
     private String groupPortraitUri;
 
-    public MyGridView(Context context, List<GroupMember> list,boolean isCreated) {
+    public MyGridView(Context context, List<GroupMember> list,String isCreator) {
         this.context = context;
         if (list.size() >= 20) {
             this.list = list.subList(0, 19);
         } else {
             this.list = list;
         }
-        this.isCreated=isCreated;
+        this.isCreator=isCreator;
         this.inflater=inflater.from(context);
     }
 
     @Override
     public int getCount() {
-        if (isCreated) {
+        if (isCreator=="1") {
             return list.size() + 2;
         } else {
             return list.size() + 1;
@@ -92,7 +92,7 @@ public class MyGridView extends BaseAdapter {
         }*/
 
         //
-        if(position==getCount()-1 && isCreated){
+        if(position==getCount()-1 && isCreator=="1"){
             holder.tvGroupDetailsName.setText("");
             holder.sivGroupDetails.setImageResource(R.mipmap.icon_btn_deleteperson);
             holder.sivGroupDetails.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +104,7 @@ public class MyGridView extends BaseAdapter {
                     context.startActivity(intent);
                 }
             });
-        }else if ((isCreated && position == getCount() - 2) || (!isCreated && position == getCount() - 1)) {
+        }else if ((isCreator=="1" && position == getCount() - 2) || (isCreator!="1" && position == getCount() - 1)) {
             holder.tvGroupDetailsName.setText("");
             holder.sivGroupDetails.setImageResource(R.mipmap.jy_drltsz_btn_addperson);
 
@@ -120,17 +120,17 @@ public class MyGridView extends BaseAdapter {
             });
         } else { // 普通成员
             final GroupMember bean = list.get(position);
-            holder.tvGroupDetailsName.setText(list.get(position).getName());
-            if (TextUtils.isEmpty(bean.getPortraitUri())) {
-                ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getName(), bean.getUserId()), holder.sivGroupDetails, App.getOptions());
+            holder.tvGroupDetailsName.setText(list.get(position).getUserName());
+            if (TextUtils.isEmpty(bean.getUserPortraitUri())) {
+                ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getUserName(), bean.getUserId()), holder.sivGroupDetails, App.getOptions());
             } else {
-                ImageLoader.getInstance().displayImage(bean.getPortraitUri(), holder.sivGroupDetails, App.getOptions());
+                ImageLoader.getInstance().displayImage(bean.getUserPortraitUri(), holder.sivGroupDetails, App.getOptions());
             }
             holder.sivGroupDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getName(),
-                            Uri.parse(TextUtils.isEmpty(bean.getPortraitUri()) ? Generate.generateDefaultAvatar(bean.getName(), bean.getUserId()) : bean.getPortraitUri()));
+                    UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getUserName(),
+                            Uri.parse(TextUtils.isEmpty(bean.getUserPortraitUri()) ? Generate.generateDefaultAvatar(bean.getUserName(), bean.getUserId()) : bean.getUserPortraitUri()));
                     Intent intent = new Intent(context, UserDetailActivity.class);
                     Friend friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
                     intent.putExtra("friend", friend);

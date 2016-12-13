@@ -392,7 +392,10 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         mFriendListAdapter.updateListView(filterDateList);
     }
 
-
+    /**
+     * 用户信息
+     * @param friend
+     */
     private void startFriendDetailsPage(FriendInfo friend) {
         Intent intent = new Intent(getActivity(), UserDetailActivity.class);
         intent.putExtra("type", CLICK_CONTACT_FRAGMENT_FRIEND);

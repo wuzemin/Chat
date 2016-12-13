@@ -78,11 +78,13 @@ public class UserDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_user_detail);
         ButterKnife.bind(this);
         Intent intent = getIntent();
+        tvTitleRight.setVisibility(View.VISIBLE);
+        tvTitleRight.setText("修改备注名");
         friendInfo = intent.getParcelableExtra("friends");
         userId = friendInfo.getUserId();
         userName = friendInfo.getName();
         userPort = friendInfo.getPortraitUri();
-        userPhone = friendInfo.getPhone();
+        userPhone = friendInfo.getUserId();
         userEmail = friendInfo.getEmail();
         initView();
 
@@ -108,27 +110,26 @@ public class UserDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ll_call:   //打电话
-                AlertDialog dialog = new AlertDialog.Builder(mContext)
-                        .setTitle("拨打电话")
-                        .setPositiveButton("拨打", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(Intent.ACTION_CALL);
-                                Uri uri = Uri.parse("tel" + userPhone);
-                                intent.setData(uri);
-                                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                    return;
-                                }
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        })
-                        .show();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(userPhone);
+                builder.setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(Intent.ACTION_CALL);
+                        Uri uri = Uri.parse("tel:" + userPhone);
+                        intent.setData(uri);
+                        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                builder.show();
                 break;
             case R.id.ll_send_sms:   //发短信
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + userPhone));
@@ -150,8 +151,6 @@ public class UserDetailActivity extends BaseActivity {
                 RongIM.getInstance().startPrivateChat(mContext, userId, userName);
                 break;
             case R.id.tv_title_right:
-                tvTitleRight.setVisibility(View.VISIBLE);
-                tvTitleRight.setText("修改备注名");
                 final EditText editText=new EditText(mContext);
                 AlertDialog dialog1=new AlertDialog.Builder(mContext)
                         .setTitle("修改备注名")

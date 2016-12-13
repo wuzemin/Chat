@@ -30,6 +30,7 @@
     <string name="email">邮箱</string>
     <string name="message">消息</string>
     <string name="add">添加</string>
+    <string name="group_my_name">群名称</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

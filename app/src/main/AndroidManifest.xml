@@ -17,6 +17,10 @@
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <!-- 接收消息 -->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <!-- 拨打电话 -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!-- 发送短信 -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
 
     <application

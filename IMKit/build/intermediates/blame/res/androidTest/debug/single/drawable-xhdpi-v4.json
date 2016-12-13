@@ -12,12 +12,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f36b.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f632.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f632.png"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ac_sd_card_icon.png",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ac_sd_card_icon.png"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f632.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f632.png"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f319.png",
@@ -112,12 +112,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f349.png"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_add_people.png",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_add_people.png"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u2b50.png",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u2b50.png"
+    },
+    {
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_add_people.png",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_add_people.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f44f.png",
@@ -136,16 +136,16 @@
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_file_icon_else.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_receive_voice_two.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_receive_voice_two.png"
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f3b5.png",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f3b5.png"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_read_receipt.png",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_read_receipt.png"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f3b5.png",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f3b5.png"
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_receive_voice_two.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_receive_voice_two.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f4a4.png",
@@ -176,24 +176,24 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_bg_toast.9.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_file_icon_cancel.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_file_icon_cancel.png"
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u270a.png",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u270a.png"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ic_voice_sent_play1.png",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ic_voice_sent_play1.png"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u270a.png",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u270a.png"
-    },
-    {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f6ab.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f6ab.png"
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_file_icon_cancel.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_file_icon_cancel.png"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f611.png",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f611.png"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f6ab.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f6ab.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_default_group_portrait.png",

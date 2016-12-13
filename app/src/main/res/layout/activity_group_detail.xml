@@ -108,6 +108,48 @@
                 android:layout_marginRight="14dp"
                 android:layout_marginTop="20dp"
                 android:background="#dfdfdd" />
+
+            <!--个人昵称-->
+            <LinearLayout
+                android:id="@+id/ll_my_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_list_item_bg"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/group_name"
+                    android:textColor="@color/text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_my_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="14dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="#999"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!--群头像-->
             <LinearLayout
                 android:id="@+id/ll_group_port"
                 android:layout_width="match_parent"
@@ -155,6 +197,7 @@
                     android:background="#dfdfdd" />
             </LinearLayout>
 
+            <!--群名称-->
             <LinearLayout
                 android:id="@+id/ll_group_name"
                 android:layout_width="match_parent"
@@ -192,8 +235,6 @@
                     android:maxLines="1"
                     android:textColor="#999"
                     android:textSize="14sp" />
-
-
             </LinearLayout>
 
 
@@ -211,6 +252,8 @@
                     android:layout_marginRight="14dp"
                     android:background="#dfdfdd" />
             </LinearLayout>
+
+            <!--群活动-->
             <LinearLayout
                 android:id="@+id/ll_group_activity"
                 android:layout_width="match_parent"

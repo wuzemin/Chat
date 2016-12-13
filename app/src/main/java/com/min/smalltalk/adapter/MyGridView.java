@@ -17,6 +17,8 @@ import com.min.smalltalk.activity.SelectFriendsActivity;
 import com.min.smalltalk.activity.UserDetailActivity;
 import com.min.smalltalk.bean.Friend;
 import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.bean.Groups;
+import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.CharacterParser;
 import com.min.smalltalk.wedget.Generate;
 
@@ -40,8 +42,9 @@ public class MyGridView extends BaseAdapter {
     private String groupId;
     private String groupName;
     private String groupPortraitUri;
+    private Groups groups;
 
-    public MyGridView(Context context, List<GroupMember> list,boolean isCreated) {
+    public MyGridView(Context context, List<GroupMember> list, boolean isCreated, Groups groups) {
         this.context = context;
         if (list.size() >= 20) {
             this.list = list.subList(0, 19);
@@ -49,6 +52,7 @@ public class MyGridView extends BaseAdapter {
             this.list = list;
         }
         this.isCreated=isCreated;
+        this.groups=groups;
         this.inflater=inflater.from(context);
     }
 
@@ -101,7 +105,7 @@ public class MyGridView extends BaseAdapter {
                 public void onClick(View view) {
                     Intent intent = new Intent(context, SelectFriendsActivity.class);
                     intent.putExtra("isDeleteGroupMember", true);
-                    intent.putExtra("GroupId", list.get(position).getGroupId());
+                    intent.putExtra("GroupId", groups.getGroupId());
                     context.startActivity(intent);
                 }
             });
@@ -114,18 +118,18 @@ public class MyGridView extends BaseAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, SelectFriendsActivity.class);
                     intent.putExtra("isAddGroupMember", true);
-                    intent.putExtra("GroupId", list.get(position).getGroupId());
+                    intent.putExtra("GroupId", groups.getGroupId());
                     context.startActivity(intent);
 
                 }
             });
         } else { // 普通成员
             final GroupMember bean = list.get(position);
-            holder.tvGroupDetailsName.setText(list.get(position).getUserName());
+            holder.tvGroupDetailsName.setText(bean.getUserName());
             if (TextUtils.isEmpty(bean.getUserPortraitUri())) {
                 ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getUserName(), bean.getUserId()), holder.sivGroupDetails, App.getOptions());
             } else {
-                ImageLoader.getInstance().displayImage(bean.getUserPortraitUri(), holder.sivGroupDetails, App.getOptions());
+                ImageLoader.getInstance().displayImage(HttpUtils.IMAGE_RUL+bean.getUserPortraitUri(), holder.sivGroupDetails, App.getOptions());
             }
             holder.sivGroupDetails.setOnClickListener(new View.OnClickListener() {
                 @Override

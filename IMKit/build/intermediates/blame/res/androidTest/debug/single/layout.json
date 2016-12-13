@@ -28,12 +28,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_plugin_location_activity.xml"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_item_public_service_message.xml",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_public_service_message.xml"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_fr_public_service_search.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_fr_public_service_search.xml"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_item_public_service_message.xml",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_public_service_message.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_refresh_list_view.xml",
@@ -80,12 +80,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_share_location_message.xml"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_fr_file_list.xml",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_fr_file_list.xml"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_input_pager_layout.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_input_pager_layout.xml"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_fr_file_list.xml",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_fr_file_list.xml"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_ext_plugin_item.xml",
@@ -120,12 +120,12 @@
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_public_service_list.xml"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_fr_public_service_sub_list.xml",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_fr_public_service_sub_list.xml"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_ext_plugin_grid_view.xml",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_ext_plugin_grid_view.xml"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_fr_public_service_sub_list.xml",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_fr_public_service_sub_list.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_ext_input_edit_text.xml",
@@ -148,16 +148,16 @@
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_dialog_popup_options.xml"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_picsel_preview.xml",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_picsel_preview.xml"
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_wi_block.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_wi_block.xml"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_item_text_message.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_text_message.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_wi_block.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_wi_block.xml"
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_picsel_preview.xml",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_picsel_preview.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_wi_file_list_adapter.xml",
@@ -256,12 +256,12 @@
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_public_service_message.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_item_public_service_input_menu.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_public_service_input_menu.xml"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_pic_popup_window.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_pic_popup_window.xml"
+    },
+    {
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_item_public_service_input_menu.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\layout\\rc_item_public_service_input_menu.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\rc_dialog_popup_prompt.xml",

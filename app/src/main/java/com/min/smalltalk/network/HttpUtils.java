@@ -120,7 +120,7 @@ public class HttpUtils {
     //好友信息
     public static void postFriendsRequest(String url,String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
-                .addParams("userId",userId)
+                .addParams("userid",userId)
                 .build().execute(callback);
     }
 
@@ -160,11 +160,12 @@ public class HttpUtils {
                 .addFile("file","",file)
                 .build().execute(callback);
     }
-    //修改群名称
-    public static void postChangeGroupName(String url,String groupId,String groupName,StringCallback callback){
+    //修改群名称或图片
+    public static void postChangeGroupName(String url,String groupId,String groupName, File file,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addParams("groupId",groupId)
                 .addParams("groupName",groupName)
+                .addFile("file","",file)
                 .build().execute(callback);
     }
     //退出群
@@ -200,8 +201,35 @@ public class HttpUtils {
     }
     //添加群成员
     public static void postAddGroupMember(String url,String groupId,String userIds,StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL+url).addParams("groupId",groupId)
-                .addParams("userIds",userIds).build().execute(callback);
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("groupId",groupId)
+                .addParams("groupUser",userIds).build().execute(callback);
+    }
+
+    //修改群个人昵称
+    public static void postChangeNameGroup(String url,String groupId,String userId,String groupName,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("groupId",groupId)
+                .addParams("userId",userId)
+                .addParams("groupName",groupName)
+                .build().execute(callback);
+    }
+
+    //修改好友备注名
+    public static void postChangeFriendName(String url,String userId,String f_userId, String nickname,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("userId",userId)
+                .addParams("f_userid",f_userId)
+                .addParams("nickname",nickname)
+                .build().execute(callback);
+    }
+
+    //修改个人资料----添加群活动
+    public static void postChangePerson(String url,String string, File file,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("person",string)
+                .addFile("file","",file)
+                .build().execute(callback);
     }
 
 }

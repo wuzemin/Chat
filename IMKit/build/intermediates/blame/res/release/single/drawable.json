@@ -128,12 +128,12 @@
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_item_top_list_selector.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable\\rc_pb_file_download_progress.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_pb_file_download_progress.xml"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable\\rc_selector_grid_camera_mask.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_selector_grid_camera_mask.xml"
+    },
+    {
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable\\rc_pb_file_download_progress.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_pb_file_download_progress.xml"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\release\\drawable\\rc_keyboard_selector.xml",

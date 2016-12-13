@@ -170,7 +170,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                     List<FriendInfo> list = code.getMsg();
                     if (list != null && list.size() > 0) {
                         for (FriendInfo friend : list) {
-//                            Log.e("===========", friend.getUserId());
                             mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), HttpUtils.IMAGE_RUL+friend.getPortraitUri(),
                                     friend.getDisplayName(), friend.getPhone(), friend.getEmail()));
                         }
@@ -254,14 +253,14 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                FriendInfo bean = mFriendList.get(position - 1);
+                final FriendInfo bean = mFriendList.get(position - 1);
                 startFriendDetailsPage(bean);
                 AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                        .setTitle("删除该好友")
+                        .setTitle("删除该好友"+bean.getName())
                         .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                deleteFriends(mFriendList.get(i));
+                                deleteFriends(bean);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -312,8 +311,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<FriendInfo>>() {
-                }.getType();
+                Type type = new TypeToken<Code<FriendInfo>>() {}.getType();
                 Code<FriendInfo> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     T.showShort(getActivity(), "删除成功");

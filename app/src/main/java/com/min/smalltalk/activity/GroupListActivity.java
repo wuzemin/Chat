@@ -79,7 +79,7 @@ public class GroupListActivity extends BaseActivity {
                 if (code.getCode() == 200) {
                     List<Groups> groups = code.getMsg();
                     for (Groups groups1 : groups)
-                        list.add(new Groups(groups1.getGroupId(), groups1.getGroupName(), groups1.getGroupPortraitUri()));
+                        list.add(new Groups(groups1.getGroupId(), groups1.getGroupName(), HttpUtils.IMAGE_RUL+groups1.getGroupPortraitUri()));
 
                     LoadDialog.dismiss(mContext);
                     initAdapter();

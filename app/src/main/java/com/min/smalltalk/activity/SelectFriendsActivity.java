@@ -190,7 +190,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     if(mListView!=null){
                         for(FriendInfo friendInfo:friendInfos){
                             data_list.add(new FriendInfo(friendInfo.getUserId(),friendInfo.getName(),
-                                    friendInfo.getPortraitUri(),friendInfo.getDisplayName()));
+                                    HttpUtils.IMAGE_RUL+friendInfo.getPortraitUri(),friendInfo.getDisplayName()));
 //                            data_list.add(new FriendInfo(friendInfo.getUserId(), friendInfo.getName(),
 //                                    friendInfo.getPortraitUri(), friendInfo.getDisplayName(), null, null));
                         }
@@ -226,6 +226,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         mListView.setAdapter(adapter);
     }
 
+    //获取成员
     private void initData() {
         if (deleDisList != null && deleDisList.size() > 0) {
             for (int i = 0; i < deleDisList.size(); i++) {
@@ -322,7 +323,9 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                             }
                         })
                         .show();
-            } else if (addGroupMemberList != null && startDisList != null && startDisList.size() > 0) {
+            } else
+            //添加群成员
+            if (addGroupMemberList != null && startDisList != null && startDisList.size() > 0) {
                 //TODO 选中添加成员的数据添加到服务端数据库  返回本地也需要更改
                 LoadDialog.show(mContext);
 //                request(ADD_GROUP_MEMBER);
@@ -359,10 +362,10 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
         }*/
         final Gson gson=new Gson();
         String dd=gson.toJson(addGroupMemberList);
-        HttpUtils.postAddGroupMember("/add_group_member", groupId, dd, new StringCallback() {
+        HttpUtils.postAddGroupMember("/GroupPullUser", groupId, dd, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/add_group_member-----"+e);
+                T.showShort(mContext,"/GroupPullUser-----"+e);
             }
 
             @Override
@@ -376,6 +379,8 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     LoadDialog.dismiss(mContext);
                     T.showShort(mContext,"添加成功");
                     finish();
+                }else {
+                    T.showShort(mContext,"添加失败");
                 }
             }
         });

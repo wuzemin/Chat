@@ -21,10 +21,17 @@ import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
+import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.utils.DateUtils;
 import com.min.smalltalk.wedget.Wheel.JudgeDate;
 import com.min.smalltalk.wedget.Wheel.ScreenInfo;
 import com.min.smalltalk.wedget.Wheel.WheelMain;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.ParseException;
@@ -36,6 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.imageloader.core.ImageLoader;
+import okhttp3.Call;
 
 /**
  * 添加群活动
@@ -72,6 +80,8 @@ public class GroupAddFlexibleActivity extends BaseActivity {
     private String beginTime;
     private int number=0;
 
+    private String userId,group_id,actives_title,actives_content,actives_limit,actives_start,actives_end,actives_address;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +94,13 @@ public class GroupAddFlexibleActivity extends BaseActivity {
 
     private void initView() {
         tvTitle.setText("添加群活动");
+        tvTitleRight.setVisibility(View.VISIBLE);
+        tvTitleRight.setText("添加");
+        userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        group_id=getIntent().getStringExtra("group_id");
+        actives_title=etActivityName.getText().toString();
+        actives_content=etdActivityContent.getText().toString();
+        actives_address=etActivityPlace.getText().toString();
     }
 
     @OnClick({R.id.iv_title_back, R.id.tv_title_right, R.id.iv_group_activity_head, R.id.tv_activity_start_time, R.id.tv_activity_end_time})
@@ -104,11 +121,40 @@ public class GroupAddFlexibleActivity extends BaseActivity {
                 showSTimePopupWindow(number);
                 break;
             case R.id.tv_title_right:
-                String activityName=etActivityName.getText().toString();
-                String activityplace=etActivityPlace.getText().toString();
-                String activityContent=etdActivityContent.getText().toString();
+                addFlexible();
+
                 break;
         }
+    }
+
+    private void addFlexible() {
+        JSONArray jsonArray=new JSONArray();
+        JSONObject row=new JSONObject();
+        try {
+            row.put("userId",userId);
+            row.put("group_id",group_id);
+            row.put("actives_title",actives_title);
+            row.put("actives_content",actives_content);
+            row.put("actives_limit",actives_limit);
+            row.put("actives_start",actives_start);
+            row.put("actives_end",actives_end);
+            row.put("actives_address",actives_address);
+            jsonArray.put(row);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String string = jsonArray.toString();
+        HttpUtils.postChangePerson("/ss", string, imageFile, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+
+            }
+        });
     }
 
     private java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -167,9 +213,11 @@ public class GroupAddFlexibleActivity extends BaseActivity {
                     Date begin = dateFormat.parse(currentTime);
                     Date end = dateFormat.parse(beginTime);
                     if(number1==1){
-                        tvActivityStartTime.setText(DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm));
+                        actives_start=DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm);
+                        tvActivityStartTime.setText(actives_start);
                     }else {
-                        tvActivityEndTime.setText(DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm));
+                        actives_end=DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm);
+                        tvActivityEndTime.setText(actives_end);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();

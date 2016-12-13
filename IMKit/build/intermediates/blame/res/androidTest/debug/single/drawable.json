@@ -1,11 +1,11 @@
 [
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_keyboard_selector.xml",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_keyboard_selector.xml"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_progress_sending_style.xml",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_progress_sending_style.xml"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_keyboard_selector.xml",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_keyboard_selector.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_corner_location_style.xml",
@@ -32,28 +32,28 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_read_receipt_request_button.xml"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_selector_grid_camera_mask.xml",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_selector_grid_camera_mask.xml"
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_bg_item.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_bg_item.xml"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_menu_background_selector.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_menu_background_selector.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_bg_item.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_bg_item.xml"
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_selector_grid_camera_mask.xml",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_selector_grid_camera_mask.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_bg_mentionlist_item.xml",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_bg_mentionlist_item.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_ic_star_selector.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_ic_star_selector.xml"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_menu_text_selector.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_menu_text_selector.xml"
+    },
+    {
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_ic_star_selector.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_ic_star_selector.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_an_voice_receive.xml",
@@ -152,12 +152,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_emoji_grid_item_selector.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_bg_sidebar.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_bg_sidebar.xml"
-    },
-    {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_bg_mentionlist_item.xml",
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_bg_mentionlist_item.xml"
+    },
+    {
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_bg_sidebar.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable\\rc_bg_sidebar.xml"
     },
     {
         "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rc_corner_popup_dialog_style.xml",

@@ -139,7 +139,9 @@ public class GroupFlexibleActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_title_right:
-                startActivity(new Intent(mContext, GroupAddFlexibleActivity.class));
+                Intent intent=new Intent(mContext,GroupAddFlexibleActivity.class);
+                intent.putExtra("group_id",groupId);
+                startActivity(intent);
                 break;
         }
     }

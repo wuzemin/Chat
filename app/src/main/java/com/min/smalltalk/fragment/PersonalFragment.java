@@ -32,8 +32,6 @@ public class PersonalFragment extends Fragment {
     CircleImageView civIcon;
     @BindView(R.id.tv_user)
     TextView tvUser;
-    @BindView(R.id.tv_phone)
-    TextView tvPhone;
     @BindView(R.id.ll_password_setting)
     LinearLayout llPasswordSetting;
     @BindView(R.id.ll_setting)
@@ -64,7 +62,6 @@ public class PersonalFragment extends Fragment {
     private void initView() {
         tvUserid.setText(userid);
         tvUser.setText(username);
-        tvPhone.setText(userphone);
     }
 
     @OnClick({R.id.civ_icon, R.id.btn_exit, R.id.ll_password_setting, R.id.ll_setting, R.id.rl_person_setting})

@@ -96,12 +96,12 @@
         "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_menu_text_selector.xml"
     },
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable\\rc_cs_group_dialog_ok_selector.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_cs_group_dialog_ok_selector.xml"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable\\rc_keyboard_selector.xml",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable\\rc_keyboard_selector.xml"
+    },
+    {
+        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable\\rc_cs_group_dialog_ok_selector.xml",
+        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\drawable\\rc_cs_group_dialog_ok_selector.xml"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable\\rc_voice_input_selector.xml",

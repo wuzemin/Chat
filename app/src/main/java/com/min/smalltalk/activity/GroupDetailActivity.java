@@ -101,6 +101,11 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     ImageView ivGroupCode;
     @BindView(R.id.ll_group_activity)
     LinearLayout llGroupActivity;
+    @BindView(R.id.ll_my_nickname)
+    LinearLayout llMyNickname;
+    @BindView(R.id.tv_my_name)
+    TextView tvMyName;
+
 
     private List<GroupMember> mGroupMember;
     private String groupId;    //群ID
@@ -116,6 +121,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     private BottomMenuDialog dialog;
     private Bitmap bitmap;
     private String userId;
+    private String groupName;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +157,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     imageFile=new File(uri.getPath());
                     imageUrl=uri.toString();
                     ImageLoader.getInstance().displayImage(imageUrl,sivGroupHeader);
-                    HttpUtils.postChangeGroupHead("/group/change_groupHead", groupId, imageFile, new StringCallback() {
+                    HttpUtils.postChangeGroupName("/change_groupName", groupId, "",imageFile, new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             T.showShort(mContext,"/group/change_groupHead-------网络连接错误");
@@ -158,7 +165,14 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
                         @Override
                         public void onResponse(String response, int id) {
-                            T.showShort(mContext,"修改成功");
+                            Gson gson=new Gson();
+                            Type type=new TypeToken<Code<Integer>>(){}.getType();
+                            Code<Integer> code=gson.fromJson(response,type);
+                            if(code.getCode()==200){
+                                T.showShort(mContext,"修改成");
+                            }else {
+                                T.showShort(mContext,"修改失败");
+                            }
                         }
                     });
                 }
@@ -198,13 +212,14 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //群组信息
     private void initGroupData() {
+        groupName=mGroup.getGroupName();
         if (TextUtils.isEmpty(mGroup.getGroupPortraitUri())) {
             ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(
-                    mGroup.getGroupName(), mGroup.getGroupId()), sivGroupHeader, App.getOptions());
+                    groupName, mGroup.getGroupId()), sivGroupHeader, App.getOptions());
         } else {
             ImageLoader.getInstance().displayImage(mGroup.getGroupPortraitUri(), sivGroupHeader, App.getOptions());
         }
-        tvGroupName.setText(mGroup.getGroupName());   //群名
+        tvGroupName.setText(groupName);   //群名
         /**
          * 会话置顶
          */
@@ -298,7 +313,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     mGroupMember = code.getMsg();
                     if (mGroupMember != null && mGroupMember.size() > 0) {
                         tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
-                        mGridView.setAdapter(new MyGridView(mContext, mGroupMember, isCreator));
+                        mGridView.setAdapter(new MyGridView(mContext, mGroupMember, isCreator,mGroup));
                     } else {
                         return;
                     }
@@ -326,7 +341,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     //点击事件
     @OnClick({R.id.iv_title_back, R.id.rl_group_member_size_item, R.id.ll_group_port, R.id.ll_group_name,
                 R.id.ll_group_code, R.id.sw_group_top, R.id.sw_group_notfaction,R.id.btn_group_quit,
-                R.id.btn_group_dismiss, R.id.ll_group_announcement, R.id.ll_group_activity})
+                R.id.btn_group_dismiss, R.id.ll_group_announcement, R.id.ll_group_activity ,R.id.ll_my_nickname})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_title_back:  //返回
@@ -442,9 +457,50 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 intent3.putExtra("groupId", groupId);
                 startActivity(intent3);
                 break;
+            case R.id.ll_my_nickname:  //修改群个人昵称
+                editText=new EditText(mContext);
+                AlertDialog dialog3=new AlertDialog.Builder(mContext)
+                        .setTitle("退出群")
+                        .setView(editText)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                changeMyName();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        })
+                        .show();
+                break;
             default:
                 break;
         }
+    }
+
+    //修改群个人你昵称
+    private void changeMyName() {
+        HttpUtils.postChangeNameGroup("/change_userName", groupId, userId, groupName, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/change_userName------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Integer>>() {
+                }.getType();
+                Code<Integer> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    tvMyName.setText(editText.getText());
+                }else {
+                    T.showShort(mContext,"修改失败");
+                }
+            }
+        });
     }
 
     //退出群
@@ -546,10 +602,10 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //修改群名称
     private void changGroupName(String groupName) {
-        HttpUtils.postChangeGroupName("/group/change_groupName", groupId, groupName, new StringCallback() {
+        HttpUtils.postChangeGroupName("/change_groupName", groupId, groupName,imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/group/change_groupName------网络连接错误");
+                T.showShort(mContext,"/change_groupName------网络连接错误");
             }
 
             @Override

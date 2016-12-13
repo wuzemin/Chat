@@ -232,4 +232,12 @@ public class HttpUtils {
                 .build().execute(callback);
     }
 
+    //参加群活动
+    public static void postAddFlexible(String url,String userId,String actives_id,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("userId",userId)
+                .addParams("actives_id",actives_id)
+                .build().execute(callback);
+    }
+
 }

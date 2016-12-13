@@ -49,6 +49,8 @@
     <string name="select_end_time">选择结束时间</string>
     <string name="sex">性别</string>
     <string name="birthday">生日</string>
+    <string name="age">年龄</string>
+    <string name="actives_limit">活动限制人数</string>
     <string name="address">地址</string>
     <string name="QR_code">二维码</string>
 </resources>

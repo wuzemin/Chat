@@ -10,21 +10,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
+import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.GroupFlexible;
 import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
+import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.imageloader.core.ImageLoader;
+import okhttp3.Call;
 
 /**
  * 群活动的详细信息
@@ -53,6 +61,7 @@ public class FlexibleDetailActivity extends BaseActivity {
     RecyclerView rvActivityUser;
 
     private GroupFlexible groupFlexible;
+    private String userId;
     private String flexibleId,flexibleName,flexiblePort,flexibleStartTime,flexibleEndTime,flexiblePlace,flexibleContent;
     private List<GroupMember> list;
     private BaseRecyclerAdapter<GroupMember> adapter;
@@ -111,8 +120,48 @@ public class FlexibleDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_join_activity:
-                T.showShort(mContext,"no");
+                joinActivity();
                 break;
         }
+    }
+
+    //参加活动
+    private void joinActivity() {
+        userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postAddFlexible("/joinActives", userId, flexibleId, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/joinActives------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<Integer>>(){}.getType();
+                Code<Integer> code = gson.fromJson(response,type);
+                switch (code.getCode()){
+                    case 200:
+                        T.showShort(mContext,"加入成功");
+                        break;
+                    case 0:
+                        T.showShort(mContext,"加入失败");
+                        break;
+                    case 100:
+                        T.showShort(mContext,"非群内人员无法加入该活动");
+                        break;
+                    case 101:
+                        T.showShort(mContext,"活动还未开始");
+                        break;
+                    case 102:
+                        T.showShort(mContext,"活动结束");
+                        break;
+                    case 103:
+                        T.showShort(mContext,"活动人数已满");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 }

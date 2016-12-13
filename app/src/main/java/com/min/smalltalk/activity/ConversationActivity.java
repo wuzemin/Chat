@@ -111,10 +111,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         title = intent.getData().getQueryParameter("title");
 
         //私聊和群聊
-        if(mConversationType== Conversation.ConversationType.PRIVATE){
+        /*if(mConversationType== Conversation.ConversationType.PRIVATE){
             ivTitleRight.setVisibility(View.VISIBLE);
             ivTitleRight.setImageResource(R.mipmap.icon1_menu);
-        }
+        }*/
         if (mConversationType == Conversation.ConversationType.GROUP) {
             ivTitleRight.setVisibility(View.VISIBLE);
             ivTitleRight.setImageResource(R.mipmap.icon2_menu);

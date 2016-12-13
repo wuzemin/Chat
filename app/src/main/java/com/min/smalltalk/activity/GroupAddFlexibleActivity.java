@@ -17,10 +17,14 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.PhotoUtils;
+import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
+import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.utils.DateUtils;
@@ -34,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -144,15 +149,23 @@ public class GroupAddFlexibleActivity extends BaseActivity {
             e.printStackTrace();
         }
         String string = jsonArray.toString();
-        HttpUtils.postChangePerson("/ss", string, imageFile, new StringCallback() {
+        HttpUtils.postChangePerson("/foundActives", string, imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-
+                T.showShort(mContext,"/foundActives---------"+e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<Integer>>(){}.getType();
+                Code<Integer> code = gson.fromJson(response,type);
+                if(code.getCode()==200){
+                    T.showShort(mContext,"创建成功");
+                    finish();
+                }else {
+                    T.showShort(mContext,"创建失败");
+                }
             }
         });
     }

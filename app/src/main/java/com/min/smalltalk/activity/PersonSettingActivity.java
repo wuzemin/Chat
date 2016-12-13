@@ -47,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -96,6 +97,8 @@ public class PersonSettingActivity extends BaseActivity {
     RelativeLayout rlPhone;
     @BindView(R.id.tv_phone)
     TextView tvPhone;
+    @BindView(R.id.tv_age)
+    TextView tvAge;
 
 
 
@@ -107,6 +110,7 @@ public class PersonSettingActivity extends BaseActivity {
     private String sex;
     private String birthday;
     private String address;
+    private String age;
 
     private PhotoUtils photoUtils;
     private Uri selectUri;
@@ -117,6 +121,7 @@ public class PersonSettingActivity extends BaseActivity {
     private String beginTime;
     private boolean flag=false;
     private EditText editText;
+    private int str;
 
 
     @Override
@@ -124,6 +129,12 @@ public class PersonSettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_setting);
         ButterKnife.bind(this);
+        setPortraitChangListener();
+        initView();
+
+    }
+
+    private void initView() {
         sp = getSharedPreferences("config", MODE_PRIVATE);
         userId = sp.getString(Const.LOGIN_ID, "");
         nickName = sp.getString(Const.LOGIN_NICKNAME, "");
@@ -133,8 +144,10 @@ public class PersonSettingActivity extends BaseActivity {
         tvTitleRight.setText("编辑");
         tvNickname.setText(nickName);
         tvPhone.setText(phone);
-        setPortraitChangListener();
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        str = Integer.parseInt(formatter.format(curDate));
     }
 
     private void setPortraitChangListener() {
@@ -298,7 +311,7 @@ public class PersonSettingActivity extends BaseActivity {
             row.put("phone",phone);
             row.put("address",address);
             row.put("birth_date",birthday);
-            row.put("age","");
+            row.put("age",age);
             jsonArray.put(row);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -367,7 +380,7 @@ public class PersonSettingActivity extends BaseActivity {
         TextView tv_cancle = (TextView) menuView.findViewById(R.id.tv_cancle);
         TextView tv_ensure = (TextView) menuView.findViewById(R.id.tv_ensure);
         TextView tv_pop_title = (TextView) menuView.findViewById(R.id.tv_pop_title);
-        tv_pop_title.setText("选择起始时间");
+        tv_pop_title.setText("选择时间");
         tv_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -382,6 +395,9 @@ public class PersonSettingActivity extends BaseActivity {
                 beginTime = wheelMainDate.getTime().toString();
                 birthday=DateUtils.formateStringH(beginTime, DateUtils.yyyyMMddHHmm);
                 tvBirthday.setText(birthday);
+                int birth= Integer.parseInt(birthday.substring(0,4));
+                age= String.valueOf(str-birth);
+                tvAge.setText(age);
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
             }

@@ -136,10 +136,10 @@
             android:text="@string/join_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/tv_activity_content"
+            android:id="@+id/btn_join_activity"
+            android:layout_below="@+id/activity_name"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/btn_join_activity" />
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
     <View

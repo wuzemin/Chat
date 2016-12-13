@@ -1,9 +1,12 @@
 package com.min.smalltalk.bean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * Created by Min on 2016/11/30.
  */
-
+@Entity
 public class Groups{
     private String groupId;
     private String groupName;
@@ -27,6 +30,20 @@ public class Groups{
         this.groupName = groupName;
         this.groupPortraitUri = groupPortraitUri;
         this.role=role;
+    }
+
+    @Generated(hash = 1961875826)
+    public Groups(String groupId, String groupName, String groupPortraitUri,
+            String displayName, String role, String bulletin, String timestamp,
+            String nameSpelling) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.groupPortraitUri = groupPortraitUri;
+        this.displayName = displayName;
+        this.role = role;
+        this.bulletin = bulletin;
+        this.timestamp = timestamp;
+        this.nameSpelling = nameSpelling;
     }
 
     public String getDisplayName() {

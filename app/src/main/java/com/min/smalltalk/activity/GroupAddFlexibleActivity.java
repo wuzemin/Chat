@@ -85,7 +85,8 @@ public class GroupAddFlexibleActivity extends BaseActivity {
     private String beginTime;
     private int number=0;
 
-    private String userId,group_id,actives_title,actives_content,actives_limit,actives_start,actives_end,actives_address;
+    private String userId,group_id,actives_title,actives_content,actives_start,actives_end,actives_address;
+    private int actives_limit=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +104,6 @@ public class GroupAddFlexibleActivity extends BaseActivity {
         tvTitleRight.setText("添加");
         userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
         group_id=getIntent().getStringExtra("group_id");
-        actives_title=etActivityName.getText().toString();
-        actives_content=etdActivityContent.getText().toString();
-        actives_address=etActivityPlace.getText().toString();
     }
 
     @OnClick({R.id.iv_title_back, R.id.tv_title_right, R.id.iv_group_activity_head, R.id.tv_activity_start_time, R.id.tv_activity_end_time})
@@ -133,6 +131,9 @@ public class GroupAddFlexibleActivity extends BaseActivity {
     }
 
     private void addFlexible() {
+        actives_title=etActivityName.getText().toString();
+        actives_content=etdActivityContent.getText().toString();
+        actives_address=etActivityPlace.getText().toString();
         JSONArray jsonArray=new JSONArray();
         JSONObject row=new JSONObject();
         try {

@@ -1,7 +1,18 @@
 package com.min.smalltalk.db;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.text.TextUtils;
+
+import com.min.smalltalk.constant.Const;
+
+import java.io.File;
+
+import io.rong.common.RLog;
+import io.rong.imkit.userInfoCache.RongDatabaseContext;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Min on 2016/12/3.
@@ -16,34 +27,105 @@ public class DBManager {
     private static DBManager instance;
     private DaoMaster.DevOpenHelper openHelper;
     private Context context;
+    private DaoMaster daoMaster;
+    private DaoSession daoSession;
+    private static Context mContext;
+    private static boolean isInitialized;
 
-    public DBManager(Context context) {
-        this.context = context;
-        openHelper=new DaoMaster.DevOpenHelper(context,DB_NAME,null);
-    }
 
     /**
-     * 获取单例引用
+     * [获取DBManager实例，单例模式实现]
+     *
+     * @return DBManager
      */
-    public static DBManager getInstance(Context context){
-        if(instance==null){
-            synchronized (DBManager.class){
-                if(instance==null){
-                    instance=new DBManager(context);
-                }
-            }
-        }
+    public static DBManager getInstance() {
         return instance;
     }
 
-    //可写
-    private SQLiteDatabase getWritableDatabases(){
-        SQLiteDatabase db=openHelper.getWritableDatabase();
-        return db;
+    /**
+     * [初始化DBManager实例，单例模式实现]
+     *
+     * @param context
+     * @return DBManager
+     */
+    public static DBManager init(Context context) {
+        if (isInitialized) {
+            RLog.d(TAG, "DBManager has init");
+            return instance;
+        }
+        RLog.d(TAG, "DBManager init");
+        mContext = context;
+        instance = new DBManager(context);
+        isInitialized = true;
+        return instance;
     }
-    //可读
-    private SQLiteDatabase getReadableDatabases(){
-        SQLiteDatabase db=openHelper.getReadableDatabase();
-        return db;
+
+    public boolean isInitialized() {
+        return  isInitialized;
+    }
+
+    /**
+     * 构造方法
+     * @param context
+     */
+    private DBManager(Context context) {
+        DaoMaster.OpenHelper helper = new
+                DaoMaster.DevOpenHelper(new RongDatabaseContext(context, getDbPath()), DB_NAME, null);
+        daoMaster = new DaoMaster(helper.getWritableDatabase());
+        daoSession = daoMaster.newSession();
+        //数据库存贮路径修改,直接删除旧的数据库
+        mContext.deleteDatabase(mContext.getPackageName());
+    }
+
+    public DaoMaster getDaoMaster() {
+        return daoMaster;
+    }
+
+    public void setDaoMaster(DaoMaster daoMaster) {
+        this.daoMaster = daoMaster;
+    }
+
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
+
+    public void setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+    }
+
+    private static String getAppKey() {
+        String appKey = null;
+        try {
+            ApplicationInfo applicationInfo = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
+            if (applicationInfo != null) {
+                appKey = applicationInfo.metaData.getString("RONG_CLOUD_APP_KEY");
+            }
+            if (TextUtils.isEmpty(appKey)) {
+                throw new IllegalArgumentException("can't find RONG_CLOUD_APP_KEY in AndroidManifest.xml.");
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError("can't find packageName!");
+        }
+        return appKey;
+    }
+
+    private static String getDbPath () {
+        String currentUserId = mContext.getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, null);
+        String dbPath = mContext.getFilesDir().getAbsolutePath();
+        dbPath = dbPath + File.separator + getAppKey() + File.separator + currentUserId;
+        RLog.d(TAG, "DBManager dbPath = " + dbPath);
+        return  dbPath;
+    }
+
+    public void uninit() {
+        RLog.d(TAG, "DBManager uninit");
+        if (daoSession != null && daoSession.getDatabase() != null) {
+            daoSession.getDatabase().close();
+        }
+        daoSession = null;
+        daoMaster = null;
+        isInitialized = false;
     }
 }

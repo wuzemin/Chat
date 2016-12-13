@@ -17,7 +17,8 @@ import okhttp3.OkHttpClient;
  */
 public class HttpUtils {
     private static final String LOCAL_RUL ="http://192.168.0.178:8080";
-    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+//    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+    private static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
     public static final String IMAGE_RUL ="http://192.168.0.209:80";
 
 
@@ -183,9 +184,10 @@ public class HttpUtils {
                 .build().execute(callback);
     }
     //群活动
-    public static void postGroupActiivity(String url,String groupId ,StringCallback callback){
+    public static void postGroupActiivity(String url, String userid,String groupId ,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
-                .addParams("groupId",groupId)
+                .addParams("userId",userid)
+                .addParams("group_id",groupId)
                 .build().execute(callback);
     }
     //删除好友
@@ -195,9 +197,11 @@ public class HttpUtils {
     }
 
     //删除群成员
-    public static void postDelGroupMember(String url,String groupId,String userIds,StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL+url).addParams("groupId",groupId)
-                .addParams("userIds",userIds).build().execute(callback);
+    public static void postDelGroupMember(String url,String userId, String groupId,String userIds,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("userId",userIds)
+                .addParams("g_user",userId)   //群主
+                .addParams("group_id",groupId).build().execute(callback);
     }
     //添加群成员
     public static void postAddGroupMember(String url,String groupId,String userIds,StringCallback callback){
@@ -228,16 +232,27 @@ public class HttpUtils {
     public static void postChangePerson(String url,String string, File file,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addParams("person",string)
-                .addFile("file","",file)
+                .addFile("file","crop_file.jpg",file)
+                .build().execute(callback);
+    }
+    //
+    public static void postChangePerson(String url,String string,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("person",string)
                 .build().execute(callback);
     }
 
     //参加群活动
-    public static void postAddFlexible(String url,String userId,String actives_id,StringCallback callback){
+    public static void postAddFlexible(String url,String actives_id,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
-                .addParams("userId",userId)
                 .addParams("actives_id",actives_id)
                 .build().execute(callback);
     }
+    //添加群成员
+    public static void postAddGroupMember(String url,String actives_id,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addParams("actives_id",actives_id).build().execute(callback);
+    }
+
 
 }

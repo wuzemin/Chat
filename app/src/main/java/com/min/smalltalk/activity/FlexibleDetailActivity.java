@@ -20,6 +20,7 @@ import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.GroupFlexible;
 import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.bean.LoginBean;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
@@ -64,7 +65,8 @@ public class FlexibleDetailActivity extends BaseActivity {
     private String userId;
     private String flexibleId,flexibleName,flexiblePort,flexibleStartTime,flexibleEndTime,flexiblePlace,flexibleContent;
     private List<GroupMember> list;
-    private BaseRecyclerAdapter<GroupMember> adapter;
+    private BaseRecyclerAdapter<LoginBean> adapter;
+    private List<LoginBean> loginBeenList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,15 +84,35 @@ public class FlexibleDetailActivity extends BaseActivity {
         flexibleContent=groupFlexible.getFlexibleContent();
         list=groupFlexible.getFlexibleList();
         initView();
-        initAdapter();
+        initData();
     }
 
-    private void initAdapter() {
-        adapter=new BaseRecyclerAdapter<GroupMember>(mContext,list,R.layout.item_group) {
+    private void initData() {
+        HttpUtils.postAddGroupMember("/infoActives", flexibleId, new StringCallback() {
             @Override
-            public void convert(BaseRecyclerHolder holder, GroupMember item, int position, boolean isScrolling) {
-                holder.setImageByUrl(R.id.siv_group_head,item.getGroupPortraitUri());
-                holder.setText(R.id.tv_group_name,item.getUserName());
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/infoActives------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<List<LoginBean>>>(){}.getType();
+                Code<List<LoginBean>> beanCode=gson.fromJson(response,type);
+                if(beanCode.getCode()==200){
+                    List<LoginBean> bean=beanCode.getMsg();
+                    initAdapter(bean);
+                }
+            }
+        });
+    }
+
+    private void initAdapter(List<LoginBean> bean) {
+        adapter=new BaseRecyclerAdapter<LoginBean>(mContext,bean,R.layout.item_group) {
+            @Override
+            public void convert(BaseRecyclerHolder holder, LoginBean item, int position, boolean isScrolling) {
+                holder.setImageByUrl(R.id.siv_group_head,item.getPortrait());
+                holder.setText(R.id.tv_group_name,item.getNickname());
             }
         };
         rvActivityUser.setAdapter(adapter);
@@ -128,7 +150,7 @@ public class FlexibleDetailActivity extends BaseActivity {
     //参加活动
     private void joinActivity() {
         userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        HttpUtils.postAddFlexible("/joinActives", userId, flexibleId, new StringCallback() {
+        HttpUtils.postAddFlexible("/joinActives", flexibleId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/joinActives------"+e);

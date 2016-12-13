@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.CommonUtils;
 import com.min.mylibrary.util.T;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.App;
 import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
@@ -71,6 +72,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 startActivityForResult(intent,0);
                 break;
             case R.id.sign_in_button:
+                LoadDialog.show(mContext);
                 if(!CommonUtils.isNetConnect(mContext)){
                     T.showShort(mContext,R.string.no_network);
                     return;
@@ -133,6 +135,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString("loginnickname",nickName);
                         editor.putString("loginPortrait",portraitUri);
                         editor.commit();
+                        LoadDialog.dismiss(mContext);
                         finish();
                     }else if(code1==0){
                         Toast.makeText(LoginActivity.this, "账号不存在！", Toast.LENGTH_SHORT).show();

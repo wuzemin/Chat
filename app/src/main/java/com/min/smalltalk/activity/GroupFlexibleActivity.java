@@ -18,6 +18,7 @@ import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.GroupFlexible;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -62,7 +63,8 @@ public class GroupFlexibleActivity extends BaseActivity {
     }
 
     private void initListView() {
-        HttpUtils.postGroupActiivity("/group/groupAcitivity", groupId, new StringCallback() {
+        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postGroupActiivity("/listActives", userid, groupId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/group/groupAcitivity------onError");
@@ -88,6 +90,8 @@ public class GroupFlexibleActivity extends BaseActivity {
                                 flexibleStartTime,flexibleEndTime, flexiblePlace, flexibleContent));
                     }
                     initAdapter();
+                }else{
+                    T.showShort(mContext,"没有群活动");
                 }
             }
         });

@@ -1,5 +1,8 @@
 package com.min.smalltalk.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -7,7 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * Created by Min on 2016/11/30.
  */
 @Entity
-public class Groups{
+public class Groups implements Parcelable{
     private String groupId;
     private String groupName;
     private String groupPortraitUri;
@@ -45,6 +48,29 @@ public class Groups{
         this.timestamp = timestamp;
         this.nameSpelling = nameSpelling;
     }
+
+    protected Groups(Parcel in) {
+        groupId = in.readString();
+        groupName = in.readString();
+        groupPortraitUri = in.readString();
+        displayName = in.readString();
+        role = in.readString();
+        bulletin = in.readString();
+        timestamp = in.readString();
+        nameSpelling = in.readString();
+    }
+
+    public static final Creator<Groups> CREATOR = new Creator<Groups>() {
+        @Override
+        public Groups createFromParcel(Parcel in) {
+            return new Groups(in);
+        }
+
+        @Override
+        public Groups[] newArray(int size) {
+            return new Groups[size];
+        }
+    };
 
     public String getDisplayName() {
         return displayName;
@@ -108,5 +134,22 @@ public class Groups{
 
     public void setGroupPortraitUri(String groupPortraitUri) {
         this.groupPortraitUri = groupPortraitUri;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(groupId);
+        parcel.writeString(groupName);
+        parcel.writeString(groupPortraitUri);
+        parcel.writeString(displayName);
+        parcel.writeString(role);
+        parcel.writeString(bulletin);
+        parcel.writeString(timestamp);
+        parcel.writeString(nameSpelling);
     }
 }

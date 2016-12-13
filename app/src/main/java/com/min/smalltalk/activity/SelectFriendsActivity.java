@@ -393,10 +393,10 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
     private void deleteGroupMember() {
         Gson gson=new Gson();
         String sss=gson.toJson(deleteGroupMemberList);
-        HttpUtils.postDelGroupMember("/delete_group_member", groupId, sss, new StringCallback() {
+        HttpUtils.postDelGroupMember("/kickGroupUser", userId, groupId, sss, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/delete_group_member--------"+e);
+                T.showShort(mContext,"/kickGroupUser--------"+e);
             }
 
             @Override

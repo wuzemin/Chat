@@ -107,10 +107,10 @@ public class PersonSettingActivity extends BaseActivity {
     private String nickName;
     private String phone;
     private String email;
-    private String sex;
+    private int sex;
     private String birthday;
     private String address;
-    private String age;
+    private int age;
 
     private PhotoUtils photoUtils;
     private Uri selectUri;
@@ -137,12 +137,12 @@ public class PersonSettingActivity extends BaseActivity {
     private void initView() {
         sp = getSharedPreferences("config", MODE_PRIVATE);
         userId = sp.getString(Const.LOGIN_ID, "");
-        nickName = sp.getString(Const.LOGIN_NICKNAME, "");
+        String name = sp.getString(Const.LOGIN_NICKNAME, "");
         phone = sp.getString(Const.LOGIN_PHONE, "");
         tvTitle.setText("个人信息设置");
         tvTitleRight.setVisibility(View.VISIBLE);
         tvTitleRight.setText("编辑");
-        tvNickname.setText(nickName);
+        tvNickname.setText(name);
         tvPhone.setText(phone);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
@@ -195,7 +195,8 @@ public class PersonSettingActivity extends BaseActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                tvNickname.setText(editText.getText());
+                                nickName=editText.getText().toString();
+                                tvNickname.setText(nickName);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -210,14 +211,21 @@ public class PersonSettingActivity extends BaseActivity {
                 if(!flag){
                     return;
                 }
-                final String[] test = new String[]{"男", "女"};
+                final String[] test = new String[]{"男", "女","保密"};
                 AlertDialog.Builder dialog_sex = new AlertDialog.Builder(mContext);
                 dialog_sex.setTitle("选择性别");
                 dialog_sex.setSingleChoiceItems(test, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        sex=test[i];
-                        tvSex.setText(sex);
+                        String string=test[i];
+                        if("男".equals(string)){
+                            sex=1;
+                        }else if("女".equals(string)){
+                            sex=2;
+                        }else {
+                            sex=0;
+                        }
+                        tvSex.setText(string);
                     }
                 });
                 dialog_sex.create().show();
@@ -300,7 +308,6 @@ public class PersonSettingActivity extends BaseActivity {
 
     //修改个人资料
     private void changePerson() {
-//        Map<String,Object> row=new HashMap<>();
         JSONArray jsonArray=new JSONArray();
         JSONObject row=new JSONObject();
         try {
@@ -317,6 +324,29 @@ public class PersonSettingActivity extends BaseActivity {
             e.printStackTrace();
         }
         String string=jsonArray.toString();
+        if(imageFile==null){
+            HttpUtils.postChangePerson("/editUserInfo", string, new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    T.showShort(mContext,"/editUserInfo----"+e);
+                }
+
+                @Override
+                public void onResponse(String response, int id) {
+                    Gson gson=new Gson();
+                    Type type=new TypeToken<Code<Integer>>(){}.getType();
+                    Code<Integer> code = gson.fromJson(response,type);
+                    if(code.getCode()==200){
+                        T.showShort(mContext,"修改成功");
+                        flag=false;
+                        tvTitleRight.setVisibility(View.VISIBLE);
+                    }else {
+                        T.showShort(mContext,"修改失败");
+                    }
+                }
+            });
+            return;
+        }
         HttpUtils.postChangePerson("/editUserInfo", string, imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -396,8 +426,8 @@ public class PersonSettingActivity extends BaseActivity {
                 birthday=DateUtils.formateStringH(beginTime, DateUtils.yyyyMMddHHmm);
                 tvBirthday.setText(birthday);
                 int birth= Integer.parseInt(birthday.substring(0,4));
-                age= String.valueOf(str-birth);
-                tvAge.setText(age);
+                age= str-birth;
+                tvAge.setText(age+"");
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
             }

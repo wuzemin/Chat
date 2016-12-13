@@ -1,9 +1,5 @@
 [
     {
-        "merged": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\build\\intermediates\\res\\merged\\debug\\xml\\rc_file_path.xml",
-        "source": "F:\\Study\\Android\\AndroidStudioProjects\\Chat\\Chat\\IMKit\\src\\main\\res\\xml\\rc_file_path.xml"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\xml\\rc_file_path.xml",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\xml\\rc_file_path.xml"
     }

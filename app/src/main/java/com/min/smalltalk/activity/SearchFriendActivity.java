@@ -117,10 +117,10 @@ public class SearchFriendActivity extends BaseActivity {
                 Type type=new TypeToken<Code<LoginBean>>(){}.getType();
                 Code<LoginBean> beanCode = gson.fromJson(response,type);
                 int code=beanCode.getCode();
-                f_userid=beanCode.getMsg().getUserid();
-                headUri = HttpUtils.IMAGE_RUL+beanCode.getMsg().getPortrait();
-                userName = beanCode.getMsg().getNickname();
                 if (code == 200) {
+                    f_userid=beanCode.getMsg().getUserid();
+                    headUri = HttpUtils.IMAGE_RUL+beanCode.getMsg().getPortrait();
+                    userName = beanCode.getMsg().getNickname();
                     LoadDialog.dismiss(mContext);
                     llFriend.setVisibility(View.VISIBLE);
                     String image=beanCode.getMsg().getPortrait();
@@ -161,6 +161,7 @@ public class SearchFriendActivity extends BaseActivity {
 
                 } else {
                     T.showShort(mContext, "用户不存在");
+                    LoadDialog.dismiss(mContext);
                 }
             }
         });

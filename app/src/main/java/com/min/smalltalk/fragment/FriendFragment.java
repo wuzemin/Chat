@@ -29,6 +29,7 @@ import com.min.smalltalk.AppContext;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.GroupListActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
+import com.min.smalltalk.activity.PersonSettingActivity;
 import com.min.smalltalk.activity.UserDetailActivity;
 import com.min.smalltalk.adapter.FriendListAdapter;
 import com.min.smalltalk.bean.Code;
@@ -459,7 +460,8 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 T.showShort(getActivity(), "PublicServiceActivity.class");
                 break;
             case R.id.rl_me_item:
-                T.showShort(getActivity(),"这是自己");
+//                T.showShort(getActivity(),"这是自己");
+                startActivity(new Intent(getActivity(), PersonSettingActivity.class));
 //                RongIM.getInstance().startPrivateChat(getActivity(), mId, mCacheName);
                 break;
         }

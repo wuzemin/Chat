@@ -26,6 +26,7 @@
 
 
         <TextView
+            android:textSize="@dimen/font_40"
             android:layout_marginLeft="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
             android:layout_marginTop="18dp" />
 
         <TextView
+            android:textSize="@dimen/font_40"
             android:id="@+id/textView1"
             android:text="编号:"
             android:layout_width="wrap_content"
@@ -47,6 +49,7 @@
             android:layout_alignStart="@+id/tv_user"
             android:layout_marginBottom="17dp" />
         <TextView
+            android:textSize="@dimen/font_40"
             android:id="@+id/tv_userid"
             android:layout_marginLeft="20dp"
             android:text="编号"
@@ -160,12 +163,11 @@
 
             </LinearLayout>
 
-
             <Button
                 android:id="@+id/btn_exit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="15dp"
                 android:layout_gravity="center"
                 android:textSize="@dimen/fiche_tile"
                 android:textColor="@color/white"

@@ -63,7 +63,7 @@ public class BroadcastManager {
     public void addAction(String action,BroadcastReceiver receiver){
         IntentFilter filter=new IntentFilter();
         filter.addAction(action);
-        context.registerReceiver(receiver,filter);
+//        context.registerReceiver(receiver,filter);
         receiverMap.put(action,receiver);
     }
     /**

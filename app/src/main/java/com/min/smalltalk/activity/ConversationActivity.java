@@ -83,14 +83,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         sp = getSharedPreferences("config", MODE_PRIVATE);
 
         Intent intent = getIntent();
-        //用户头像
-        list = new ArrayList<>();
-        list.add(new ConversationUser("swk", "孙悟空", "http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg"));
-        list.add(new ConversationUser("ts", "唐僧", "http://news.mbalib.com/uploads/image/2015/0914/2015091442543ea2be07a6eb37e054bcc419daea.jpg"));
-        list.add(new ConversationUser("zbj", "猪八戒", "http://img5.mypsd.com.cn/20111121/Mypsd_67401_201111210849430010B.jpg"));
-        list.add(new ConversationUser("ss", "沙僧", "http://img3.redocn.com/20100623/20100623_25983d787b4f8608d140qd11qhbbtGNK.jpg"));
-        RongIM.setUserInfoProvider(this, true);
-
+        initPortrait();
 
         if (intent == null || intent.getData() == null)
             return;
@@ -131,6 +124,19 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
 
         AppContext.getInstance().pushActivity(this);
 
+    }
+
+    /**
+     * 用户头像
+     */
+    private void initPortrait() {
+        //用户头像
+        list = new ArrayList<>();
+        list.add(new ConversationUser("swk", "孙悟空", "http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg"));
+        list.add(new ConversationUser("ts", "唐僧", "http://news.mbalib.com/uploads/image/2015/0914/2015091442543ea2be07a6eb37e054bcc419daea.jpg"));
+        list.add(new ConversationUser("zbj", "猪八戒", "http://img5.mypsd.com.cn/20111121/Mypsd_67401_201111210849430010B.jpg"));
+        list.add(new ConversationUser("ss", "沙僧", "http://img3.redocn.com/20100623/20100623_25983d787b4f8608d140qd11qhbbtGNK.jpg"));
+        RongIM.setUserInfoProvider(this, true);
     }
 
     /**

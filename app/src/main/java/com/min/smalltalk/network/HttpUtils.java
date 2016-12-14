@@ -42,7 +42,8 @@ public class HttpUtils {
 
     //好友列表
     public static void postRequest(String url, String userid, StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL +url).addParams("userid",userid).build().execute(callback);
+        OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close").addParams("userid",userid).build().execute(callback);
     }
 
     public static void postListRequest(String url, String text, StringCallback callback){
@@ -55,6 +56,7 @@ public class HttpUtils {
     //登录
     public static void postLoginRequest(String url,String username,String password,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("phone",username)
                 .addParams("password",password)
                 .build().execute(callback);
@@ -62,11 +64,13 @@ public class HttpUtils {
 
     //好友请求列表
     public static void postAddFriendsRequest(String url, String userId,StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL +url).addParams("userid",userId).build().execute(callback);
+        OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close").addParams("userid",userId).build().execute(callback);
     }
     //确认好友添加请求
     public static void postEnterFriendRequest(String url,String userid,String friendid, int status, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("userid",userid)
                 .addParams("f_userid",friendid)
                 .addParams("status", String.valueOf(status)).build().execute(callback);
@@ -75,6 +79,7 @@ public class HttpUtils {
     //普通Post上传----用户登录
     public static void sendPostRequest(String url,String username,String password,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("username",username)
                 .addParams("password",password)
                 .build().execute(callback);
@@ -90,12 +95,14 @@ public class HttpUtils {
     //搜索好友
     public static void PostSearchFriendRequest(String url, String string, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL + url)
+                .addHeader("Connection", "close")
                 .addParams("user",string)
                 .build().execute(callback);
     }
 
     public static void senddPostRequest(String url,String userid, String nickname, String f_userid,String message,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("userid",userid)
                 .addParams("vsername",nickname)
                 .addParams("f_userid",f_userid)
@@ -114,6 +121,7 @@ public class HttpUtils {
     //注册
     public static void postRegisterRequest(String url, String nickname, String phone,String password, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("nickname",nickname)
                 .addParams("phone",phone)
                 .addParams("password",password).build().execute(callback);
@@ -122,6 +130,7 @@ public class HttpUtils {
     //好友信息
     public static void postFriendsRequest(String url,String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("userid",userId)
                 .build().execute(callback);
     }
@@ -129,6 +138,7 @@ public class HttpUtils {
     //创建群组
     public static void sendPostListRequest(String url,String userid, String text, String aaa, File file, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("groupName",text)
                 .addParams("userId",userid)
                 .addParams("groupUser", aaa)
@@ -148,16 +158,19 @@ public class HttpUtils {
 
     //群组列表
     public static void postGroupListRequest(String url, String userId, StringCallback callback){
-        OkHttpUtils.post().url(BASE_RUL +url).addParams("userId",userId).build().execute(callback);
+        OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close").addParams("userId",userId).build().execute(callback);
     }
     //群组信息---群组成员
     public static void postGroupsRequest(String url,String groupId, String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId).addParams("userId",userId).build().execute(callback);
     }
     //修改群头像
     public static void postChangeGroupHead(String url,String groupId,File file,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addFile("file","",file)
                 .build().execute(callback);
@@ -165,6 +178,7 @@ public class HttpUtils {
     //修改群名称或图片
     public static void postChangeGroupName(String url,String groupId,String groupName, File file,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addParams("groupName",groupName)
                 .addFile("file","",file)
@@ -173,6 +187,7 @@ public class HttpUtils {
     //退出群
     public static void postQuitGroup(String url,String groupId,String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addParams("groupUser",userId)
                 .build().execute(callback);
@@ -180,6 +195,7 @@ public class HttpUtils {
     //解散群
     public static void postDismissGroup(String url,String groupId,String userId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addParams("groupUser",userId)
                 .build().execute(callback);
@@ -187,6 +203,7 @@ public class HttpUtils {
     //群活动
     public static void postGroupActiivity(String url, String userid,String groupId ,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("userId",userid)
                 .addParams("group_id",groupId)
                 .build().execute(callback);
@@ -194,19 +211,22 @@ public class HttpUtils {
     //删除好友
     public static void postDelFriendRequest(String url, String userId, String friendId, StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
+                .addHeader("Connection", "close")
                 .addParams("userId",userId).addParams("f_userid",friendId).build().execute(callback);
     }
 
     //删除群成员
-    public static void postDelGroupMember(String url,String userId, String groupId,String userIds,StringCallback callback){
+    public static void postDelGroupMember(String url,String userIds,String userId, String groupId,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
-                .addParams("userId",userIds)
-                .addParams("g_user",userId)   //群主
+                .addHeader("Connection", "close")
+                .addParams("Users",userIds)
+                .addParams("group_user",userId)   //群主
                 .addParams("group_id",groupId).build().execute(callback);
     }
     //添加群成员
     public static void postAddGroupMember(String url,String groupId,String userIds,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addParams("groupUser",userIds).build().execute(callback);
     }
@@ -214,6 +234,7 @@ public class HttpUtils {
     //修改群个人昵称
     public static void postChangeNameGroup(String url,String groupId,String userId,String groupName,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addParams("userId",userId)
                 .addParams("groupName",groupName)
@@ -223,6 +244,7 @@ public class HttpUtils {
     //修改好友备注名
     public static void postChangeFriendName(String url,String userId,String f_userId, String nickname,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("userId",userId)
                 .addParams("f_userid",f_userId)
                 .addParams("nickname",nickname)
@@ -232,6 +254,7 @@ public class HttpUtils {
     //修改个人资料----添加群活动
     public static void postChangePerson(String url,String string, File file,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("person",string)
                 .addFile("file","crop_file.jpg",file)
                 .build().execute(callback);
@@ -239,6 +262,7 @@ public class HttpUtils {
     //
     public static void postChangePerson(String url,String string,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("person",string)
                 .build().execute(callback);
     }
@@ -246,12 +270,14 @@ public class HttpUtils {
     //参加群活动
     public static void postAddFlexible(String url,String actives_id,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("actives_id",actives_id)
                 .build().execute(callback);
     }
     //添加群成员
     public static void postAddGroupMember(String url,String actives_id,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
                 .addParams("actives_id",actives_id).build().execute(callback);
     }
 

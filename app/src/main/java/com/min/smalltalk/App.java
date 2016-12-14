@@ -31,6 +31,8 @@ public class App extends Application {
         //在这里为应用设置异常处理，然后程序才能获取未处理的异常
         CrashHandler crashHandler=CrashHandler.getsInstance();
         crashHandler.init(this);
+
+
         /**
          * OnCreate 会被多个进程重入，这段保护代码，确保只有您需要使用 RongIM 的进程和 Push 进程执行了 init。
          * io.rong.push 为融云 push 进程名称，不可修改。

@@ -2,15 +2,11 @@ package com.min.smalltalk.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +82,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
 
 
     private List<FriendInfo> mSourceFriendList;
-    private List<FriendInfo> mFriendList;
+    private List<FriendInfo> mFriendList = new ArrayList<>(0);
     private List<FriendInfo> mFilteredFriendList;
     /**
      * 好友列表的 mFriendListAdapter
@@ -102,12 +98,13 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
 
     private String mId;
     private String mCacheName;
+    private String header;
     private SharedPreferences sp;
 
     private View mHeadView;
 
-    private TextView tvUnread,tvMe;
-    private RelativeLayout rlNewfriends,rlGroup,rlPublicservice,rlMeItem;
+    private TextView tvUnread, tvMe;
+    private RelativeLayout rlNewfriends, rlGroup, rlPublicservice, rlMeItem;
     private SelectableRoundedImageView sivMe;
 //    tvUnread,tvMe, rlNewfriends,rlGroup,rlPublicservice,rlMeItem sivMe
 
@@ -129,13 +126,36 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
         mId = sp.getString(Const.LOGIN_ID, "");
         mCacheName = sp.getString(Const.LOGIN_NICKNAME, "");
-        final String header = sp.getString(Const.LOGIN_PORTRAIT, "");
+        header = sp.getString(Const.LOGIN_PORTRAIT, "");
         //自己信息
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        mHeadView = inflater.inflate(R.layout.item_friend_list_header, null);
+        tvUnread = (TextView) mHeadView.findViewById(R.id.tv_unread);
+        rlNewfriends = (RelativeLayout) mHeadView.findViewById(R.id.rl_newfriends);
+        rlGroup = (RelativeLayout) mHeadView.findViewById(R.id.rl_group);
+        rlPublicservice = (RelativeLayout) mHeadView.findViewById(R.id.rl_publicservice);
+        rlMeItem = (RelativeLayout) mHeadView.findViewById(R.id.rl_me_item);
+        sivMe = (SelectableRoundedImageView) mHeadView.findViewById(R.id.siv_me);
+        tvMe = (TextView) mHeadView.findViewById(R.id.tv_me);
 
-        /*tvMe.setText(mCacheName);
-        ImageLoader.getInstance().displayImage(TextUtils.isEmpty(header) ?
-                Generate.generateDefaultAvatar(mCacheName, mId) : header, sivMe, App.getOptions());*/
+        tvMe.setText(mCacheName);
+        if (!TextUtils.isEmpty(header)) {
+            ImageLoader.getInstance().displayImage(header, sivMe);
+        } else {
+            sivMe.setImageResource(R.mipmap.default_portrait);
+        }
 
+        mListView.addHeaderView(mHeadView);
+
+//        ImageLoader.getInstance().displayImage();
+        /*ImageLoader.getInstance().displayImage(TextUtils.isEmpty(header) ?
+                Generate.generateDefaultAvatar(mCacheName,mId):header,sivMe, App.getOptions());*/
+
+
+        rlMeItem.setOnClickListener(this);  //me
+        rlNewfriends.setOnClickListener(this);
+        rlGroup.setOnClickListener(this);
+        rlPublicservice.setOnClickListener(this);
 
         //设置右侧触摸监听
         sb.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
@@ -156,34 +176,36 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         mSourceFriendList = new ArrayList<>();
         mFriendList = new ArrayList<>();
         mFilteredFriendList = new ArrayList<>();
-        HttpUtils.postRequest("/friends", mId,new StringCallback() {
+        HttpUtils.postRequest("/friends", mId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(getActivity(), "friends-----"+e);
+                T.showShort(getActivity(), "friends-----" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<FriendInfo>>>() {}.getType();
+                Type type = new TypeToken<Code<List<FriendInfo>>>() {
+                }.getType();
                 Code<List<FriendInfo>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     List<FriendInfo> list = code.getMsg();
-                    if (list != null && list.size() > 0) {
-                        for (FriendInfo friend : list) {
-                            mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), HttpUtils.IMAGE_RUL+friend.getPortraitUri(),
-                                    friend.getDisplayName(), friend.getPhone(), friend.getEmail()));
-                        }
-                        //实例化汉字转拼音类
-                        mCharacterParser = CharacterParser
-                                .getInstance();
-                        mPinyinComparator = PinyinComparator.getInstance();
-                        initList();
-                    }else {
-                        tvShowNoFriend.setVisibility(View.VISIBLE);
+                    for (FriendInfo friend : list) {
+                        mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), HttpUtils.IMAGE_RUL + friend.getPortraitUri(),
+                                friend.getDisplayName(), friend.getPhone(), friend.getEmail()));
                     }
+                    //实例化汉字转拼音类
+                    mCharacterParser = CharacterParser
+                            .getInstance();
+                    mPinyinComparator = PinyinComparator.getInstance();
+                    initList();
+
                 } else {
-                    T.showShort(getActivity(), "数据获取错误");
+
+                    mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
+                    mListView.setAdapter(mFriendListAdapter);
+                    tvShowNoFriend.setVisibility(View.VISIBLE);
+                    T.showShort(getActivity(),"您暂没好友，请点击有上角按钮来添加好友吧！");
                 }
             }
         });
@@ -205,38 +227,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         // 根据a-z进行排序源数据
         Collections.sort(mFriendList, mPinyinComparator);
 
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        mHeadView = inflater.inflate(R.layout.item_friend_list_header, null);
-        tvUnread= (TextView) mHeadView.findViewById(R.id.tv_unread);
-        rlNewfriends= (RelativeLayout) mHeadView.findViewById(R.id.rl_newfriends);
-        rlGroup= (RelativeLayout) mHeadView.findViewById(R.id.rl_group);
-        rlPublicservice= (RelativeLayout) mHeadView.findViewById(R.id.rl_publicservice);
-        rlMeItem= (RelativeLayout) mHeadView.findViewById(R.id.rl_me_item);
-        sivMe= (SelectableRoundedImageView) mHeadView.findViewById(R.id.siv_me);
-        tvMe= (TextView) mHeadView.findViewById(R.id.tv_me);
-
-        sp=getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
-        mId=sp.getString(Const.LOGIN_ID,"");
-        mCacheName=sp.getString(Const.LOGIN_NICKNAME,"");
-        final String header=sp.getString(Const.LOGIN_PORTRAIT,"");
-        //自己信息
-        tvMe.setText(mCacheName);
-        if(!TextUtils.isEmpty(header)){
-            ImageLoader.getInstance().displayImage(header,sivMe);
-        }else {
-            sivMe.setImageResource(R.mipmap.default_portrait);
-        }
-//        ImageLoader.getInstance().displayImage();
-        /*ImageLoader.getInstance().displayImage(TextUtils.isEmpty(header) ?
-                Generate.generateDefaultAvatar(mCacheName,mId):header,sivMe, App.getOptions());*/
-
-        rlMeItem.setOnClickListener(this);  //me
-        rlNewfriends.setOnClickListener(this);
-        rlGroup.setOnClickListener(this);
-        rlPublicservice.setOnClickListener(this);
-
         mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
-        mListView.addHeaderView(mHeadView);
         mListView.setAdapter(mFriendListAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -246,35 +237,11 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 } else {
                     startFriendDetailsPage(mFilteredFriendList.get(position));
                 }
-//                startFriendDetailsPage(mFilteredFriendList.get(position));
             }
         });
 
-        //长按删除好友
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final FriendInfo bean = mFriendList.get(position - 1);
-                startFriendDetailsPage(bean);
-                AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                        .setTitle("删除该好友"+bean.getName())
-                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                deleteFriends(bean);
-                            }
-                        })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        })
-                        .show();
-                return true;
-            }
-        });
-        etSearch.addTextChangedListener(new TextWatcher() {
+        /*etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -298,30 +265,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             }
-        });
-    }
-
-    //删除好友
-    private void deleteFriends(FriendInfo friendInfo) {
-        HttpUtils.postDelFriendRequest("/deleteUser", mId, friendInfo.getUserId(), new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(getActivity(), "deleteUser-----"+e);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<Code<FriendInfo>>() {}.getType();
-                Code<FriendInfo> code = gson.fromJson(response, type);
-                if (code.getCode() == 200) {
-                    T.showShort(getActivity(), "删除成功");
-                    mFriendListAdapter.notifyDataSetChanged();
-                } else {
-                    T.showShort(getActivity(), "删除失败");
-                }
-            }
-        });
+        });*/
     }
 
     @Override
@@ -394,6 +338,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
 
     /**
      * 用户信息
+     *
      * @param friend
      */
     private void startFriendDetailsPage(FriendInfo friend) {

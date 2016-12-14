@@ -53,4 +53,6 @@
     <string name="actives_limit">活动限制人数</string>
     <string name="address">地址</string>
     <string name="QR_code">二维码</string>
+    <string name="delete_friend">删除该好友</string>
+
 </resources>

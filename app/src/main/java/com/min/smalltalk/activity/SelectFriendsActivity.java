@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.mylibrary.widget.image.SelectableRoundedImageView;
@@ -144,10 +145,10 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 Code<List<GroupMember>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     if(isAddGroupMember){
-                        addGroupMemberList=code.getMsg();
+                        addGroupMemberList=code.getMsg();    //
                         fillSourceDataListWithFriendsInfo();
                     }else {
-                        deleteGroupMemberList = code.getMsg();
+                        deleteGroupMemberList = code.getMsg();  //图片没有http....
                         fillSourceDataListForDeleteGroupMember();
                     }
                 }else {
@@ -164,7 +165,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     continue;
                 }
                 data_list.add(new FriendInfo(deleteMember.getUserId(),
-                        deleteMember.getUserName(), deleteMember.getUserPortraitUri(),
+                        deleteMember.getUserName(), HttpUtils.IMAGE_RUL+deleteMember.getUserPortraitUri(),
                         null //TODO displayName 需要处理 暂为 null
                 ));
             }
@@ -188,7 +189,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 if (code.getCode() == 200) {
                     List<FriendInfo> friendInfos=code.getMsg();
                     if(mListView!=null){
-                        for(FriendInfo friendInfo:friendInfos){
+                        for(FriendInfo friendInfo:friendInfos){   //有http。。。。
                             data_list.add(new FriendInfo(friendInfo.getUserId(),friendInfo.getName(),
                                     HttpUtils.IMAGE_RUL+friendInfo.getPortraitUri(),friendInfo.getDisplayName()));
 //                            data_list.add(new FriendInfo(friendInfo.getUserId(), friendInfo.getName(),
@@ -235,7 +236,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                 }
                 data_list.add(new FriendInfo(deleDisList.get(i).getUserId(),
                         deleDisList.get(i).getName(),
-                        deleDisList.get(i).getPortraitUri().toString(),
+                        HttpUtils.IMAGE_RUL+deleDisList.get(i).getPortraitUri().toString(),
                         null //TODO displayName 需要处理 暂为 null
                 ));
             }
@@ -306,7 +307,9 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     createGroupList.add(sourceDataList.get(i));
                 }
             }
-            //删除群成员
+            /**
+             * 删除群成员
+             */
             if (deleteGroupMemberList != null && startDisList != null && sourceDataList.size() > 0) {
                 AlertDialog dialog=new AlertDialog.Builder(mContext)
                         .setTitle("删除该成员")
@@ -324,10 +327,13 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                         })
                         .show();
             } else
-            //添加群成员
+            /**
+             * 添加群成员
+             */
             if (addGroupMemberList != null && startDisList != null && startDisList.size() > 0) {
                 //TODO 选中添加成员的数据添加到服务端数据库  返回本地也需要更改
                 LoadDialog.show(mContext);
+                L.e("-----------ssss",startDisList.get(0));
 //                request(ADD_GROUP_MEMBER);
                 addGroupMember();
 
@@ -351,21 +357,13 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
      * 添加群组成员
      */
     private void addGroupMember() {
-        /*AddGroupMemberResponse res = (AddGroupMemberResponse) result;
-        if (res.getCode() == 200) {
-            Intent data = new Intent();
-            data.putExtra("newAddMember", (Serializable) createGroupList);
-            setResult(101, data);
-            LoadDialog.dismiss(mContext);
-            NToast.shortToast(mContext, getString(R.string.add_successful));
-            finish();
-        }*/
         final Gson gson=new Gson();
-        String dd=gson.toJson(addGroupMemberList);
+        String dd=gson.toJson(startDisList);
         HttpUtils.postAddGroupMember("/GroupPullUser", groupId, dd, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/GroupPullUser-----"+e);
+                LoadDialog.dismiss(mContext);
             }
 
             @Override
@@ -381,6 +379,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                     finish();
                 }else {
                     T.showShort(mContext,"添加失败");
+                    LoadDialog.dismiss(mContext);
                 }
             }
         });
@@ -391,9 +390,9 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
      * 删除群组成员
      */
     private void deleteGroupMember() {
-        Gson gson=new Gson();
-        String sss=gson.toJson(deleteGroupMemberList);
-        HttpUtils.postDelGroupMember("/kickGroupUser", userId, groupId, sss, new StringCallback() {
+        final Gson gson=new Gson();
+        String sss=gson.toJson(startDisList);
+        HttpUtils.postDelGroupMember("/kickGroupUser", sss, userId, groupId,  new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/kickGroupUser--------"+e);
@@ -401,11 +400,12 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson1=new Gson();
+//                Gson gson1=new Gson();
                 Type type=new TypeToken<Code<Integer>>(){}.getType();
-                Code<Integer> code=gson1.fromJson(response,type);
+                Code<Integer> code=gson.fromJson(response,type);
                 if(code.getCode()==200){
                     T.showShort(mContext,"删除成功");
+                    finish();
                 }else {
                     T.showShort(mContext,"删除失败");
                 }
@@ -580,9 +580,9 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
                         mSelectedFriend.add(friendInfo);
                         LinearLayout linearLayout = (LinearLayout) View.inflate(SelectFriendsActivity.this, R.layout.item_selected_friends_iv, null);
                         SelectableRoundedImageView iv = (SelectableRoundedImageView) linearLayout.findViewById(R.id.iv_selected_friends);
-                        ImageLoader.getInstance().displayImage(TextUtils.isEmpty(friendInfo.getPortraitUri())
+                        ImageLoader.getInstance().displayImage(TextUtils.isEmpty(HttpUtils.IMAGE_RUL+friendInfo.getPortraitUri())
                                 ? Generate.generateDefaultAvatar(friendInfo.getName(), friendInfo.getUserId())
-                                : friendInfo.getPortraitUri(), iv);
+                                : HttpUtils.IMAGE_RUL+friendInfo.getPortraitUri(), iv);
                         linearLayout.removeView(iv);
                         llSelectedFriends.addView(iv);
                     }

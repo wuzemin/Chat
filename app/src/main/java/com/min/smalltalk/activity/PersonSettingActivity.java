@@ -13,10 +13,10 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +35,7 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
+import com.min.smalltalk.server.broadcast.BroadcastManager;
 import com.min.smalltalk.utils.DateUtils;
 import com.min.smalltalk.wedget.Wheel.JudgeDate;
 import com.min.smalltalk.wedget.Wheel.ScreenInfo;
@@ -87,8 +88,8 @@ public class PersonSettingActivity extends BaseActivity {
     RelativeLayout rlEmail;
     @BindView(R.id.activity_person_setting)
     LinearLayout activityPersonSetting;
-    @BindView(R.id.btn_enter)
-    Button btnEnter;
+    /*@BindView(R.id.btn_enter)
+    Button btnEnter;*/
     @BindView(R.id.tv_address)
     TextView tvAddress;
     @BindView(R.id.rl_address)
@@ -107,6 +108,7 @@ public class PersonSettingActivity extends BaseActivity {
     private String nickName;
     private String phone;
     private String email;
+    private String sex1;
     private int sex;
     private String birthday;
     private String address;
@@ -122,6 +124,7 @@ public class PersonSettingActivity extends BaseActivity {
     private boolean flag=false;
     private EditText editText;
     private int str;
+    private SharedPreferences.Editor editor;
 
 
     @Override
@@ -129,6 +132,7 @@ public class PersonSettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_setting);
         ButterKnife.bind(this);
+        editor=getSharedPreferences("config",MODE_PRIVATE).edit();
         setPortraitChangListener();
         initView();
 
@@ -140,8 +144,6 @@ public class PersonSettingActivity extends BaseActivity {
         String name = sp.getString(Const.LOGIN_NICKNAME, "");
         phone = sp.getString(Const.LOGIN_PHONE, "");
         tvTitle.setText("个人信息设置");
-        tvTitleRight.setVisibility(View.VISIBLE);
-        tvTitleRight.setText("编辑");
         tvNickname.setText(name);
         tvPhone.setText(phone);
 
@@ -172,22 +174,17 @@ public class PersonSettingActivity extends BaseActivity {
     }
 
     @OnClick({R.id.iv_title_back, R.id.iv_myHead, R.id.rl_nickname, R.id.rl_sex, R.id.rl_birthday,
-            R.id.rl_QR_code, R.id.rl_email, R.id.tv_title_right, R.id.btn_enter, R.id.rl_address})
+            R.id.rl_QR_code, R.id.rl_email, R.id.rl_phone, R.id.rl_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_title_back:
+                BroadcastManager.getInstance(mContext).sendBroadcast(Const.CHANGEINFO);
                 finish();
                 break;
             case R.id.iv_myHead:
-                if(!flag){
-                    return;
-                }
                 ShowPhotoDialog();
                 break;
             case R.id.rl_nickname:
-                if(!flag){
-                    return;
-                }
                 editText=new EditText(mContext);
                 AlertDialog dialog = new AlertDialog.Builder(mContext)
                         .setTitle("修改昵称")
@@ -197,6 +194,7 @@ public class PersonSettingActivity extends BaseActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 nickName=editText.getText().toString();
                                 tvNickname.setText(nickName);
+                                changePerson(1);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -208,9 +206,6 @@ public class PersonSettingActivity extends BaseActivity {
                         .show();
                 break;
             case R.id.rl_sex:
-                if(!flag){
-                    return;
-                }
                 final String[] test = new String[]{"男", "女","保密"};
                 AlertDialog.Builder dialog_sex = new AlertDialog.Builder(mContext);
                 dialog_sex.setTitle("选择性别");
@@ -219,36 +214,31 @@ public class PersonSettingActivity extends BaseActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String string=test[i];
                         if("男".equals(string)){
+                            sex1=string;
                             sex=1;
                         }else if("女".equals(string)){
+                            sex1=string;
                             sex=2;
                         }else {
+                            sex1=string;
                             sex=0;
                         }
                         tvSex.setText(string);
+                        changePerson(2);
                     }
                 });
                 dialog_sex.create().show();
                 break;
             case R.id.rl_birthday:
-                if(!flag){
-                    return;
-                }
                 showSTimePopupWindow();
                 break;
             case R.id.rl_QR_code:
-                if(!flag){
-                    return;
-                }
                 Intent intent1=new Intent(mContext,ZxingActivity.class);
                 intent1.putExtra("Id",userId);
 //                intent1.putExtra("Head",bitmap);
                 startActivity(intent1);
                 break;
             case R.id.rl_email:
-                if(!flag){
-                    return;
-                }
                 editText=new EditText(mContext);
                 AlertDialog dialog_email = new AlertDialog.Builder(mContext)
                         .setTitle("修改邮箱")
@@ -258,6 +248,7 @@ public class PersonSettingActivity extends BaseActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 email=editText.getText().toString();
                                 tvEmail.setText(email);
+                                changePerson(3);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -268,20 +259,7 @@ public class PersonSettingActivity extends BaseActivity {
                         })
                         .show();
                 break;
-            case R.id.tv_title_right:
-                flag=true;
-                btnEnter.setVisibility(View.VISIBLE);
-                tvTitleRight.setVisibility(View.GONE);
-                rlQRCode.setVisibility(View.GONE);
-                rlPhone.setVisibility(View.GONE);
-                break;
-            case R.id.btn_enter:
-                changePerson();
-                break;
             case R.id.rl_address:
-                if(!flag){
-                    return;
-                }
                 editText=new EditText(mContext);
                 AlertDialog dialog_address = new AlertDialog.Builder(mContext)
                         .setTitle("修改地址")
@@ -291,6 +269,7 @@ public class PersonSettingActivity extends BaseActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 address=editText.getText().toString();
                                 tvAddress.setText(address);
+                                changePerson(4);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -301,13 +280,20 @@ public class PersonSettingActivity extends BaseActivity {
                         })
                         .show();
                 break;
+            case R.id.rl_phone:
+                Intent intent=new Intent(mContext,MyPhoneActivity.class);
+                intent.putExtra("phone",phone);
+                startActivityForResult(intent,1);
+                break;
             default:
                 break;
         }
     }
 
-    //修改个人资料
-    private void changePerson() {
+    /**
+     * 修改个人资料
+     */
+    private void changePerson(final int index) {
         JSONArray jsonArray=new JSONArray();
         JSONObject row=new JSONObject();
         try {
@@ -337,9 +323,41 @@ public class PersonSettingActivity extends BaseActivity {
                     Type type=new TypeToken<Code<Integer>>(){}.getType();
                     Code<Integer> code = gson.fromJson(response,type);
                     if(code.getCode()==200){
-                        T.showShort(mContext,"修改成功");
-                        flag=false;
-                        tvTitleRight.setVisibility(View.VISIBLE);
+                        switch (index){
+                            case 1:   //昵称
+                                editor.putString(Const.LOGIN_NICKNAME, nickName);
+                                editor.commit();
+                                T.showShort(mContext,"修改昵称成功");
+                                break;
+                            case 2:   //性别
+                                editor.putString(Const.LOGIN_SEX, sex1);
+                                editor.commit();
+                                T.showShort(mContext,"修改性别成功");
+                                break;
+                            case 3:   //邮箱
+                                editor.putString(Const.LOGIN_EMAIL, email);
+                                editor.commit();
+                                T.showShort(mContext,"修改邮箱成功");
+                                break;
+                            case 4:   //地址
+                                editor.putString(Const.LOGIN_ADDRESS, address);
+                                editor.commit();
+                                T.showShort(mContext,"修改地址成功");
+                                break;
+                            case 5:   //生日
+                                editor.putString(Const.LOGIN_BIRTHDAY, birthday);
+                                editor.commit();
+                                T.showShort(mContext,"修改生日成功");
+                                break;
+                            case 6:   //头像
+                                editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
+                                editor.commit();
+                                T.showShort(mContext,"修改头像成功");
+                                break;
+                            default:
+                                break;
+
+                        }
                     }else {
                         T.showShort(mContext,"修改失败");
                     }
@@ -428,6 +446,7 @@ public class PersonSettingActivity extends BaseActivity {
                 int birth= Integer.parseInt(birthday.substring(0,4));
                 age= str-birth;
                 tvAge.setText(age+"");
+                changePerson(5);
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
             }
@@ -483,6 +502,28 @@ public class PersonSettingActivity extends BaseActivity {
             case PhotoUtils.INTENT_TAKE:
             case PhotoUtils.INTENT_SELECT:
                 photoUtils.onActivityResult(PersonSettingActivity.this, requestCode, resultCode, data);
+                break;
+            case 1:
+                if(resultCode==1){
+                    String phone1=data.getStringExtra("phone1");
+                    String phone2=data.getStringExtra("phone2");
+                    if("".equals(phone2)){
+                        tvPhone.setText(phone1);
+                    }else {
+                        tvPhone.setText(phone1 + "/" + phone2);
+                    }
+                    changePerson(6);
+                }
+                break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

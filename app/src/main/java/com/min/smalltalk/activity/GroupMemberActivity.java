@@ -82,7 +82,7 @@ public class GroupMemberActivity extends BaseActivity {
                     for(GroupMember member:groupMember) {
                         userId = member.getUserId();
                         userName = member.getUserName();
-                        userPort = member.getUserPortraitUri();
+                        userPort = HttpUtils.IMAGE_RUL+member.getUserPortraitUri();
                         userPhone=member.getPhone();
                         userEmail=member.getEmail();
                         list.add(new GroupMember(userId, userName, userPort));

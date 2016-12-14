@@ -1,5 +1,6 @@
 package com.min.smalltalk.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +22,12 @@ import com.min.smalltalk.R;
 import com.min.smalltalk.activity.LoginActivity;
 import com.min.smalltalk.activity.PersonSettingActivity;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.server.broadcast.BroadcastManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.rong.imageloader.core.ImageLoader;
 
 
 public class PersonalFragment extends Fragment {
@@ -44,7 +48,7 @@ public class PersonalFragment extends Fragment {
     RelativeLayout rlPersonSetting;
 
     private SharedPreferences sp;
-    private String userid, username, userphone;
+    private String userid, username, userphone,userPortraitUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,13 +59,27 @@ public class PersonalFragment extends Fragment {
         userid = sp.getString(Const.LOGIN_ID, "");
         username=sp.getString(Const.LOGIN_NICKNAME,"");
         userphone = sp.getString(Const.LOGIN_PHONE, "");
+        userPortraitUri=sp.getString(Const.LOGIN_PORTRAIT,"");
         initView();
+        BroadcastManager.getInstance(getActivity()).addAction(Const.CHANGEINFO, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                initView();
+            }
+        });
         return view;
     }
+
 
     private void initView() {
         tvUserid.setText(userid);
         tvUser.setText(username);
+        if(TextUtils.isEmpty(userPortraitUri)){
+            civIcon.setImageResource(R.mipmap.default_portrait);
+        }else {
+            ImageLoader.getInstance().displayImage(userPortraitUri, civIcon);
+        }
+
     }
 
     @OnClick({R.id.civ_icon, R.id.btn_exit, R.id.ll_password_setting, R.id.ll_setting, R.id.rl_person_setting})
@@ -88,10 +106,20 @@ public class PersonalFragment extends Fragment {
                         }).show();
                 break;
             case R.id.rl_person_setting:
-                startActivity(new Intent(getActivity(), PersonSettingActivity.class));
+                Intent intent=new Intent(getActivity(),PersonSettingActivity.class);
+                getActivity().startActivityForResult(intent,0);
+//                startActivity(new Intent(getActivity(), PersonSettingActivity.class));
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==0){
+            initView();
         }
     }
 }

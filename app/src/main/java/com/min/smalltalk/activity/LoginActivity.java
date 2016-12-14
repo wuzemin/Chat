@@ -139,6 +139,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         finish();
                     }else if(code1==0){
                         Toast.makeText(LoginActivity.this, "账号不存在！", Toast.LENGTH_SHORT).show();
+                        LoadDialog.dismiss(mContext);
                     }else if(code1==1001){
                         T.showShort(mContext,"密码错误");
                     }else if(code1==1000){

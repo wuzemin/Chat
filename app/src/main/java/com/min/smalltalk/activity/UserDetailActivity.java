@@ -66,6 +66,8 @@ public class UserDetailActivity extends BaseActivity {
     TextView tvEmail;
     @BindView(R.id.btn_send_message)
     Button btnSendMessage;
+    @BindView(R.id.btn_delete_friend)
+    Button btnDeleteFriend;
     @BindView(R.id.ll_email)
     LinearLayout llEmail;
 
@@ -103,7 +105,7 @@ public class UserDetailActivity extends BaseActivity {
     }
 
     @OnClick({R.id.iv_title_back, R.id.ll_call, R.id.ll_send_sms, R.id.ll_send_email,
-            R.id.btn_send_message, R.id.tv_title_right})
+            R.id.btn_send_message, R.id.tv_title_right, R.id.btn_delete_friend})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_title_back:
@@ -152,7 +154,7 @@ public class UserDetailActivity extends BaseActivity {
                 break;
             case R.id.tv_title_right:
                 final EditText editText=new EditText(mContext);
-                AlertDialog dialog1=new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(mContext)
                         .setTitle("修改备注名")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -169,11 +171,55 @@ public class UserDetailActivity extends BaseActivity {
                             }
                         })
                         .show();
+                break;
+            case R.id.btn_delete_friend:
+                AlertDialog dialog=new AlertDialog.Builder(mContext)
+                        .setTitle("删除好友")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteFriends();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .show();
+                break;
             default:
                 break;
         }
     }
 
+    private void deleteFriends() {
+        String mId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postDelFriendRequest("/deleteUser", mId, userId, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext, "deleteUser-----" + e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<FriendInfo>>() {
+                }.getType();
+                Code<FriendInfo> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    T.showShort(mContext, "删除成功");
+                    finish();
+                } else {
+                    T.showShort(mContext, "删除失败");
+                }
+            }
+        });
+    }
+
+
+    //修改备注名
     private void changeDiaplayName(final String string) {
         String myId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
         HttpUtils.postChangeFriendName("/editFriendName", myId, userId, userName, new StringCallback() {

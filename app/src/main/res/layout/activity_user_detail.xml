@@ -13,13 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <com.min.mylibrary.widget.image.CircleImageView
+            android:layout_marginTop="10dp"
             android:id="@+id/civ_user_head"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@mipmap/default_portrait"
             android:layout_centerHorizontal="true"/>
         <TextView
-            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/font_40"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
             android:id="@+id/tv_username"
             android:textColor="@color/white"
@@ -191,7 +193,16 @@
         android:textColor="@color/white"
         android:text="@string/send_message"
         android:layout_margin="20dp"
-        android:background="@color/blue2"
+        android:background="@drawable/rs_select_btn_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/btn_delete_friend"
+        android:textSize="@dimen/font_36"
+        android:textColor="@color/white"
+        android:text="@string/delete_friend"
+        android:layout_margin="20dp"
+        android:background="@drawable/rs_select_btn_red"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

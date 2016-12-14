@@ -590,7 +590,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                                 }
                             });
                     T.showShort(mContext, "解散群成功");
-                    BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
+//                    BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
                     finish();
                 }else {
                     T.showShort(mContext,"解散群失败");

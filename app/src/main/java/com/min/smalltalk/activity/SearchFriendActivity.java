@@ -129,7 +129,7 @@ public class SearchFriendActivity extends BaseActivity {
                     }else {
                         sivFriend.setImageResource(R.mipmap.default_portrait);
                     }
-                    tvFriend.setText(phone);
+                    tvFriend.setText(userName);
                     llFriend.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

@@ -14,6 +14,10 @@ public class Const {
     public static final String LOGIN_PORTRAIT ="loginPortrait";
     public static final String LOGIN_PHONE ="loginphone";
     public static final String LOGIN_PASSWORD ="password";
+    public static final String LOGIN_SEX ="sex";
+    public static final String LOGIN_BIRTHDAY ="birthday";
+    public static final String LOGIN_ADDRESS ="address";
+    public static final String LOGIN_EMAIL="email";
 
     public static final String GROUP_LIST_UPDATE = "GROUP_LIST_UPDATE";
 }

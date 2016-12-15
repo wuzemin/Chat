@@ -2,6 +2,7 @@ package com.min.smalltalk.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
@@ -31,6 +33,8 @@ import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.DBOpenHelper;
+import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.server.broadcast.BroadcastManager;
 import com.min.smalltalk.wedget.DemoGridView;
@@ -121,17 +125,25 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     private BottomMenuDialog dialog;
     private Bitmap bitmap;
     private String userId;
+    private String nickname;
     private String groupName;
     private EditText editText;
+
+    private SharedPreferences sp;
+
+    private DBOpenHelper dbOpenHelper;  //SQLite
+    private GroupsDAOImpl sqLiteDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
         ButterKnife.bind(this);
-        userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+
+        initSQLite();
         initView();
         setPortraitChangListener();
+
         //群组会话界面点进群组详情---groupId
         groupId = getIntent().getStringExtra("TargetId");
         //----GROUP
@@ -143,12 +155,33 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
         if (isFromConversation) {  //群主会话页进入
             LoadDialog.show(mContext);
-            getGroups();  //群组信息
+//            getGroups();  //群组信息
+            getGroupsSqlite();
             LoadDialog.dismiss(mContext);
         }
     }
 
-    //图片
+    //数据库
+    private void initSQLite() {
+        dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
+        dbOpenHelper.getWritableDatabase();
+        sqLiteDAO= new GroupsDAOImpl(mContext);
+    }
+
+
+    private void initView() {
+        tvTitle.setText("群组信息");
+        sp=getSharedPreferences("config",MODE_PRIVATE);
+        userId = sp.getString(Const.LOGIN_ID, "");   //个人id
+        nickname= sp.getString(Const.LOGIN_NICKNAME,"");  //个人昵称
+        tvMyName.setText(nickname);
+        swGroupTop.setOnCheckedChangeListener(this);
+        swGroupNotfaction.setOnCheckedChangeListener(this);
+    }
+
+    /**
+     * 图片
+     */
     private void setPortraitChangListener() {
         photoUtils=new PhotoUtils(new PhotoUtils.OnPhotoResultListener() {
             @Override
@@ -188,7 +221,20 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     /**
      * 群组信息
      */
-    private void getGroups() {
+
+    private void getGroupsSqlite(){
+        Groups groups=sqLiteDAO.find(groupId);
+        groupName=groups.getGroupName();
+        tvGroupName.setText(groupName);   //群名
+        mGroup = new Groups(groups.getGroupId(), groupName,
+                groups.getGroupPortraitUri(), groups.getRole());
+        initGroupData();
+        L.e("--------------====",mGroup+"");
+    }
+
+
+
+    /*private void getGroups() {
         HttpUtils.postGroupsRequest("/group_info", groupId,userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -208,18 +254,16 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 }
             }
         });
-    }
+    }*/
 
     //群组信息
     private void initGroupData() {
-        groupName=mGroup.getGroupName();
         if (TextUtils.isEmpty(mGroup.getGroupPortraitUri())) {
             ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(
                     groupName, mGroup.getGroupId()), sivGroupHeader, App.getOptions());
         } else {
             ImageLoader.getInstance().displayImage(mGroup.getGroupPortraitUri(), sivGroupHeader, App.getOptions());
         }
-        tvGroupName.setText(groupName);   //群名
         /**
          * 会话置顶
          */
@@ -265,10 +309,10 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                         }
                     });
         }
-
         //成员角色---1：群主
+
         if (mGroup.getRole().equals("1")) {
-            isCreated = true;
+              isCreated = true;
 //            isCreator=mGroup.getRole();
         }
         if (!isCreated) {
@@ -281,16 +325,6 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             btnGroupQuit.setVisibility(View.GONE);
         }
         getGroupMembers(isCreated); //成员信息
-//        if("1".equals(isCreator)){
-        /*if(isCreated){
-            llGroupAnnouncementDivider.setVisibility(View.GONE);
-            llGroupAnnouncement.setVisibility(View.GONE);
-        } else {
-            llGroupAnnouncementDivider.setVisibility(View.VISIBLE);
-            llGroupAnnouncement.setVisibility(View.VISIBLE);
-            btnGroupDismiss.setVisibility(View.VISIBLE);
-            btnGroupQuit.setVisibility(View.GONE);
-        }*/
     }
 
     /**
@@ -317,7 +351,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     } else {
                         return;
                     }
-                    for (GroupMember member : mGroupMember) {
+                    /*for (GroupMember member : mGroupMember) {
                         String s = member.getUserId();
                         if (userId.equals(s)) {
                             if (!TextUtils.isEmpty(member.getDisplayName())) {
@@ -326,16 +360,10 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                                 tvGroupName.setText("无");
                             }
                         }
-                    }
+                    }*/
                 }
             }
         });
-    }
-
-    private void initView() {
-        tvTitle.setText("群组信息");
-        swGroupTop.setOnCheckedChangeListener(this);
-        swGroupNotfaction.setOnCheckedChangeListener(this);
     }
 
     //点击事件

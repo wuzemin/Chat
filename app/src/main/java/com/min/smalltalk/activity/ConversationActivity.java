@@ -24,7 +24,9 @@ import com.min.smalltalk.AppContext;
 import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
-import com.min.smalltalk.bean.ConversationUser;
+import com.min.smalltalk.bean.FriendInfo;
+import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
     private TextView tvTitle;
 
 
-    private List<ConversationUser> list;
+    private List<FriendInfo> list;
 
     private String TAG = ConversationActivity.class.getSimpleName();
     //对方id
@@ -68,10 +70,17 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
 
     private SharedPreferences sp;
 
+    private FriendInfoDAOImpl friendInfoDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
+
+        //
+
+        friendInfoDAO= new FriendInfoDAOImpl(mContext);
+
         ivTitleBack= (ImageView) findViewById(R.id.iv_title_back);
         ivTitleRight= (ImageView) findViewById(R.id.iv_title_right);
         tvTitle= (TextView) findViewById(R.id.tv_title);
@@ -132,10 +141,27 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
     private void initPortrait() {
         //用户头像
         list = new ArrayList<>();
-        list.add(new ConversationUser("swk", "孙悟空", "http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg"));
+        String userId=sp.getString(Const.LOGIN_ID,"");
+        String name=sp.getString(Const.LOGIN_NICKNAME,"");
+        String portrait;
+        if(TextUtils.isEmpty(sp.getString(Const.LOGIN_PORTRAIT,""))){
+            portrait="http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg";
+        }else {
+            portrait = sp.getString(Const.LOGIN_PORTRAIT, "");
+        }
+        String displayName="";
+        String phone=sp.getString(Const.LOGIN_PHONE,"");
+        String email=sp.getString(Const.LOGIN_EMAIL,"");
+        list=friendInfoDAO.findAll();
+        list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
+//        list.addAll(list);
+
+        L.e("---------",list.size()+"");
+//        list.addAll(list);
+        /*list.add(new ConversationUser("swk", "孙悟空", "http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg"));
         list.add(new ConversationUser("ts", "唐僧", "http://news.mbalib.com/uploads/image/2015/0914/2015091442543ea2be07a6eb37e054bcc419daea.jpg"));
         list.add(new ConversationUser("zbj", "猪八戒", "http://img5.mypsd.com.cn/20111121/Mypsd_67401_201111210849430010B.jpg"));
-        list.add(new ConversationUser("ss", "沙僧", "http://img3.redocn.com/20100623/20100623_25983d787b4f8608d140qd11qhbbtGNK.jpg"));
+        list.add(new ConversationUser("ss", "沙僧", "http://img3.redocn.com/20100623/20100623_25983d787b4f8608d140qd11qhbbtGNK.jpg"));*/
         RongIM.setUserInfoProvider(this, true);
     }
 
@@ -338,9 +364,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
 
     @Override
     public UserInfo getUserInfo(String s) {
-        for (ConversationUser i : list) {
-            if (i.getUserid().equals(s)) {
-                UserInfo userInfo = new UserInfo(i.getUserid(), i.getUserName(), Uri.parse(i.getPortraitUri()));
+        for (FriendInfo i : list) {
+            if (i.getUserId().equals(s)) {
+                UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
                 return userInfo;
             }
         }

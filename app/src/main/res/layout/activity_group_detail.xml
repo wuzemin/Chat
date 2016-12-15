@@ -128,7 +128,7 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/group_name"
+                    android:text="@string/group_nickname"
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
 

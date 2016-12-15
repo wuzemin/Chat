@@ -18,9 +18,8 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Code;
+import com.min.smalltalk.bean.FlexibleMember;
 import com.min.smalltalk.bean.GroupFlexible;
-import com.min.smalltalk.bean.GroupMember;
-import com.min.smalltalk.bean.LoginBean;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
@@ -64,9 +63,9 @@ public class FlexibleDetailActivity extends BaseActivity {
     private GroupFlexible groupFlexible;
     private String userId;
     private String flexibleId,flexibleName,flexiblePort,flexibleStartTime,flexibleEndTime,flexiblePlace,flexibleContent;
-    private List<GroupMember> list;
-    private BaseRecyclerAdapter<LoginBean> adapter;
-    private List<LoginBean> loginBeenList;
+    private List<GroupFlexible> list;
+    private BaseRecyclerAdapter<FlexibleMember> adapter;
+    private List<FlexibleMember> loginBeenList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,52 +74,20 @@ public class FlexibleDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
         Intent intent=getIntent();
         groupFlexible=intent.getParcelableExtra("flexible");
-        flexibleId=groupFlexible.getFlexibleId();
-        flexibleName=groupFlexible.getFlexibleName();
-        flexibleStartTime=groupFlexible.getFlexibleStartTime();
-        flexibleEndTime=groupFlexible.getFlexibleEndTime();
-        flexiblePlace=groupFlexible.getFlexiblePlace();
-        flexiblePort=groupFlexible.getFlexiblePortrait();
-        flexibleContent=groupFlexible.getFlexibleContent();
-        list=groupFlexible.getFlexibleList();
+        flexibleId=groupFlexible.getActives_id();
+        flexibleName=groupFlexible.getActives_title();
+        flexibleStartTime=groupFlexible.getActives_start();
+        flexibleEndTime=groupFlexible.getActives_end();
+        flexiblePlace=groupFlexible.getActives_address();
+        flexiblePort=groupFlexible.getActives_image();
+        flexibleContent=groupFlexible.getActives_content();
         initView();
-        initData();
+        initData();  //群活动成员
     }
 
-    private void initData() {
-        HttpUtils.postAddGroupMember("/infoActives", flexibleId, new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/infoActives------"+e);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<List<LoginBean>>>(){}.getType();
-                Code<List<LoginBean>> beanCode=gson.fromJson(response,type);
-                if(beanCode.getCode()==200){
-                    List<LoginBean> bean=beanCode.getMsg();
-                    initAdapter(bean);
-                }
-            }
-        });
-    }
-
-    private void initAdapter(List<LoginBean> bean) {
-        adapter=new BaseRecyclerAdapter<LoginBean>(mContext,bean,R.layout.item_group) {
-            @Override
-            public void convert(BaseRecyclerHolder holder, LoginBean item, int position, boolean isScrolling) {
-                holder.setImageByUrl(R.id.siv_group_head,item.getPortrait());
-                holder.setText(R.id.tv_group_name,item.getNickname());
-            }
-        };
-        rvActivityUser.setAdapter(adapter);
-        LinearLayoutManager lm=new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
-        rvActivityUser.setLayoutManager(lm);
-        rvActivityUser.addItemDecoration(new ItemDivider(mContext,ItemDivider.VERTICAL_LIST));
-    }
-
+    /**
+     * 群活动信息
+     */
     private void initView() {
         if(!TextUtils.isEmpty(flexiblePort)){
             ImageLoader.getInstance().displayImage(flexiblePort,ivGroupActivityHead);
@@ -134,6 +101,45 @@ public class FlexibleDetailActivity extends BaseActivity {
         tvActivityPlace.setText(flexiblePlace);
         tvActivityContent.setText(flexibleContent);
     }
+
+
+    /**
+     * 群活动成员
+     */
+    private void initData() {
+        HttpUtils.postAddGroupMember("/infoActives", flexibleId, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/infoActives------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<List<FlexibleMember>>>(){}.getType();
+                Code<List<FlexibleMember>> beanCode=gson.fromJson(response,type);
+                if(beanCode.getCode()==200){
+                    List<FlexibleMember> bean=beanCode.getMsg();
+                    initAdapter(bean);
+                }
+            }
+        });
+    }
+
+    private void initAdapter(List<FlexibleMember> bean) {
+        adapter=new BaseRecyclerAdapter<FlexibleMember>(mContext,bean,R.layout.item_group) {
+            @Override
+            public void convert(BaseRecyclerHolder holder, FlexibleMember item, int position, boolean isScrolling) {
+                holder.setImageByUrl(R.id.siv_group_head,HttpUtils.IMAGE_RUL+item.getAvatar_image());
+                holder.setText(R.id.tv_group_name,item.getVsername());
+            }
+        };
+        rvActivityUser.setAdapter(adapter);
+        LinearLayoutManager lm=new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
+        rvActivityUser.setLayoutManager(lm);
+        rvActivityUser.addItemDecoration(new ItemDivider(mContext,ItemDivider.VERTICAL_LIST));
+    }
+
 
     @OnClick({R.id.iv_title_back, R.id.btn_join_activity})
     public void onClick(View view) {
@@ -150,7 +156,7 @@ public class FlexibleDetailActivity extends BaseActivity {
     //参加活动
     private void joinActivity() {
         userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        HttpUtils.postAddFlexible("/joinActives", flexibleId, new StringCallback() {
+        HttpUtils.postAddFlexible("/joinActives", userId, flexibleId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/joinActives------"+e);

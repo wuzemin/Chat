@@ -16,11 +16,12 @@ import okhttp3.OkHttpClient;
  * Created by Min on 2016/9/10.
  */
 public class HttpUtils {
-    private static final String LOCAL_RUL ="http://192.168.0.178:8080";
-//    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
-    private static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
-//    public static final String IMAGE_RUL ="http://192.168.0.209:80";
-    public static final String IMAGE_RUL ="http://15q990d559.iok.la";
+//    private static final String LOCAL_RUL ="http://192.168.0.178:8080";
+//    private static final String BASE_RUL ="http://192.168.0.178:8080";
+    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+//    private static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
+    public static final String IMAGE_RUL ="http://192.168.0.209:80";
+//    public static final String IMAGE_RUL ="http://15q990d559.iok.la";
 
 
 
@@ -251,12 +252,20 @@ public class HttpUtils {
                 .build().execute(callback);
     }
 
-    //修改个人资料----添加群活动
+    //修改个人资料
     public static void postChangePerson(String url,String string, File file,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addHeader("Connection", "close")
                 .addParams("person",string)
                 .addFile("file","crop_file.jpg",file)
+                .build().execute(callback);
+
+    }//添加群活动
+    public static void postAddGroupFlexible(String url,String string, File file,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("person",string)
+                .addFile("actives_image","crop_file.jpg",file)
                 .build().execute(callback);
     }
     //
@@ -268,9 +277,10 @@ public class HttpUtils {
     }
 
     //参加群活动
-    public static void postAddFlexible(String url,String actives_id,StringCallback callback){
+    public static void postAddFlexible(String url, String userId,String actives_id,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addHeader("Connection", "close")
+                .addParams("actives_id",userId)
                 .addParams("actives_id",actives_id)
                 .build().execute(callback);
     }

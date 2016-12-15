@@ -16,6 +16,7 @@
     <string name="search_message">查看聊天记录</string>
     <string name="group_portrait">群头像</string>
     <string name="group_name">群名称</string>
+    <string name="group_nickname">个人昵称</string>
     <string name="group_activity">群活动</string>
     <string name="group_announcement">群公告</string>
     <string name="message_notice">消息免打扰</string>

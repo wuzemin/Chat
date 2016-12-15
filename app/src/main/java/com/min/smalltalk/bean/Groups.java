@@ -49,7 +49,7 @@ public class Groups implements Parcelable{
         this.nameSpelling = nameSpelling;
     }
 
-    protected Groups(Parcel in) {
+    public Groups(Parcel in) {
         groupId = in.readString();
         groupName = in.readString();
         groupPortraitUri = in.readString();

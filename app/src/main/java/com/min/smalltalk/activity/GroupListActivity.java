@@ -7,22 +7,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
-import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.Groups;
-import com.min.smalltalk.constant.Const;
-import com.min.smalltalk.network.HttpUtils;
+import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.wedget.ItemDivider;
-import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.imkit.RongIM;
-import okhttp3.Call;
 
 /**
  * 群列表
@@ -52,45 +44,31 @@ public class GroupListActivity extends BaseActivity {
     private String groupId;
     private String groupPortraitUri;
 
+    private GroupsDAOImpl sqLiteDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_list);
         ButterKnife.bind(this);
+
+        sqLiteDAO= new GroupsDAOImpl(mContext);
+
         tvTitle.setText("我的群组");
         LoadDialog.show(mContext);
         initData();
     }
 
     private void initData() {
-        String userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
-        HttpUtils.postGroupListRequest("/group_data", userId, new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/group_data-----" + e);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<Groups>>>() {
-                }.getType();
-                Code<List<Groups>> code = gson.fromJson(response, type);
-                if (code.getCode() == 200) {
-                    List<Groups> groups = code.getMsg();
-                    for (Groups groups1 : groups)
-                        list.add(new Groups(groups1.getGroupId(), groups1.getGroupName(), HttpUtils.IMAGE_RUL+groups1.getGroupPortraitUri()));
-
-                    LoadDialog.dismiss(mContext);
-                    initAdapter();
-                } else {
-                    rvGroupList.setVisibility(View.GONE);
-                    tvNoGroup.setVisibility(View.VISIBLE);
-                    tvNoGroup.setText("你暂时未加入任何一个群组");
-                    LoadDialog.dismiss(mContext);
-                }
-            }
-        });
+        list=sqLiteDAO.findAll();
+        if(list.size()>0){
+            initAdapter();
+        }else {
+            rvGroupList.setVisibility(View.GONE);
+            tvNoGroup.setVisibility(View.VISIBLE);
+            tvNoGroup.setText("你暂时未加入任何一个群组");
+            LoadDialog.dismiss(mContext);
+        }
     }
 
     private void initAdapter() {
@@ -112,6 +90,7 @@ public class GroupListActivity extends BaseActivity {
         rvGroupList.addItemDecoration(new ItemDivider(this, ItemDivider.VERTICAL_LIST));
         adapter.notifyDataSetChanged();
         initListItemClick();
+        LoadDialog.dismiss(mContext);
     }
 
     private void initListItemClick() {

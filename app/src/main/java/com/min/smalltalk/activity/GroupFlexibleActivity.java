@@ -79,13 +79,13 @@ public class GroupFlexibleActivity extends BaseActivity {
                 if (code.getCode() == 200) {
                     List<GroupFlexible> flexibleList = code.getMsg();
                     for (GroupFlexible groupFlexible : flexibleList) {
-                        String flexibleId = groupFlexible.getFlexibleId();
-                        String flexibleName = groupFlexible.getFlexibleName();
-                        String flexiblePort = groupFlexible.getFlexiblePortrait();
-                        String flexibleStartTime = groupFlexible.getFlexibleStartTime();
-                        String flexibleEndTime=groupFlexible.getFlexibleEndTime();
-                        String flexiblePlace = groupFlexible.getFlexiblePlace();
-                        String flexibleContent = groupFlexible.getFlexibleContent();
+                        String flexibleId = groupFlexible.getActives_id();
+                        String flexibleName = groupFlexible.getActives_title();
+                        String flexiblePort = groupFlexible.getActives_image();
+                        String flexibleStartTime = groupFlexible.getActives_start();
+                        String flexibleEndTime=groupFlexible.getActives_end();
+                        String flexiblePlace = groupFlexible.getActives_address();
+                        String flexibleContent = groupFlexible.getActives_content();
                         list.add(new GroupFlexible(flexibleId, flexibleName, flexiblePort,
                                 flexibleStartTime,flexibleEndTime, flexiblePlace, flexibleContent));
                     }
@@ -101,17 +101,17 @@ public class GroupFlexibleActivity extends BaseActivity {
         adapter = new BaseRecyclerAdapter<GroupFlexible>(mContext, list, R.layout.item_group_activity) {
             @Override
             public void convert(BaseRecyclerHolder holder, GroupFlexible item, int position, boolean isScrolling) {
-                String activityPort = list.get(position).getFlexiblePortrait();
+                String activityPort = list.get(position).getActives_image();
                 if (!TextUtils.isEmpty(activityPort)) {
-                    holder.setImageByUrl(R.id.iv_group_activity_head, item.getFlexiblePortrait());
+                    holder.setImageByUrl(R.id.iv_group_activity_head, item.getActives_image());
                 } else {
                     holder.setImageResource(R.id.iv_group_activity_head, R.mipmap.load_image_2);
                 }
-                holder.setText(R.id.activity_name, item.getFlexibleName());
-                holder.setText(R.id.tv_activity_start_time, item.getFlexibleStartTime());
-                holder.setText(R.id.tv_activity_end_time,item.getFlexibleEndTime());
-                holder.setText(R.id.tv_activity_place, item.getFlexiblePlace());
-                holder.setText(R.id.tv_activity_content, item.getFlexibleContent());
+                holder.setText(R.id.activity_name, item.getActives_title());
+                holder.setText(R.id.tv_activity_start_time, item.getActives_start());
+                holder.setText(R.id.tv_activity_end_time,item.getActives_end());
+                holder.setText(R.id.tv_activity_place, item.getActives_address());
+                holder.setText(R.id.tv_activity_content, item.getActives_content());
             }
         };
         rvGroupActivity.setAdapter(adapter);

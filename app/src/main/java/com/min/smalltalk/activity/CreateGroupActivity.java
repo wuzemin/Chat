@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +22,10 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.bean.GroupId;
+import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.DBOpenHelper;
+import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -64,11 +68,19 @@ public class CreateGroupActivity extends BaseActivity {
     private File imageFile;
     private String groupId;
 
+    private DBOpenHelper dbOpenHelper;  //SQLite
+    private GroupsDAOImpl sqLiteDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
         ButterKnife.bind(this);
+
+        dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
+        dbOpenHelper.getWritableDatabase();
+        sqLiteDAO= new GroupsDAOImpl(mContext);
+
         tvTitle.setText("创建群组");
         List<FriendInfo> memberList= (List<FriendInfo>) getIntent().getSerializableExtra("GroupMember");
 
@@ -137,6 +149,12 @@ public class CreateGroupActivity extends BaseActivity {
                     Code<GroupId> code = gson.fromJson(response,type);
                     if(code.getCode()==200){
                         groupId=code.getMsg().getGroupId();
+                        Groups groups = new Groups();
+                        groups.setGroupId(groupId);  //groupId
+                        groups.setGroupName(groupName);  //groupName
+                        groups.setGroupPortraitUri(imageUrl);
+                        sqLiteDAO.save(groups);
+                        Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
                         RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP,groupId,groupName);
                         finish();
                     }else {

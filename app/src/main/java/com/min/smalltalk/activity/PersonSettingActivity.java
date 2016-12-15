@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -162,6 +161,7 @@ public class PersonSettingActivity extends BaseActivity {
                     imageFile = new File(selectUri.getPath());
                     imageUrl = selectUri.toString();
                     ImageLoader.getInstance().displayImage(imageUrl, ivMyHead);
+                    changePerson(0);
                     LoadDialog.dismiss(mContext);
                 }
             }
@@ -310,7 +310,7 @@ public class PersonSettingActivity extends BaseActivity {
             e.printStackTrace();
         }
         String string=jsonArray.toString();
-        if(imageFile==null){
+        if(index!=0){
             HttpUtils.postChangePerson("/editUserInfo", string, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
@@ -349,10 +349,10 @@ public class PersonSettingActivity extends BaseActivity {
                                 editor.commit();
                                 T.showShort(mContext,"修改生日成功");
                                 break;
-                            case 6:   //头像
-                                editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
+                            case 6:   //电话
+                                editor.putString(Const.LOGIN_PHONE, phone);
                                 editor.commit();
-                                T.showShort(mContext,"修改头像成功");
+                                T.showShort(mContext,"修改电话成功");
                                 break;
                             default:
                                 break;
@@ -363,28 +363,29 @@ public class PersonSettingActivity extends BaseActivity {
                     }
                 }
             });
-            return;
-        }
-        HttpUtils.postChangePerson("/editUserInfo", string, imageFile, new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/editUserInfo----"+e);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<Integer>>(){}.getType();
-                Code<Integer> code = gson.fromJson(response,type);
-                if(code.getCode()==200){
-                    T.showShort(mContext,"修改成功");
-                    flag=false;
-                    tvTitleRight.setVisibility(View.VISIBLE);
-                }else {
-                    T.showShort(mContext,"修改失败");
+        }else {
+            HttpUtils.postChangePerson("/editUserInfo", string, imageFile, new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    T.showShort(mContext, "/editUserInfo----" + e);
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(String response, int id) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<Code<Integer>>() {
+                    }.getType();
+                    Code<Integer> code = gson.fromJson(response, type);
+                    if (code.getCode() == 200) {
+                        /*editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
+                        editor.commit();*/
+                        T.showShort(mContext, "修改成功");
+                    } else {
+                        T.showShort(mContext, "修改失败");
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -518,12 +519,4 @@ public class PersonSettingActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 }

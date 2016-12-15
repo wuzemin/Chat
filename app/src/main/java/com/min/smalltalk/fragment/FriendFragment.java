@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
@@ -31,6 +32,8 @@ import com.min.smalltalk.adapter.FriendListAdapter;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.DBOpenHelper;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.server.broadcast.BroadcastManager;
 import com.min.smalltalk.wedget.CharacterParser;
@@ -110,11 +113,19 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
 
     private static final int CLICK_CONTACT_FRAGMENT_FRIEND = 2;
 
+    private DBOpenHelper dbOpenHelper;
+    private FriendInfoDAOImpl sqLiteDAO;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
         ButterKnife.bind(this, view);
+
+        dbOpenHelper = new DBOpenHelper(getActivity(), "talk.db", null, 2);// 创建数据库文件
+        dbOpenHelper.getWritableDatabase();
+        sqLiteDAO= new FriendInfoDAOImpl(getActivity());
+
         initView();
         initData();
         refreshUIListener();
@@ -190,10 +201,44 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 Code<List<FriendInfo>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     List<FriendInfo> list = code.getMsg();
+                    /*for(int i=0;i<list.size();i++){
+                        String userId=list.get(i).getUserId();
+                        String name=list.get(i).getName();
+                        String portrait=list.get(i).getPortraitUri();
+                        String displayName=list.get(i).getDisplayName();
+                        String phone=list.get(i).getPhone();
+                        String email=list.get(i).getEmail();
+                        FriendInfo friendInfo=new FriendInfo();
+                        friendInfo.setUserId(userId);
+                        friendInfo.setName(name);
+                        friendInfo.setPortraitUri(portrait);
+                        friendInfo.setDisplayName(displayName);
+                        friendInfo.setPhone(phone);
+                        friendInfo.setEmail(email);
+                        mSourceFriendList.add(friendInfo);
+
+                    }*/
                     for (FriendInfo friend : list) {
-                        mSourceFriendList.add(new FriendInfo(friend.getUserId(), friend.getName(), HttpUtils.IMAGE_RUL + friend.getPortraitUri(),
-                                friend.getDisplayName(), friend.getPhone(), friend.getEmail()));
+                        String userId=friend.getUserId();
+                        String name=friend.getName();
+                        String portrait=HttpUtils.IMAGE_RUL+friend.getPortraitUri();
+                        String displayName=friend.getDisplayName();
+                        String phone=friend.getPhone();
+                        String email=friend.getEmail();
+                        FriendInfo friendInfo=new FriendInfo();
+                        friendInfo.setUserId(userId);
+                        friendInfo.setName(name);
+                        friendInfo.setPortraitUri(portrait);
+                        friendInfo.setDisplayName(displayName);
+                        friendInfo.setPhone(phone);
+                        friendInfo.setEmail(email);
+                        mSourceFriendList.add(friendInfo);
+
+                        //存进Sqlite
+                        sqLiteDAO.save(friendInfo);
+                        L.e("---------===", "插入成功");
                     }
+
                     //实例化汉字转拼音类
                     mCharacterParser = CharacterParser
                             .getInstance();
@@ -201,7 +246,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                     initList();
 
                 } else {
-
                     mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
                     mListView.setAdapter(mFriendListAdapter);
                     tvShowNoFriend.setVisibility(View.VISIBLE);

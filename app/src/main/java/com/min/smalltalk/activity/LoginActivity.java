@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -23,11 +24,19 @@ import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
+import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.bean.LoginBean;
+import com.min.smalltalk.db.DBOpenHelper;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
+import com.min.smalltalk.db.GroupMemberDAOImpl;
+import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
@@ -45,11 +54,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private String password;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private List<Groups> list = new ArrayList<>();
+    private DBOpenHelper dbOpenHelper;  //SQLite
+    private GroupsDAOImpl groupsDAO;
+    private FriendInfoDAOImpl friendInfoDAO;
+    private GroupMemberDAOImpl groupMemberDAO;
+    private Groups mGroup;
+    private List<GroupMember> mGroupMember;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
+        dbOpenHelper.getWritableDatabase();
+        groupsDAO= new GroupsDAOImpl(mContext);
+        friendInfoDAO=new FriendInfoDAOImpl(mContext);
+        groupMemberDAO=new GroupMemberDAOImpl(mContext);
+
         sharedPreferences=getSharedPreferences("config",this.MODE_PRIVATE);
         editor=sharedPreferences.edit();
         initView();
@@ -103,7 +127,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void login(final String user, final String password) {
         if("".equals(user) || "".equals(password)) {
             Toast.makeText(LoginActivity.this,"用户名和密码不能为空",Toast.LENGTH_SHORT).show();
-        }else if(user!=null && password!=null) {
+        }else if(user!=null && password!=null) {   ///?phone=18819493906&password=123456
             HttpUtils.postLoginRequest("/login", user, password, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
@@ -120,10 +144,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     int code1=code.getCode();
                     if(code1==200){
                         T.showShort(mContext,"登录成功");
-                        String uid=code.getMsg().getUserid();
+                        uid=code.getMsg().getUserid();
                         String token=code.getMsg().getToken();
                         String nickName=code.getMsg().getNickname();
-                        String portraitUri=code.getMsg().getPortrait();
+                        String portraitUri=HttpUtils.IMAGE_RUL+code.getMsg().getPortrait();
                         connect(token);
                         editor.putString("user",user);
                         editor.putString("password",password);
@@ -136,6 +160,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString("loginPortrait",portraitUri);
                         editor.commit();
                         LoadDialog.dismiss(mContext);
+//                        initFriendInfo();
+                        initGroups();
+//                        getGroupMembers();
+//                        initGroupMember();
                         finish();
                     }else if(code1==0){
                         Toast.makeText(LoginActivity.this, "账号不存在！", Toast.LENGTH_SHORT).show();
@@ -151,6 +179,126 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
         }
     }
+
+    private String groupId;
+//    private String userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+
+    /**
+     * 获取群组列表
+     */
+    private void initGroups() {
+        HttpUtils.postGroupListRequest("/group_data", uid, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext, "/group_data-----" + e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<Groups>>>() {
+                }.getType();
+                Code<List<Groups>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    List<Groups> groups = code.getMsg();
+                    for (Groups groups1 : groups) {
+                        groupId=groups1.getGroupId();
+                        String groupName=groups1.getGroupName();
+                        String groupPort=HttpUtils.IMAGE_RUL + groups1.getGroupPortraitUri();
+                        String role=groups1.getRole();
+//                        list.add(new Groups(groupid, groupName, groupPort));
+                        Groups groups2 = new Groups();
+                        groups2.setGroupId(groupId);  //groupId
+                        groups2.setGroupName(groupName);  //groupName
+                        groups2.setGroupPortraitUri(groupPort);
+                        groups2.setRole(role);
+                        groupsDAO.save(groups2);
+                        Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
+                    }
+                    LoadDialog.dismiss(mContext);
+                } else {
+                    LoadDialog.dismiss(mContext);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取群组信息
+     */
+    private void getGroups() {
+        HttpUtils.postGroupsRequest("/group_info", groupId,uid, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext, "group_data------" + "网络连接错误");
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Groups>>() {}.getType();
+                Code<Groups> code = gson.fromJson(response, type);
+                Groups groups=code.getMsg();
+                if (code.getCode() == 200) {
+                    mGroup = new Groups(groups.getGroupId(), groups.getGroupName(),
+                            HttpUtils.IMAGE_RUL+groups.getGroupPortraitUri(), groups.getRole());
+                }
+            }
+        });
+    }
+
+    /**
+     * 群组成员
+     */
+    private void getGroupMembers() {
+        HttpUtils.postGroupsRequest("/group_member", groupId,uid, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext, "group_member------" + "网络连接错误");
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<GroupMember>>>() {}.getType();
+                Code<List<GroupMember>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    mGroupMember = code.getMsg();
+                    for(GroupMember member:mGroupMember){
+                        String userId=member.getUserId();
+                        String userName=member.getUserName();
+                        String userPortraitUri=member.getUserPortraitUri();
+                        GroupMember groupMember=new GroupMember();
+                        groupMember.setUserId(userId);
+                        groupMember.setUserName(userName);
+                        groupMember.setUserPortraitUri(userPortraitUri);
+                        groupMemberDAO.save(groupMember);
+                        Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
+                    }
+                    /*if (mGroupMember != null && mGroupMember.size() > 0) {
+                        tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
+                        mGridView.setAdapter(new MyGridView(mContext, mGroupMember, isCreator,mGroup));
+                    } else {
+                        return;
+                    }
+                    for (GroupMember member : mGroupMember) {
+                        String s = member.getUserId();
+                        if (userId.equals(s)) {
+                            if (!TextUtils.isEmpty(member.getDisplayName())) {
+                                tvGroupName.setText(member.getDisplayName());
+                            } else {
+                                tvGroupName.setText("无");
+                            }
+                        }
+                    }*/
+                }
+            }
+        });
+    }
+
+
+
+
 
     private void connect(String token) {
         final Message message=new Message();

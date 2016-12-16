@@ -22,14 +22,14 @@ public class GroupsDAOImpl {
 
     public void save(Groups groups) {// 插入记录
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();// 取得数据库操作
-        db.execSQL("insert into t_groupInfo (groupId,groupName,groupPortraitUri,role) values(?,?,?,?)",
-                new Object[] { groups.getGroupId(), groups.getGroupName(), groups.getGroupPortraitUri(), groups.getRole() });
+        db.execSQL("insert into t_groupInfo ( userId,groupId,groupName,groupPortraitUri,role) values(?,?,?,?,?)",
+                new Object[] { groups.getUserId(),groups.getGroupId(), groups.getGroupName(), groups.getGroupPortraitUri(), groups.getRole() });
         db.close();  //关闭数据库操作
     }
 
-    public void delete(Integer id) {// 删除纪录
+    public void delete(String id) {// 删除纪录
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        db.execSQL("delete from t_groupInfo where id=?", new Object[] { id.toString() });
+        db.execSQL("delete from t_groupInfo where userId=?", new Object[] { id.toString() });
         db.close();
     }
 
@@ -57,7 +57,7 @@ public class GroupsDAOImpl {
         return groups;
     }
 
-    public List<Groups> findAll() {// 查询所有记录
+    public List<Groups> findAll(String id) {// 查询所有记录
         List<Groups> lists = new ArrayList<Groups>();
         Groups groups = null;
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
@@ -65,7 +65,7 @@ public class GroupsDAOImpl {
         // String[]{offset.toString(),maxLength.toString()});
         // //这里支持类型MYSQL的limit分页操作
 
-        Cursor cursor = db.rawQuery("select * from t_groupInfo ", null);
+        Cursor cursor = db.rawQuery("select * from t_groupInfo where userId=? ", new String[] { id.toString()});
         while (cursor.moveToNext()) {
             groups = new Groups();
             groups.setGroupId(cursor.getString(cursor.getColumnIndex("groupId")));

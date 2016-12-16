@@ -18,16 +18,23 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
+import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
+import com.min.smalltalk.bean.UserId;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
+import com.min.smalltalk.network.HttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +47,7 @@ import io.rong.imkit.userInfoCache.RongUserInfoManager;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.UserInfo;
+import okhttp3.Call;
 
 /**
  * 会话页面
@@ -100,10 +108,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         mTargetId = intent.getData().getQueryParameter("targetId");
         //10000 为 Demo Server 加好友的 id，若 targetId 为 10000，则为加好友消息，默认跳转到 NewFriendListActivity
         // Demo 逻辑
-        if (mTargetId != null && mTargetId.equals("10000")) {
-            startActivity(new Intent(ConversationActivity.this, NewFriendListActivity.class));
-            return;
-        }
+        newFriend();
+
         setActionBarTitle(mConversationType, mTargetId);
         //展示如何从 Intent 中得到 融云会话页面传递的 Uri
 //        intent.getData().getLastPathSegment();//获得当前会话类型
@@ -135,6 +141,36 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
 
     }
 
+    private void newFriend() {
+        final String userid=sp.getString(Const.LOGIN_ID,"");
+        HttpUtils.postAddFriender("/all_unread_friends", userid, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"/all_unread_friends--------"+e);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<List<UserId>>>(){}.getType();
+                Code<List<UserId>> code = gson.fromJson(response,type);
+                if(code.getCode()==200){
+                    List<UserId> userIds=code.getMsg();
+                    for (int i = 0;i<userIds.size();i++){
+                        if(mTargetId != null && mTargetId.equals(userIds.get(i).getUserId())){
+                            startActivity(new Intent(ConversationActivity.this, NewFriendListActivity.class));
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+        /*if (mTargetId != null && mTargetId.equals("10000")) {
+            startActivity(new Intent(ConversationActivity.this, NewFriendListActivity.class));
+            return;
+        }*/
+    }
+
     /**
      * 用户头像
      */
@@ -152,7 +188,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         String displayName="";
         String phone=sp.getString(Const.LOGIN_PHONE,"");
         String email=sp.getString(Const.LOGIN_EMAIL,"");
-        list=friendInfoDAO.findAll();
+        list=friendInfoDAO.findAll(userId);
         list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
 //        list.addAll(list);
 

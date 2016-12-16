@@ -32,14 +32,14 @@ public class DBOpenHelper  extends SQLiteOpenHelper {
         // 创建一个t_users表，id主键，自动增长，字符类型的username和pass;
         //群信息
         db.execSQL("create table if not exists t_groupInfo(id integer primary key autoincrement," +
-                "groupId varchar(200),groupName varchar(200),groupPortraitUri varchar(200),role varchar(200) )");
+                "userId varchar(200), groupId varchar(200),groupName varchar(200),groupPortraitUri varchar(200),role varchar(200) )");
         //群成员
         db.execSQL("create table if not exists t_groupMember(id integer primary key autoincrement," +
                 "groupId varchar(200),groupName varchar(200),groupPortraitUri varchar(200)," +
                 "userId varchar(200),userName varchar(200), userPortraitUri varchar(200), role varchar(200) )");
         //好友
         db.execSQL("create table if not exists t_friendInfo(id integer primary key autoincrement," +
-                "userId varchar(200),userName varchar(200), userPortraitUri varchar(200)," +
+                "myId varchar(200),userId varchar(200),userName varchar(200), userPortraitUri varchar(200)," +
                 "displayName varchar(200),phone varchar(200),email varchar(200) )");
     }
 

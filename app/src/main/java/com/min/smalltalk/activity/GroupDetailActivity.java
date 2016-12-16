@@ -134,6 +134,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     private DBOpenHelper dbOpenHelper;  //SQLite
     private GroupsDAOImpl sqLiteDAO;
 
+    private MyGridView adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -327,6 +329,21 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         getGroupMembers(isCreated); //成员信息
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!TextUtils.isEmpty(groupId)) {
+            isFromConversation = true;
+        }
+
+        if (isFromConversation) {  //群主会话页进入
+            LoadDialog.show(mContext);
+//            getGroups();  //群组信息
+            getGroupsSqlite();
+            LoadDialog.dismiss(mContext);
+        }
+    }
+
     /**
      * 群组成员
      */
@@ -340,14 +357,14 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<GroupMember>>>() {
-                }.getType();
+                Type type = new TypeToken<Code<List<GroupMember>>>() {}.getType();
                 Code<List<GroupMember>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     mGroupMember = code.getMsg();
                     if (mGroupMember != null && mGroupMember.size() > 0) {
                         tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
-                        mGridView.setAdapter(new MyGridView(mContext, mGroupMember, isCreator,mGroup));
+                        adapter=new MyGridView(mContext, mGroupMember, isCreator,mGroup);
+                        mGridView.setAdapter(adapter);
                     } else {
                         return;
                     }

@@ -34,7 +34,6 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
-import com.min.smalltalk.server.broadcast.BroadcastManager;
 import com.min.smalltalk.utils.DateUtils;
 import com.min.smalltalk.wedget.Wheel.JudgeDate;
 import com.min.smalltalk.wedget.Wheel.ScreenInfo;
@@ -178,7 +177,7 @@ public class PersonSettingActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_title_back:
-                BroadcastManager.getInstance(mContext).sendBroadcast(Const.CHANGEINFO);
+//                BroadcastManager.getInstance(mContext).sendBroadcast(Const.CHANGEINFO);
                 finish();
                 break;
             case R.id.iv_myHead:
@@ -186,7 +185,7 @@ public class PersonSettingActivity extends BaseActivity {
                 break;
             case R.id.rl_nickname:
                 editText=new EditText(mContext);
-                AlertDialog dialog = new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(mContext)
                         .setTitle("修改昵称")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -240,7 +239,7 @@ public class PersonSettingActivity extends BaseActivity {
                 break;
             case R.id.rl_email:
                 editText=new EditText(mContext);
-                AlertDialog dialog_email = new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(mContext)
                         .setTitle("修改邮箱")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -261,7 +260,7 @@ public class PersonSettingActivity extends BaseActivity {
                 break;
             case R.id.rl_address:
                 editText=new EditText(mContext);
-                AlertDialog dialog_address = new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(mContext)
                         .setTitle("修改地址")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {

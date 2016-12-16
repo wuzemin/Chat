@@ -1,6 +1,5 @@
 package com.min.smalltalk.fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,12 +16,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.image.CircleImageView;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.LoginActivity;
 import com.min.smalltalk.activity.PersonSettingActivity;
 import com.min.smalltalk.constant.Const;
-import com.min.smalltalk.server.broadcast.BroadcastManager;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
+import com.min.smalltalk.db.GroupMemberDAOImpl;
+import com.min.smalltalk.db.GroupsDAOImpl;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,26 +52,44 @@ public class PersonalFragment extends Fragment {
     private SharedPreferences sp;
     private String userid, username, userphone,userPortraitUri;
 
+    private GroupsDAOImpl groupsDAO;
+    private GroupMemberDAOImpl groupMemberDAO;
+    private FriendInfoDAOImpl friendInfoDAO;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         ButterKnife.bind(this, view);
+
+        groupsDAO=new GroupsDAOImpl(getActivity());
+        friendInfoDAO=new FriendInfoDAOImpl(getActivity());
+
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
         userid = sp.getString(Const.LOGIN_ID, "");
         username=sp.getString(Const.LOGIN_NICKNAME,"");
         userphone = sp.getString(Const.LOGIN_PHONE, "");
         userPortraitUri=sp.getString(Const.LOGIN_PORTRAIT,"");
         initView();
-        BroadcastManager.getInstance(getActivity()).addAction(Const.CHANGEINFO, new BroadcastReceiver() {
+        /*BroadcastManager.getInstance(getActivity()).addAction(Const.CHANGEINFO, new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 initView();
             }
-        });
+        });*/
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
+        userid = sp.getString(Const.LOGIN_ID, "");
+        username=sp.getString(Const.LOGIN_NICKNAME,"");
+        userphone = sp.getString(Const.LOGIN_PHONE, "");
+        userPortraitUri=sp.getString(Const.LOGIN_PORTRAIT,"");
+        initView();
+    }
 
     private void initView() {
         tvUserid.setText(userid);
@@ -94,7 +114,10 @@ public class PersonalFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 sp.edit().clear().commit();
+                                groupsDAO.delete(userid);
+                                friendInfoDAO.delete(userid);
                                 getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                                T.showShort(getActivity(),"退出成功");
                                 getActivity().finish();
                             }
                         })
@@ -107,7 +130,7 @@ public class PersonalFragment extends Fragment {
                 break;
             case R.id.rl_person_setting:
                 Intent intent=new Intent(getActivity(),PersonSettingActivity.class);
-                getActivity().startActivityForResult(intent,0);
+                getActivity().startActivity(intent);
 //                startActivity(new Intent(getActivity(), PersonSettingActivity.class));
                 break;
             default:
@@ -115,11 +138,12 @@ public class PersonalFragment extends Fragment {
         }
     }
 
-    @Override
+
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==0){
             initView();
         }
-    }
+    }*/
 }

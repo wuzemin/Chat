@@ -25,6 +25,7 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -74,11 +75,16 @@ public class UserDetailActivity extends BaseActivity {
     private String userId, userName, userPort, userPhone, userEmail;
     private FriendInfo friendInfo;
 
+    private FriendInfoDAOImpl friendInfoDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
         ButterKnife.bind(this);
+
+        friendInfoDAO=new FriendInfoDAOImpl(mContext);
+
         Intent intent = getIntent();
         tvTitleRight.setVisibility(View.VISIBLE);
         tvTitleRight.setText("修改备注名");
@@ -209,6 +215,7 @@ public class UserDetailActivity extends BaseActivity {
                 }.getType();
                 Code<FriendInfo> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
+                    friendInfoDAO.deleteOne(userId);
                     T.showShort(mContext, "删除成功");
                     finish();
                 } else {

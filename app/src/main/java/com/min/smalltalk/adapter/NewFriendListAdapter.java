@@ -1,6 +1,7 @@
 package com.min.smalltalk.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,28 +51,61 @@ public class NewFriendListAdapter  extends BaseAdapters {
             ImageLoader.getInstance().displayImage(HttpUtils.IMAGE_RUL+bean.getPortraitUri(), holder.mHead, App.getOptions());
         }
         holder.mMessage.setText(bean.getAddFriendMessage());
+        //同意
         holder.tvAgree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mOnItemButtonClick != null) {
-                    mOnItemButtonClick.onButtonClick(position, v, bean.getStatus());
+                    mOnItemButtonClick.onButtonAgreeClick(position, v, bean.getStatus());
+                }
+            }
+        });
+        //拒绝
+        holder.tvRefuse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemButtonClick != null) {
+                    mOnItemButtonClick.onButttonRefuseClick(position, v, bean.getStatus());
+                }
+            }
+        });
+        holder.tvIgnore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemButtonClick != null) {
+                    mOnItemButtonClick.onButttonIgnoreClick(position, v, bean.getStatus());
                 }
             }
         });
 
         switch (bean.getStatus()) {
-            case 3: //收到了好友邀请
-                holder.tvAgree.setText(R.string.agree);
+            case 0: // 已拒绝
+                holder.tvRefuse.setVisibility(View.VISIBLE);
+                holder.tvRefuse.setTextColor(Color.GRAY);
+                holder.tvRefuse.setText("已拒绝");
+                holder.tvRefuse.setClickable(false);
                 break;
-            case 1: // 发出了好友邀请
+            case 1: //  已同意
+                holder.tvAgree.setVisibility(View.VISIBLE);
+                holder.tvAgree.setTextColor(Color.GRAY);
+                holder.tvAgree.setClickable(false);
                 holder.tvAgree.setText("已同意");
                 break;
-            case 2: // 忽略好友邀请
-                holder.tvAgree.setText("已忽略");
+            case 2: // 已忽略
+                holder.tvIgnore.setVisibility(View.VISIBLE);
+                holder.tvIgnore.setTextColor(Color.GRAY);
+                holder.tvIgnore.setText("已忽略");
+                holder.tvIgnore.setClickable(false);
                 break;
-            case 0: // 已是好友
-                holder.tvAgree.setText("已拒绝");
+            case 3: //未读18
+                holder.tvRefuse.setVisibility(View.VISIBLE);
+                holder.tvRefuse.setClickable(true);
+                holder.tvAgree.setVisibility(View.VISIBLE);
+                holder.tvAgree.setClickable(true);
+                holder.tvIgnore.setVisibility(View.VISIBLE);
+                holder.tvIgnore.setClickable(true);
                 break;
+
         }
         return convertView;
     }
@@ -93,7 +127,9 @@ public class NewFriendListAdapter  extends BaseAdapters {
     }
 
     public interface OnItemButtonClick {
-        boolean onButtonClick(int position, View view, int status);
+        boolean onButtonAgreeClick(int position, View view, int status);
+        boolean onButttonRefuseClick(int position, View view, int status);
+        boolean onButttonIgnoreClick(int position, View view, int status);
 
     }
 }

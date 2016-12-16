@@ -12,6 +12,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class FriendInfo implements Parcelable{
+    private String myId;
     private String userId;
     private String name;
     private String portraitUri;
@@ -23,6 +24,7 @@ public class FriendInfo implements Parcelable{
     private String email;
 
     protected FriendInfo(Parcel in) {
+        myId=in.readString();
         userId = in.readString();
         name = in.readString();
         portraitUri = in.readString();
@@ -103,9 +105,10 @@ public class FriendInfo implements Parcelable{
         this.timestamp = timestamp;
     }
 
-    @Generated(hash = 966604725)
-    public FriendInfo(String userId, String name, String portraitUri, String displayName, String status, Long timestamp,
-            String letters, String phone, String email) {
+    @Generated(hash = 1133244936)
+    public FriendInfo(String myId, String userId, String name, String portraitUri, String displayName, String status,
+            Long timestamp, String letters, String phone, String email) {
+        this.myId = myId;
         this.userId = userId;
         this.name = name;
         this.portraitUri = portraitUri;
@@ -115,6 +118,14 @@ public class FriendInfo implements Parcelable{
         this.letters = letters;
         this.phone = phone;
         this.email = email;
+    }
+
+    public String getMyId() {
+        return myId;
+    }
+
+    public void setMyId(String myId) {
+        this.myId = myId;
     }
 
     public String getUserId() {
@@ -195,6 +206,7 @@ public class FriendInfo implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(myId);
         parcel.writeString(userId);
         parcel.writeString(name);
         parcel.writeString(portraitUri);

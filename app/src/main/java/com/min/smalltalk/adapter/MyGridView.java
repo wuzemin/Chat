@@ -87,14 +87,6 @@ public class MyGridView extends BaseAdapter {
         }else {
             holder= (ViewHolder) convertView.getTag();
         }
-//        groupId=list.get(position).getGroupId();
-//        groupName=list.get(position).getGroupName();
-//        groupPortraitUri=list.get(position).getGroupPortraitUri();
-        /*if(list.get(position).getGroupPortraitUri()!                         =null) {
-            ImageLoader.getInstance().displayImage(groupPortraitUri, holder.sivGroupDetails);
-        }else {
-            holder.sivGroupDetails.setImageResource(R.mipmap.default_fmessage);
-        }*/
 
         //
         if(position==getCount()-1 && isCreated){

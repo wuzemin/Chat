@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class Groups implements Parcelable{
+    private String userId;
     private String groupId;
     private String groupName;
     private String groupPortraitUri;
@@ -35,10 +36,11 @@ public class Groups implements Parcelable{
         this.role=role;
     }
 
-    @Generated(hash = 1961875826)
-    public Groups(String groupId, String groupName, String groupPortraitUri,
+    @Generated(hash = 1633572121)
+    public Groups(String userId, String groupId, String groupName, String groupPortraitUri,
             String displayName, String role, String bulletin, String timestamp,
             String nameSpelling) {
+        this.userId = userId;
         this.groupId = groupId;
         this.groupName = groupName;
         this.groupPortraitUri = groupPortraitUri;
@@ -50,6 +52,7 @@ public class Groups implements Parcelable{
     }
 
     public Groups(Parcel in) {
+        userId=in.readString();
         groupId = in.readString();
         groupName = in.readString();
         groupPortraitUri = in.readString();
@@ -71,6 +74,14 @@ public class Groups implements Parcelable{
             return new Groups[size];
         }
     };
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -143,6 +154,7 @@ public class Groups implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(userId);
         parcel.writeString(groupId);
         parcel.writeString(groupName);
         parcel.writeString(groupPortraitUri);

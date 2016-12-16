@@ -32,7 +32,6 @@ import com.min.smalltalk.adapter.FriendListAdapter;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.constant.Const;
-import com.min.smalltalk.db.DBOpenHelper;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.server.broadcast.BroadcastManager;
@@ -113,8 +112,8 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
 
     private static final int CLICK_CONTACT_FRAGMENT_FRIEND = 2;
 
-    private DBOpenHelper dbOpenHelper;
-    private FriendInfoDAOImpl sqLiteDAO;
+    //    private DBOpenHelper dbOpenHelper;
+    private FriendInfoDAOImpl friendInfoDAO;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,15 +121,16 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
         ButterKnife.bind(this, view);
 
-        dbOpenHelper = new DBOpenHelper(getActivity(), "talk.db", null, 2);// 创建数据库文件
-        dbOpenHelper.getWritableDatabase();
-        sqLiteDAO= new FriendInfoDAOImpl(getActivity());
-
+        friendInfoDAO = new FriendInfoDAOImpl(getActivity());
+        mSourceFriendList = new ArrayList<>();
+        mFriendList = new ArrayList<>();
+        mFilteredFriendList = new ArrayList<>();
         initView();
         initData();
         refreshUIListener();
         return view;
     }
+
 
     private void initView() {
         sb.setTextView(tvGroupDialog);
@@ -184,9 +184,9 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData() {
-        mSourceFriendList = new ArrayList<>();
-        mFriendList = new ArrayList<>();
-        mFilteredFriendList = new ArrayList<>();
+        /**
+         * 好友列表
+         */
         HttpUtils.postRequest("/friends", mId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -201,31 +201,15 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 Code<List<FriendInfo>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     List<FriendInfo> list = code.getMsg();
-                    /*for(int i=0;i<list.size();i++){
-                        String userId=list.get(i).getUserId();
-                        String name=list.get(i).getName();
-                        String portrait=list.get(i).getPortraitUri();
-                        String displayName=list.get(i).getDisplayName();
-                        String phone=list.get(i).getPhone();
-                        String email=list.get(i).getEmail();
-                        FriendInfo friendInfo=new FriendInfo();
-                        friendInfo.setUserId(userId);
-                        friendInfo.setName(name);
-                        friendInfo.setPortraitUri(portrait);
-                        friendInfo.setDisplayName(displayName);
-                        friendInfo.setPhone(phone);
-                        friendInfo.setEmail(email);
-                        mSourceFriendList.add(friendInfo);
-
-                    }*/
                     for (FriendInfo friend : list) {
-                        String userId=friend.getUserId();
-                        String name=friend.getName();
-                        String portrait=HttpUtils.IMAGE_RUL+friend.getPortraitUri();
-                        String displayName=friend.getDisplayName();
-                        String phone=friend.getPhone();
-                        String email=friend.getEmail();
-                        FriendInfo friendInfo=new FriendInfo();
+                        String userId = friend.getUserId();
+                        String name = friend.getName();
+                        String portrait = HttpUtils.IMAGE_RUL + friend.getPortraitUri();
+                        String displayName = friend.getDisplayName();
+                        String phone = friend.getPhone();
+                        String email = friend.getEmail();
+                        FriendInfo friendInfo = new FriendInfo();
+                        friendInfo.setMyId(mId);
                         friendInfo.setUserId(userId);
                         friendInfo.setName(name);
                         friendInfo.setPortraitUri(portrait);
@@ -233,9 +217,8 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                         friendInfo.setPhone(phone);
                         friendInfo.setEmail(email);
                         mSourceFriendList.add(friendInfo);
-
                         //存进Sqlite
-                        sqLiteDAO.save(friendInfo);
+                        friendInfoDAO.save(friendInfo);
                         L.e("---------===", "插入成功");
                     }
 
@@ -253,6 +236,29 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData2();
+    }
+
+    private void initData2() {
+        mSourceFriendList=friendInfoDAO.findAll(mId);
+        if(mSourceFriendList.size()>0){
+            //实例化汉字转拼音类
+            mCharacterParser = CharacterParser
+                    .getInstance();
+            mPinyinComparator = PinyinComparator.getInstance();
+            initList();
+        }else {
+            mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
+            mListView.setAdapter(mFriendListAdapter);
+            tvShowNoFriend.setVisibility(View.VISIBLE);
+            T.showShort(getActivity(),"您暂没好友，请点击有上角按钮来添加好友吧！");
+        }
+
     }
 
     private void initList() {

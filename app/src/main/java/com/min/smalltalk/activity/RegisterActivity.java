@@ -179,7 +179,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext,"密码不能为空且长度不能小于4");
                     return;
                 }
-                /*if (!TextUtils.isEmpty(iCord)) {
+                if (!TextUtils.isEmpty(iCord)) {
                     if (iCord.length() == 4) {
                         SMSSDK.submitVerificationCode("86", phone, iCord);
                         flag = false;
@@ -190,7 +190,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     T.showShort(mContext,"请输入验证码");
                     etCode.requestFocus();
-                }*/
+                }
                 initRegister();
                 break;
             default:

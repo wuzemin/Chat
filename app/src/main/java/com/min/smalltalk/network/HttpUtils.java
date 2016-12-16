@@ -291,5 +291,12 @@ public class HttpUtils {
                 .addParams("actives_id",actives_id).build().execute(callback);
     }
 
+    //判断是否是添加好友
+    public static void postAddFriender(String url,String userId,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("userId",userId).build().execute(callback);
+    }
+
 
 }

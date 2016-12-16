@@ -22,12 +22,18 @@ public class FriendInfoDAOImpl {
 
     public void save(FriendInfo friendInfo) {// 插入记录
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();// 取得数据库操作
-        db.execSQL("insert into t_friendInfo (userId,userName,userPortraitUri,displayName,phone,email) values(?,?,?,?,?,?)",
-                new Object[] { friendInfo.getUserId(),friendInfo.getName(),friendInfo.getPortraitUri(),friendInfo.getDisplayName(),friendInfo.getPhone(),friendInfo.getEmail()});
+        db.execSQL("insert into t_friendInfo (myId,userId,userName,userPortraitUri,displayName,phone,email) values(?,?,?,?,?,?,?)",
+                new Object[] {friendInfo.getMyId(), friendInfo.getUserId(),friendInfo.getName(),friendInfo.getPortraitUri(),
+                        friendInfo.getDisplayName(),friendInfo.getPhone(),friendInfo.getEmail()});
         db.close();  //关闭数据库操作
     }
 
     public void delete(String id) {// 删除纪录
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        db.execSQL("delete from t_friendInfo where myId=?", new Object[] { id.toString() });
+        db.close();
+    }
+    public void deleteOne(String id) {// 删除纪录
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         db.execSQL("delete from t_friendInfo where userId=?", new Object[] { id.toString() });
         db.close();
@@ -57,7 +63,7 @@ public class FriendInfoDAOImpl {
         return friendInfo;
     }
 
-    public List<FriendInfo> findAll() {// 查询所有记录
+    public List<FriendInfo> findAll(String myId) {// 查询所有记录
         List<FriendInfo> lists = new ArrayList<FriendInfo>();
         FriendInfo friendInfo = null;
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
@@ -65,13 +71,16 @@ public class FriendInfoDAOImpl {
         // String[]{offset.toString(),maxLength.toString()});
         // //这里支持类型MYSQL的limit分页操作
 
-        Cursor cursor = db.rawQuery("select * from t_friendInfo ", null);
+        Cursor cursor = db.rawQuery("select * from t_friendInfo where myId=? ", new String[]{myId.toString()});
         while (cursor.moveToNext()) {
             friendInfo = new FriendInfo();
+            friendInfo.setMyId(cursor.getString(cursor.getColumnIndex("myId")));
             friendInfo.setUserId(cursor.getString(cursor.getColumnIndex("userId")));
             friendInfo.setName(cursor.getString(cursor.getColumnIndex("userName")));
             friendInfo.setPortraitUri(cursor.getString(cursor.getColumnIndex("userPortraitUri")));
             friendInfo.setDisplayName(cursor.getString(cursor.getColumnIndex("displayName")));
+            friendInfo.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
+            friendInfo.setEmail(cursor.getString(cursor.getColumnIndex("email")));
             lists.add(friendInfo);
         }
         db.close();

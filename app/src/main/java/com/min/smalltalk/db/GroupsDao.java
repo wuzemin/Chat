@@ -24,14 +24,15 @@ public class GroupsDao extends AbstractDao<Groups, Void> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property GroupId = new Property(0, String.class, "groupId", false, "GROUP_ID");
-        public final static Property GroupName = new Property(1, String.class, "groupName", false, "GROUP_NAME");
-        public final static Property GroupPortraitUri = new Property(2, String.class, "groupPortraitUri", false, "GROUP_PORTRAIT_URI");
-        public final static Property DisplayName = new Property(3, String.class, "displayName", false, "DISPLAY_NAME");
-        public final static Property Role = new Property(4, String.class, "role", false, "ROLE");
-        public final static Property Bulletin = new Property(5, String.class, "bulletin", false, "BULLETIN");
-        public final static Property Timestamp = new Property(6, String.class, "timestamp", false, "TIMESTAMP");
-        public final static Property NameSpelling = new Property(7, String.class, "nameSpelling", false, "NAME_SPELLING");
+        public final static Property UserId = new Property(0, String.class, "userId", false, "USER_ID");
+        public final static Property GroupId = new Property(1, String.class, "groupId", false, "GROUP_ID");
+        public final static Property GroupName = new Property(2, String.class, "groupName", false, "GROUP_NAME");
+        public final static Property GroupPortraitUri = new Property(3, String.class, "groupPortraitUri", false, "GROUP_PORTRAIT_URI");
+        public final static Property DisplayName = new Property(4, String.class, "displayName", false, "DISPLAY_NAME");
+        public final static Property Role = new Property(5, String.class, "role", false, "ROLE");
+        public final static Property Bulletin = new Property(6, String.class, "bulletin", false, "BULLETIN");
+        public final static Property Timestamp = new Property(7, String.class, "timestamp", false, "TIMESTAMP");
+        public final static Property NameSpelling = new Property(8, String.class, "nameSpelling", false, "NAME_SPELLING");
     }
 
 
@@ -47,14 +48,15 @@ public class GroupsDao extends AbstractDao<Groups, Void> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"GROUPS\" (" + //
-                "\"GROUP_ID\" TEXT," + // 0: groupId
-                "\"GROUP_NAME\" TEXT," + // 1: groupName
-                "\"GROUP_PORTRAIT_URI\" TEXT," + // 2: groupPortraitUri
-                "\"DISPLAY_NAME\" TEXT," + // 3: displayName
-                "\"ROLE\" TEXT," + // 4: role
-                "\"BULLETIN\" TEXT," + // 5: bulletin
-                "\"TIMESTAMP\" TEXT," + // 6: timestamp
-                "\"NAME_SPELLING\" TEXT);"); // 7: nameSpelling
+                "\"USER_ID\" TEXT," + // 0: userId
+                "\"GROUP_ID\" TEXT," + // 1: groupId
+                "\"GROUP_NAME\" TEXT," + // 2: groupName
+                "\"GROUP_PORTRAIT_URI\" TEXT," + // 3: groupPortraitUri
+                "\"DISPLAY_NAME\" TEXT," + // 4: displayName
+                "\"ROLE\" TEXT," + // 5: role
+                "\"BULLETIN\" TEXT," + // 6: bulletin
+                "\"TIMESTAMP\" TEXT," + // 7: timestamp
+                "\"NAME_SPELLING\" TEXT);"); // 8: nameSpelling
     }
 
     /** Drops the underlying database table. */
@@ -67,44 +69,49 @@ public class GroupsDao extends AbstractDao<Groups, Void> {
     protected final void bindValues(DatabaseStatement stmt, Groups entity) {
         stmt.clearBindings();
  
+        String userId = entity.getUserId();
+        if (userId != null) {
+            stmt.bindString(1, userId);
+        }
+ 
         String groupId = entity.getGroupId();
         if (groupId != null) {
-            stmt.bindString(1, groupId);
+            stmt.bindString(2, groupId);
         }
  
         String groupName = entity.getGroupName();
         if (groupName != null) {
-            stmt.bindString(2, groupName);
+            stmt.bindString(3, groupName);
         }
  
         String groupPortraitUri = entity.getGroupPortraitUri();
         if (groupPortraitUri != null) {
-            stmt.bindString(3, groupPortraitUri);
+            stmt.bindString(4, groupPortraitUri);
         }
  
         String displayName = entity.getDisplayName();
         if (displayName != null) {
-            stmt.bindString(4, displayName);
+            stmt.bindString(5, displayName);
         }
  
         String role = entity.getRole();
         if (role != null) {
-            stmt.bindString(5, role);
+            stmt.bindString(6, role);
         }
  
         String bulletin = entity.getBulletin();
         if (bulletin != null) {
-            stmt.bindString(6, bulletin);
+            stmt.bindString(7, bulletin);
         }
  
         String timestamp = entity.getTimestamp();
         if (timestamp != null) {
-            stmt.bindString(7, timestamp);
+            stmt.bindString(8, timestamp);
         }
  
         String nameSpelling = entity.getNameSpelling();
         if (nameSpelling != null) {
-            stmt.bindString(8, nameSpelling);
+            stmt.bindString(9, nameSpelling);
         }
     }
 
@@ -112,44 +119,49 @@ public class GroupsDao extends AbstractDao<Groups, Void> {
     protected final void bindValues(SQLiteStatement stmt, Groups entity) {
         stmt.clearBindings();
  
+        String userId = entity.getUserId();
+        if (userId != null) {
+            stmt.bindString(1, userId);
+        }
+ 
         String groupId = entity.getGroupId();
         if (groupId != null) {
-            stmt.bindString(1, groupId);
+            stmt.bindString(2, groupId);
         }
  
         String groupName = entity.getGroupName();
         if (groupName != null) {
-            stmt.bindString(2, groupName);
+            stmt.bindString(3, groupName);
         }
  
         String groupPortraitUri = entity.getGroupPortraitUri();
         if (groupPortraitUri != null) {
-            stmt.bindString(3, groupPortraitUri);
+            stmt.bindString(4, groupPortraitUri);
         }
  
         String displayName = entity.getDisplayName();
         if (displayName != null) {
-            stmt.bindString(4, displayName);
+            stmt.bindString(5, displayName);
         }
  
         String role = entity.getRole();
         if (role != null) {
-            stmt.bindString(5, role);
+            stmt.bindString(6, role);
         }
  
         String bulletin = entity.getBulletin();
         if (bulletin != null) {
-            stmt.bindString(6, bulletin);
+            stmt.bindString(7, bulletin);
         }
  
         String timestamp = entity.getTimestamp();
         if (timestamp != null) {
-            stmt.bindString(7, timestamp);
+            stmt.bindString(8, timestamp);
         }
  
         String nameSpelling = entity.getNameSpelling();
         if (nameSpelling != null) {
-            stmt.bindString(8, nameSpelling);
+            stmt.bindString(9, nameSpelling);
         }
     }
 
@@ -161,28 +173,30 @@ public class GroupsDao extends AbstractDao<Groups, Void> {
     @Override
     public Groups readEntity(Cursor cursor, int offset) {
         Groups entity = new Groups( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // groupId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // groupName
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // groupPortraitUri
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // displayName
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // role
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // bulletin
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // timestamp
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // nameSpelling
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // userId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // groupId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // groupName
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // groupPortraitUri
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // displayName
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // role
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // bulletin
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // timestamp
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // nameSpelling
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, Groups entity, int offset) {
-        entity.setGroupId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setGroupName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setGroupPortraitUri(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setDisplayName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setRole(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setBulletin(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setTimestamp(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setNameSpelling(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setUserId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setGroupId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setGroupName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setGroupPortraitUri(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setDisplayName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setRole(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setBulletin(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setTimestamp(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setNameSpelling(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

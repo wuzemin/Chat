@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.CommonUtils;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.App;
@@ -161,7 +162,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.commit();
                         LoadDialog.dismiss(mContext);
 //                        initFriendInfo();
-                        initGroups();
+                        initGroups(uid);
+//                        initData(uid);
 //                        getGroupMembers();
 //                        initGroupMember();
                         finish();
@@ -170,8 +172,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         LoadDialog.dismiss(mContext);
                     }else if(code1==1001){
                         T.showShort(mContext,"密码错误");
+                        LoadDialog.dismiss(mContext);
                     }else if(code1==1000){
                         T.showShort(mContext,"账号禁止登录");
+                        LoadDialog.dismiss(mContext);
                     }
                 }
             });
@@ -186,8 +190,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     /**
      * 获取群组列表
      */
-    private void initGroups() {
-        HttpUtils.postGroupListRequest("/group_data", uid, new StringCallback() {
+    private void initGroups(final String userId) {
+        HttpUtils.postGroupListRequest("/group_data", userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/group_data-----" + e);
@@ -208,12 +212,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         String role=groups1.getRole();
 //                        list.add(new Groups(groupid, groupName, groupPort));
                         Groups groups2 = new Groups();
+                        groups2.setUserId(userId);
                         groups2.setGroupId(groupId);  //groupId
                         groups2.setGroupName(groupName);  //groupName
                         groups2.setGroupPortraitUri(groupPort);
                         groups2.setRole(role);
                         groupsDAO.save(groups2);
-                        Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
+                        L.e("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
                     }
                     LoadDialog.dismiss(mContext);
                 } else {
@@ -224,28 +229,50 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     /**
-     * 获取群组信息
-     */
-    private void getGroups() {
-        HttpUtils.postGroupsRequest("/group_info", groupId,uid, new StringCallback() {
+     * 好友列表
+     *//*
+    private void initData(final String myId) {
+        HttpUtils.postRequest("/friends",myId , new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "group_data------" + "网络连接错误");
+                T.showShort(mContext, "friends-----" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<Groups>>() {}.getType();
-                Code<Groups> code = gson.fromJson(response, type);
-                Groups groups=code.getMsg();
+                Type type = new TypeToken<Code<List<FriendInfo>>>() {
+                }.getType();
+                Code<List<FriendInfo>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
-                    mGroup = new Groups(groups.getGroupId(), groups.getGroupName(),
-                            HttpUtils.IMAGE_RUL+groups.getGroupPortraitUri(), groups.getRole());
+                    List<FriendInfo> list = code.getMsg();
+                    for (FriendInfo friend : list) {
+                        String userId=friend.getUserId();
+                        String name=friend.getName();
+                        String portrait=HttpUtils.IMAGE_RUL+friend.getPortraitUri();
+                        String displayName=friend.getDisplayName();
+                        String phone=friend.getPhone();
+                        String email=friend.getEmail();
+                        FriendInfo friendInfo=new FriendInfo();
+                        friendInfo.setMyId(myId);
+                        friendInfo.setUserId(userId);
+                        friendInfo.setName(name);
+                        friendInfo.setPortraitUri(portrait);
+                        friendInfo.setDisplayName(displayName);
+                        friendInfo.setPhone(phone);
+                        friendInfo.setEmail(email);
+                        //存进Sqlite
+                        friendInfoDAO.save(friendInfo);
+                        L.e("---------===", "插入成功");
+                    }
+
+                } else {
+                    T.showShort(mContext,"您暂没好友，请点击有上角按钮来添加好友吧！");
                 }
             }
         });
-    }
+    }*/
+
 
     /**
      * 群组成员

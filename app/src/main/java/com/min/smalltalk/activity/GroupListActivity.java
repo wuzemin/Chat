@@ -13,6 +13,7 @@ import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Groups;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.wedget.ItemDivider;
 
@@ -60,7 +61,8 @@ public class GroupListActivity extends BaseActivity {
     }
 
     private void initData() {
-        list=sqLiteDAO.findAll();
+        String userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        list=sqLiteDAO.findAll(userId);
         if(list.size()>0){
             initAdapter();
         }else {

@@ -17,7 +17,9 @@ import com.min.smalltalk.adapter.NewFriendListAdapter;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.AllAddFriends;
 import com.min.smalltalk.bean.Code;
+import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -45,8 +47,8 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     ImageView ivTitleRight;
     @BindView(R.id.isData)
     TextView isData;
-        @BindView(R.id.listView)
-        ListView mListView;
+    @BindView(R.id.listView)
+    ListView mListView;
 //    @BindView(R.id.rv_new_friends)
 //    RecyclerView rv_new_friends;
 
@@ -55,14 +57,19 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     private List<AllAddFriends> list = new ArrayList<>();
     private AllAddFriends allAddFriends;
 
-        private NewFriendListAdapter adapter;
+    private NewFriendListAdapter adapter;
 //    private BaseRecyclerAdapter<AllAddFriends> adapter;
+
+    private FriendInfoDAOImpl friendInfoDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_friend_list);
         ButterKnife.bind(this);
+
+        friendInfoDAO=new FriendInfoDAOImpl(mContext);
+
         initView();
         if (!CommonUtils.isNetConnect(mContext)) {
             T.showShort(mContext, R.string.no_network);
@@ -71,7 +78,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
         LoadDialog.show(mContext);
         userid = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
         initData();
-        adapter=new NewFriendListAdapter(mContext);
+        adapter = new NewFriendListAdapter(mContext);
         mListView.setAdapter(adapter);
     }
 
@@ -85,7 +92,8 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<AllAddFriends>>>() {}.getType();
+                Type type = new TypeToken<Code<List<AllAddFriends>>>() {
+                }.getType();
                 Code<List<AllAddFriends>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     list = code.getMsg();
@@ -107,7 +115,6 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                     });
                     adapter.removeAll();
                     adapter.addData(list);
-
                     adapter.notifyDataSetChanged();
                     adapter.setOnItemButtonClick(NewFriendListActivity.this);
                     LoadDialog.dismiss(mContext);
@@ -120,33 +127,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
         });
     }
 
-    private int index;
-
-    @Override
-    public boolean onButtonClick(int position, View view, int status) {
-        index = position;
-        switch (status) {
-            case 3: //收到了好友邀请
-                if (!CommonUtils.isNetConnect(mContext)) {
-                    T.showShort(mContext, R.string.error_network);
-                    break;
-                }
-                LoadDialog.show(mContext);
-//                friendId = null;
-                friendId = list.get(position).getUserid();
-                initRequest(friendId, 1);
-                break;
-            case 0: // 发出了好友邀请
-                break;
-            case 1: // 忽略好友邀请
-                break;
-            case 2: // 已是好友
-                break;
-        }
-        return false;
-    }
-
-    private void initRequest(String friendId, int status) {
+    private void initRequest(final String friendId, final int status) {
         HttpUtils.postEnterFriendRequest("/confirm_friend", userid, friendId, status, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -160,8 +141,34 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                 }.getType();
                 Code<Integer> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
-                    T.showShort(mContext, "请求成功");
-                    LoadDialog.dismiss(mContext);
+                    switch (status){
+                        case 0:
+                            T.showShort(mContext, "拒绝成功");
+                            LoadDialog.dismiss(mContext);
+                            finish();
+                            break;
+                        case 1:
+                            FriendInfo friendInfo=new FriendInfo();
+                            friendInfo.setMyId(userid);
+                            /*friendInfo.setUserId();
+                            friendInfo.setName();
+                            friendInfo.setPortraitUri();
+                            friendInfo.setDisplayName();
+                            friendInfo.setPhone();
+                            friendInfo.setEmail();*/
+//                            friendInfoDAO.save();
+                            T.showShort(mContext, "你们现在是好友了");
+                            LoadDialog.dismiss(mContext);
+                            finish();
+                            break;
+                        case 2:
+                            T.showShort(mContext, "拒绝成功");
+                            LoadDialog.dismiss(mContext);
+                            finish();
+                            break;
+                        default:
+                            break;
+                    }
                 } else {
                     T.showShort(mContext, "请求失败");
                     LoadDialog.dismiss(mContext);
@@ -169,38 +176,6 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
             }
         });
     }
-
-    //数据
-    /*private void initAdapter(List<AllAddFriends> list) {
-        adapter = new BaseRecyclerAdapter<AllAddFriends>(mContext, list, R.layout.item_new_friends) {
-            @Override
-            public void convert(BaseRecyclerHolder holder, AllAddFriends item, int position, boolean isScrolling) {
-                holder.setImageByUrl(R.id.civ_icon, HttpUtils.IMAGE_RUL+item.getPortraitUri());
-                holder.setText(R.id.tv_nickname, item.getNickname());
-                holder.setText(R.id.tv_message, item.getAddFriendMessage());
-                int status = item.getStatus();
-                switch (status) {
-                    case 0:
-                        holder.setText(R.id.tv_agree, "已拒绝");
-                        break;
-                    case 1:
-                        holder.setText(R.id.tv_agree, "已同意");
-                        break;
-                    case 2:
-                        holder.setText(R.id.tv_agree, "已忽略");
-                        break;
-                    case 3:
-                        holder.setText(R.id.tv_agree, "同意");
-                        break;
-                }
-            }
-        };
-        rv_new_friends.setAdapter(adapter);
-        LinearLayoutManager lm=new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
-        rv_new_friends.setLayoutManager(lm);
-        LoadDialog.dismiss(mContext);
-
-    }*/
 
     private Date stringToDate(AllAddFriends allAddFriends) {
         String updatedAt = allAddFriends.getAddtime();
@@ -234,4 +209,27 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
         }
     }
 
+    @Override
+    public boolean onButttonRefuseClick(int position, View view, int status) {
+        LoadDialog.show(mContext);
+        friendId = list.get(position).getUserid();
+        initRequest(friendId, 0);
+        return false;
+    }
+
+    @Override
+    public boolean onButtonAgreeClick(int position, View view, int status) {
+        LoadDialog.show(mContext);
+        friendId = list.get(position).getUserid();
+        initRequest(friendId, 1);
+        return false;
+    }
+
+    @Override
+    public boolean onButttonIgnoreClick(int position, View view, int status) {
+        LoadDialog.show(mContext);
+        friendId = list.get(position).getUserid();
+        initRequest(friendId, 2);
+        return false;
+    }
 }

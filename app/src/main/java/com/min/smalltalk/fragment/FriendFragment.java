@@ -63,22 +63,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     SideBar sb;
     @BindView(R.id.tv_show_no_friend)
     TextView tvShowNoFriend;
-    /*@BindView(R.id.rl_me_item)
-    RelativeLayout rlMeItem;
-    @BindView(R.id.activity_select_friends)
-    LinearLayout activitySelectFriends;
-    @BindView(R.id.rl_newfriends)
-    RelativeLayout rlNewfriends;
-    @BindView(R.id.rl_group)
-    RelativeLayout rlGroup;
-    @BindView(R.id.rl_publicservice)
-    RelativeLayout rlPublicservice;
-    @BindView(R.id.siv_me)
-    SelectableRoundedImageView sivMe;
-    @BindView(R.id.tv_me)
-    TextView tvMe;
-    @BindView(R.id.tv_unread)
-    TextView tvUnread;*/
 
     private PinyinComparator mPinyinComparator;
 
@@ -108,11 +92,9 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     private TextView tvUnread, tvMe;
     private RelativeLayout rlNewfriends, rlGroup, rlPublicservice, rlMeItem;
     private SelectableRoundedImageView sivMe;
-//    tvUnread,tvMe, rlNewfriends,rlGroup,rlPublicservice,rlMeItem sivMe
 
     private static final int CLICK_CONTACT_FRAGMENT_FRIEND = 2;
 
-    //    private DBOpenHelper dbOpenHelper;
     private FriendInfoDAOImpl friendInfoDAO;
 
     @Override
@@ -120,12 +102,12 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
         ButterKnife.bind(this, view);
-
         friendInfoDAO = new FriendInfoDAOImpl(getActivity());
         mSourceFriendList = new ArrayList<>();
         mFriendList = new ArrayList<>();
         mFilteredFriendList = new ArrayList<>();
         initView();
+        friendInfoDAO.delete(mId);
         initData();
         refreshUIListener();
         return view;
@@ -157,11 +139,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         }
 
         mListView.addHeaderView(mHeadView);
-
-//        ImageLoader.getInstance().displayImage();
-        /*ImageLoader.getInstance().displayImage(TextUtils.isEmpty(header) ?
-                Generate.generateDefaultAvatar(mCacheName,mId):header,sivMe, App.getOptions());*/
-
 
         rlMeItem.setOnClickListener(this);  //me
         rlNewfriends.setOnClickListener(this);
@@ -232,7 +209,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                     mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
                     mListView.setAdapter(mFriendListAdapter);
                     tvShowNoFriend.setVisibility(View.VISIBLE);
-                    T.showShort(getActivity(),"您暂没好友，请点击有上角按钮来添加好友吧！");
                 }
             }
         });
@@ -245,19 +221,19 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData2() {
-        mSourceFriendList=friendInfoDAO.findAll(mId);
-        if(mSourceFriendList.size()>0){
-            //实例化汉字转拼音类
-            mCharacterParser = CharacterParser
-                    .getInstance();
-            mPinyinComparator = PinyinComparator.getInstance();
-            initList();
-        }else {
+        mSourceFriendList = friendInfoDAO.findAll(mId);
+//        if(mSourceFriendList.size()>0){
+        //实例化汉字转拼音类
+        mCharacterParser = CharacterParser
+                .getInstance();
+        mPinyinComparator = PinyinComparator.getInstance();
+        initList();
+        /*}else {
             mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
             mListView.setAdapter(mFriendListAdapter);
             tvShowNoFriend.setVisibility(View.VISIBLE);
-            T.showShort(getActivity(),"您暂没好友，请点击有上角按钮来添加好友吧！");
-        }
+//            T.showShort(getActivity(),"您暂没好友，请点击有上角按钮来添加好友吧！");
+        }*/
 
     }
 
@@ -290,32 +266,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-
-        /*etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //当输入框里面的值为空，更新为原来的列表，否则为过滤数据列表
-                filterData(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() != 0) {
-                    if (mListView.getHeaderViewsCount() > 0) {
-                        mListView.removeHeaderView(mHeadView);
-                    }
-                } else {
-                    if (mListView.getHeaderViewsCount() == 0) {
-                        mListView.addHeaderView(mHeadView);
-                    }
-                }
-            }
-        });*/
     }
 
     @Override
@@ -464,24 +414,4 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
-    /*@OnClick({R.id.rl_newfriends, R.id.rl_group, R.id.rl_publicservice, R.id.rl_me_item})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.rl_newfriends:
-                tvUnread.setVisibility(View.GONE);
-                Intent intent = new Intent(getActivity(), NewFriendListActivity.class);
-                startActivityForResult(intent, 20);
-                break;
-            case R.id.rl_group:
-                startActivity(new Intent(getActivity(), GroupListActivity.class));
-                break;
-            case R.id.rl_publicservice:
-                T.showShort(getActivity(), "PublicServiceActivity.class");
-                break;
-            case R.id.rl_me_item:
-                RongIM.getInstance().startPrivateChat(getActivity(), mId, mCacheName);
-                break;
-        }
-    }*/
 }

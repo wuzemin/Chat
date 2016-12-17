@@ -7,6 +7,10 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.min.smalltalk.Exception.CrashHandler;
+import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
+import com.min.smalltalk.db.GroupMemberDAOImpl;
+import com.min.smalltalk.db.GroupsDAOImpl;
 
 import io.rong.imageloader.cache.disc.naming.Md5FileNameGenerator;
 import io.rong.imageloader.core.DisplayImageOptions;
@@ -24,6 +28,11 @@ public class App extends Application {
     private static App sInstance;
     private static DisplayImageOptions options;
 
+    private GroupsDAOImpl groupsDAO;
+    private GroupMemberDAOImpl groupMemberDAO;
+    private FriendInfoDAOImpl friendInfoDAO;
+    private String userid;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -31,6 +40,11 @@ public class App extends Application {
         //在这里为应用设置异常处理，然后程序才能获取未处理的异常
         CrashHandler crashHandler=CrashHandler.getsInstance();
         crashHandler.init(this);
+
+        userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+
+        groupsDAO=new GroupsDAOImpl(this);
+        friendInfoDAO=new FriendInfoDAOImpl(this);
 
 
         /**
@@ -109,5 +123,12 @@ public class App extends Application {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        groupsDAO.delete(userid);
+        friendInfoDAO.delete(userid);
     }
 }

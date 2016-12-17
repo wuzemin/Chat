@@ -102,7 +102,10 @@ public class CreateGroupActivity extends BaseActivity {
                 if(uri!=null && !TextUtils.isEmpty(uri.getPath())){
                     selectUri=uri;
                     LoadDialog.show(mContext);
-                    initIamgePath();
+//                    imageFile=new File(selectUri.getPath());
+                    imageUrl=selectUri.toString();
+                    ImageLoader.getInstance().displayImage(imageUrl,imgGroupPortrait);
+                    LoadDialog.dismiss(mContext);
                 }
             }
 
@@ -113,21 +116,14 @@ public class CreateGroupActivity extends BaseActivity {
         });
     }
 
-    private void initIamgePath() {
-        imageFile=new File(selectUri.getPath());
-        imageUrl=selectUri.toString();
-        ImageLoader.getInstance().displayImage(imageUrl,imgGroupPortrait);
-        LoadDialog.dismiss(mContext);
-        //imageFile:  /storage/emulated/0/crop_file.jpg
-        //selectUri:  file:///storage/emulated/0/crop_file.jpg
-//        L.e("----------",imageFile+" "+selectUri+" "+imageUrl);
-    }
-
-
+    /**
+     * 群组
+     */
     private void createGroup() {
         final String groupName=etGroupName.getText().toString().trim();
         if(TextUtils.isEmpty(groupName) && imgGroupPortrait!=null){
             T.showShort(mContext,"群组图片和群组名称不能为空");
+            LoadDialog.dismiss(mContext);
             return;
         }
 
@@ -155,10 +151,12 @@ public class CreateGroupActivity extends BaseActivity {
                         groups.setGroupPortraitUri(imageUrl);
                         sqLiteDAO.save(groups);
                         Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
+                        LoadDialog.dismiss(mContext);
                         RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP,groupId,groupName);
                         finish();
                     }else {
-                        T.showShort(mContext,"请检查网络是否完好或重新创建一个群");
+                        LoadDialog.dismiss(mContext);
+                        T.showShort(mContext,"创建失败,请检查网络是否完好或重新创建一个群");
                     }
                 }
             });
@@ -175,6 +173,7 @@ public class CreateGroupActivity extends BaseActivity {
                 ShowPhotoDialog();
                 break;
             case R.id.btn_create_group:
+                LoadDialog.show(mContext);
                 createGroup();
                 break;
         }

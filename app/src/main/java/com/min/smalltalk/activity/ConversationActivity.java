@@ -118,7 +118,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
 
         title = intent.getData().getQueryParameter("title");
 
-        //私聊和群聊
+        //私聊---群聊
         /*if(mConversationType== Conversation.ConversationType.PRIVATE){
             ivTitleRight.setVisibility(View.VISIBLE);
             ivTitleRight.setImageResource(R.mipmap.icon1_menu);
@@ -181,7 +181,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         String name=sp.getString(Const.LOGIN_NICKNAME,"");
         String portrait;
         if(TextUtils.isEmpty(sp.getString(Const.LOGIN_PORTRAIT,""))){
-            portrait="http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg";
+            portrait="http://192.168.0.209/public/effect/assets/avatars/avatar.jpg";
         }else {
             portrait = sp.getString(Const.LOGIN_PORTRAIT, "");
         }
@@ -190,14 +190,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         String email=sp.getString(Const.LOGIN_EMAIL,"");
         list=friendInfoDAO.findAll(userId);
         list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
-//        list.addAll(list);
-
-        L.e("---------",list.size()+"");
-//        list.addAll(list);
-        /*list.add(new ConversationUser("swk", "孙悟空", "http://pic37.nipic.com/20140120/9885883_125934577000_2.jpg"));
-        list.add(new ConversationUser("ts", "唐僧", "http://news.mbalib.com/uploads/image/2015/0914/2015091442543ea2be07a6eb37e054bcc419daea.jpg"));
-        list.add(new ConversationUser("zbj", "猪八戒", "http://img5.mypsd.com.cn/20111121/Mypsd_67401_201111210849430010B.jpg"));
-        list.add(new ConversationUser("ss", "沙僧", "http://img3.redocn.com/20100623/20100623_25983d787b4f8608d140qd11qhbbtGNK.jpg"));*/
         RongIM.setUserInfoProvider(this, true);
     }
 
@@ -266,7 +258,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
      */
     private void enterActivity() {
 
-        String token = sp.getString("loginToken", "");//loginToken
+        String token = sp.getString(Const.LOGIN_TOKEN, "");//loginToken
 
         if (token.equals("default")) {
             L.e("ConversationActivity push", "push2");

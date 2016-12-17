@@ -86,8 +86,6 @@ public class PersonSettingActivity extends BaseActivity {
     RelativeLayout rlEmail;
     @BindView(R.id.activity_person_setting)
     LinearLayout activityPersonSetting;
-    /*@BindView(R.id.btn_enter)
-    Button btnEnter;*/
     @BindView(R.id.tv_address)
     TextView tvAddress;
     @BindView(R.id.rl_address)
@@ -139,11 +137,14 @@ public class PersonSettingActivity extends BaseActivity {
     private void initView() {
         sp = getSharedPreferences("config", MODE_PRIVATE);
         userId = sp.getString(Const.LOGIN_ID, "");
+        String iamge=sp.getString(Const.LOGIN_PORTRAIT,"");
         String name = sp.getString(Const.LOGIN_NICKNAME, "");
         phone = sp.getString(Const.LOGIN_PHONE, "");
         tvTitle.setText("个人信息设置");
         tvNickname.setText(name);
         tvPhone.setText(phone);
+
+        ImageLoader.getInstance().displayImage(iamge,ivMyHead);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
@@ -222,6 +223,7 @@ public class PersonSettingActivity extends BaseActivity {
                             sex1=string;
                             sex=0;
                         }
+                        dialogInterface.dismiss();
                         tvSex.setText(string);
                         changePerson(2);
                     }
@@ -234,7 +236,6 @@ public class PersonSettingActivity extends BaseActivity {
             case R.id.rl_QR_code:
                 Intent intent1=new Intent(mContext,ZxingActivity.class);
                 intent1.putExtra("Id",userId);
-//                intent1.putExtra("Head",bitmap);
                 startActivity(intent1);
                 break;
             case R.id.rl_email:
@@ -376,8 +377,8 @@ public class PersonSettingActivity extends BaseActivity {
                     }.getType();
                     Code<Integer> code = gson.fromJson(response, type);
                     if (code.getCode() == 200) {
-                        /*editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
-                        editor.commit();*/
+                        editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
+                        editor.commit();
                         T.showShort(mContext, "修改成功");
                     } else {
                         T.showShort(mContext, "修改失败");

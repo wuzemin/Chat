@@ -1,5 +1,6 @@
 package com.min.smalltalk.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,8 @@ public class GroupListActivity extends BaseActivity {
 
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
+    @BindView(R.id.iv_title_right)
+    ImageView ivTitleRight;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.rv_group_list)
@@ -56,6 +59,7 @@ public class GroupListActivity extends BaseActivity {
         sqLiteDAO= new GroupsDAOImpl(mContext);
 
         tvTitle.setText("我的群组");
+        ivTitleRight.setImageResource(R.mipmap.add_more);
         LoadDialog.show(mContext);
         initData();
     }
@@ -105,8 +109,15 @@ public class GroupListActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.iv_title_back)
-    public void onClick() {
-        GroupListActivity.this.finish();
+    @OnClick({R.id.iv_title_back, R.id.iv_title_right})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.iv_title_back:
+                GroupListActivity.this.finish();
+                break;
+            case R.id.iv_title_right:
+                startActivity(new Intent(mContext,SelectFriendsActivity.class));
+                break;
+        }
     }
 }

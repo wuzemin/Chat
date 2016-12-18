@@ -137,9 +137,10 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<Integer>>() {
-                }.getType();
-                Code<Integer> code = gson.fromJson(response, type);
+//                Type type = new TypeToken<Code<Integer>>() {}.getType();
+//                Code<Integer> code = gson.fromJson(response, type);
+                Type type = new TypeToken<Code<FriendInfo>>() {}.getType();
+                Code<FriendInfo> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     switch (status){
                         case 0:
@@ -148,15 +149,16 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                             finish();
                             break;
                         case 1:
-                            FriendInfo friendInfo=new FriendInfo();
+                            FriendInfo friendInfo=null;
+                            friendInfo=code.getMsg();
                             friendInfo.setMyId(userid);
-                            /*friendInfo.setUserId();
-                            friendInfo.setName();
-                            friendInfo.setPortraitUri();
-                            friendInfo.setDisplayName();
-                            friendInfo.setPhone();
-                            friendInfo.setEmail();*/
-//                            friendInfoDAO.save();
+                            friendInfo.setUserId(friendInfo.getUserId());
+                            friendInfo.setName(friendInfo.getName());
+                            friendInfo.setPortraitUri(friendInfo.getPortraitUri());
+                            friendInfo.setDisplayName(friendInfo.getDisplayName());
+                            friendInfo.setPhone(friendInfo.getPhone());
+                            friendInfo.setEmail(friendInfo.getEmail());
+                            friendInfoDAO.save(friendInfo);
                             T.showShort(mContext, "你们现在是好友了");
                             LoadDialog.dismiss(mContext);
                             finish();

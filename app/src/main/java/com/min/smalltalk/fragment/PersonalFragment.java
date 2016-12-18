@@ -108,7 +108,7 @@ public class PersonalFragment extends Fragment {
             case R.id.civ_icon:
                 break;
             case R.id.btn_exit:
-                AlertDialog dialog=new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(getActivity())
                         .setTitle("退出")
                         .setPositiveButton("确定退出", new DialogInterface.OnClickListener() {
                             @Override

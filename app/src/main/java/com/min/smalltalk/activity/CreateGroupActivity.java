@@ -139,7 +139,6 @@ public class CreateGroupActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(String response, int id) {
-                    T.showShort(mContext,"创建成功");
                     Gson gson=new Gson();
                     Type type=new TypeToken<Code<GroupId>>(){}.getType();
                     Code<GroupId> code = gson.fromJson(response,type);
@@ -153,6 +152,7 @@ public class CreateGroupActivity extends BaseActivity {
                         Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
                         LoadDialog.dismiss(mContext);
                         RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP,groupId,groupName);
+                        T.showShort(mContext,"创建成功");
                         finish();
                     }else {
                         LoadDialog.dismiss(mContext);

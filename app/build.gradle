@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'org.greenrobot.greendao'
+//apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 24
@@ -39,11 +39,11 @@ android {
         }*//*
     }*/
 }
-greendao{
+/*greendao{
     schemaVersion 1
     daoPackage 'com.min.smalltalk.db'
     targetGenDir 'src/main/java'
-}
+}*/
 
 repositories {
     flatDir {
@@ -70,7 +70,7 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.android.support:support-v4:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile 'org.greenrobot:greendao:3.2.0'
-    compile 'org.greenrobot:greendao-generator:3.2.0'
     compile project(':libzxing')
+//    compile 'org.greenrobot:greendao:3.2.0'
+//    compile 'org.greenrobot:greendao-generator:3.2.0'
 }

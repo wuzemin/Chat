@@ -112,7 +112,6 @@ public class MyGridView extends BaseAdapter {
                     intent.putExtra("isAddGroupMember", true);
                     intent.putExtra("GroupId", groups.getGroupId());
                     context.startActivity(intent);
-
                 }
             });
         } else { // 普通成员

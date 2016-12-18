@@ -138,13 +138,14 @@ public class SearchFriendActivity extends BaseActivity {
                                 return;
                             }
                             final EditText editText = new EditText(mContext);
-                            AlertDialog dialog = new AlertDialog.Builder(mContext)
+                            new AlertDialog.Builder(mContext)
                                     .setTitle("验证信息")
                                     .setView(editText)
                                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             String provingMessage = editText.getText().toString();
+                                            LoadDialog.show(mContext);
                                             toProving(provingMessage);
                                         }
                                     })
@@ -184,15 +185,19 @@ public class SearchFriendActivity extends BaseActivity {
                 switch (code) {
                     case 200:
                         T.showShort(mContext, "请求成功，请耐心等待对方审核");
+                        LoadDialog.dismiss(mContext);
                         break;
                     case 11:
                         T.showShort(mContext, "你们已是好友");
+                        LoadDialog.dismiss(mContext);
                         break;
                     case 0:
                         T.showShort(mContext,"好友添加失败");
+                        LoadDialog.dismiss(mContext);
                         break;
                     default:
                         T.showShort(mContext, "error");
+                        LoadDialog.dismiss(mContext);
                         break;
                 }
             }

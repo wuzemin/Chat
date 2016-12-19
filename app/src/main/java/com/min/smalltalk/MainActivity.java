@@ -337,4 +337,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             });
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//        Fragment fragment=getSupportFragmentManager().getFragments().get(requestCode);
+//        fragment.onActivityResult(requestCode,resultCode,data);
+    }
 }

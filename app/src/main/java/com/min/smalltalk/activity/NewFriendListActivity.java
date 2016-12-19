@@ -141,38 +141,37 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
 //                Code<Integer> code = gson.fromJson(response, type);
                 Type type = new TypeToken<Code<FriendInfo>>() {}.getType();
                 Code<FriendInfo> code = gson.fromJson(response, type);
-                if (code.getCode() == 200) {
-                    switch (status){
-                        case 0:
-                            T.showShort(mContext, "拒绝成功");
-                            LoadDialog.dismiss(mContext);
-                            finish();
-                            break;
-                        case 1:
-                            FriendInfo friendInfo=code.getMsg();
-                            friendInfo.setMyId(userid);
-                            friendInfo.setUserId(friendInfo.getUserId());
-                            friendInfo.setName(friendInfo.getName());
-                            friendInfo.setPortraitUri(friendInfo.getPortraitUri());
-                            friendInfo.setDisplayName(friendInfo.getDisplayName());
-                            friendInfo.setPhone(friendInfo.getPhone());
-                            friendInfo.setEmail(friendInfo.getEmail());
-                            friendInfoDAO.save(friendInfo);
-                            T.showShort(mContext, "你们现在是好友了");
-                            LoadDialog.dismiss(mContext);
-                            finish();
-                            break;
-                        case 2:
-                            T.showShort(mContext, "拒绝成功");
-                            LoadDialog.dismiss(mContext);
-                            finish();
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    T.showShort(mContext, "请求失败");
-                    LoadDialog.dismiss(mContext);
+                int codeStatus=code.getCode();
+                switch (codeStatus){
+                    case 1000:
+                        T.showShort(mContext, "拒绝成功");
+                        LoadDialog.dismiss(mContext);
+                        finish();
+                        break;
+                    case 200:
+                        /*FriendInfo friendInfo=code.getMsg();
+                        friendInfo.setMyId(userid);
+                        friendInfo.setUserId(friendInfo.getUserId());
+                        friendInfo.setName(friendInfo.getName());
+                        friendInfo.setPortraitUri(friendInfo.getPortraitUri());
+                        friendInfo.setDisplayName(friendInfo.getDisplayName());
+                        friendInfo.setPhone(friendInfo.getPhone());
+                        friendInfo.setEmail(friendInfo.getEmail());
+                        friendInfoDAO.save(friendInfo);*/
+                        T.showShort(mContext, "你们现在是好友了");
+                        LoadDialog.dismiss(mContext);
+//                        finish();
+                        break;
+                    case 2000:
+                        T.showShort(mContext, "忽略成功");
+                        LoadDialog.dismiss(mContext);
+                        finish();
+                        break;
+                    default:
+                        T.showShort(mContext, "请求失败");
+                        LoadDialog.dismiss(mContext);
+                        break;
+
                 }
             }
         });

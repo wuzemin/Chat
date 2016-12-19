@@ -16,6 +16,7 @@ public class Const {
     public static final String LOGIN_PASSWORD ="password";
     public static final String LOGIN_SEX ="sex";
     public static final String LOGIN_BIRTHDAY ="birthday";
+    public static final String LOGIN_AGE ="age";
     public static final String LOGIN_ADDRESS ="address";
     public static final String LOGIN_EMAIL="email";
 

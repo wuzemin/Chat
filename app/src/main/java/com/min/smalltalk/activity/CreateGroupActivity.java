@@ -102,7 +102,7 @@ public class CreateGroupActivity extends BaseActivity {
                 if(uri!=null && !TextUtils.isEmpty(uri.getPath())){
                     selectUri=uri;
                     LoadDialog.show(mContext);
-//                    imageFile=new File(selectUri.getPath());
+                    imageFile=new File(selectUri.getPath());
                     imageUrl=selectUri.toString();
                     ImageLoader.getInstance().displayImage(imageUrl,imgGroupPortrait);
                     LoadDialog.dismiss(mContext);

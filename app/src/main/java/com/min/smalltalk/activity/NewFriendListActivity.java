@@ -149,8 +149,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                             finish();
                             break;
                         case 1:
-                            FriendInfo friendInfo=null;
-                            friendInfo=code.getMsg();
+                            FriendInfo friendInfo=code.getMsg();
                             friendInfo.setMyId(userid);
                             friendInfo.setUserId(friendInfo.getUserId());
                             friendInfo.setName(friendInfo.getName());

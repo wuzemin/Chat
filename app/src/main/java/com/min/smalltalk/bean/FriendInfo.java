@@ -4,13 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-
 /**
  * Created by Min on 2016/11/26.
  */
-@Entity
 public class FriendInfo implements Parcelable{
     private String myId;
     private String userId;
@@ -105,7 +101,6 @@ public class FriendInfo implements Parcelable{
         this.timestamp = timestamp;
     }
 
-    @Generated(hash = 1133244936)
     public FriendInfo(String myId, String userId, String name, String portraitUri, String displayName, String status,
             Long timestamp, String letters, String phone, String email) {
         this.myId = myId;

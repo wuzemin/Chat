@@ -32,6 +32,7 @@
     <string name="email">邮箱</string>
     <string name="send_message">发送信息</string>
     <string name="personal">个人信息</string>
+    <string name="myself">我</string>
     <string name="group_activity_name">群活动名称</string>
     <string name="group_activity_time">群活动时间</string>
     <string name="group_activity_place">群活动地点</string>

@@ -505,7 +505,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             case R.id.ll_my_nickname:  //修改群个人昵称
                 editText=new EditText(mContext);
                 AlertDialog dialog3=new AlertDialog.Builder(mContext)
-                        .setTitle("退出群")
+                        .setTitle("修改个人昵称")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override

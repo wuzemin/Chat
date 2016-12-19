@@ -3,13 +3,10 @@ package com.min.smalltalk.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Min on 2016/11/25.
  */
-@Entity
 public class GroupMember implements Parcelable{
     /** Not-null value. */
     private String groupId;
@@ -57,7 +54,6 @@ public class GroupMember implements Parcelable{
         role = in.readString();
     }
 
-    @Generated(hash = 214954380)
     public GroupMember(String groupId, String userId, String userName, String userPortraitUri, String displayName,
             String nameSpelling, String displayNameSpelling, String groupName, String groupNameSpelling,
             String groupPortraitUri, String phone, String email, String role) {
@@ -76,7 +72,6 @@ public class GroupMember implements Parcelable{
         this.role = role;
     }
 
-    @Generated(hash = 1668463032)
     public GroupMember() {
     }
 

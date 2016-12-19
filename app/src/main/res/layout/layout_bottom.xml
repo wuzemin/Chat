@@ -120,7 +120,7 @@
                     android:layout_below="@id/iv_dynamic"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="3dp"
-                    android:text="@string/dynamic"
+                    android:text="@string/myself"
                     android:textColor="#abadbb"
                     android:textSize="12sp" />
 

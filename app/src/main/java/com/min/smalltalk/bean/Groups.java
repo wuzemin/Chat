@@ -3,13 +3,9 @@ package com.min.smalltalk.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-
 /**
  * Created by Min on 2016/11/30.
  */
-@Entity
 public class Groups implements Parcelable{
     private String userId;
     private String groupId;
@@ -36,7 +32,6 @@ public class Groups implements Parcelable{
         this.role=role;
     }
 
-    @Generated(hash = 1633572121)
     public Groups(String userId, String groupId, String groupName, String groupPortraitUri,
             String displayName, String role, String bulletin, String timestamp,
             String nameSpelling) {

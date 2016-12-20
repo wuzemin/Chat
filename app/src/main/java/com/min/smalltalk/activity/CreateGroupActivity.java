@@ -104,6 +104,7 @@ public class CreateGroupActivity extends BaseActivity {
                     LoadDialog.show(mContext);
                     imageFile=new File(selectUri.getPath());
                     imageUrl=selectUri.toString();
+                    ImageLoader.getInstance().clearDiskCache();
                     ImageLoader.getInstance().displayImage(imageUrl,imgGroupPortrait);
                     LoadDialog.dismiss(mContext);
                 }

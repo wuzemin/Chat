@@ -48,7 +48,6 @@ public class PhotoUtils {
         try {
             //每次选择图片把之前的图片删除
             clearCropFile(buildUri(activity));
-
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, buildUri(activity));
@@ -71,7 +70,6 @@ public class PhotoUtils {
         try {
             //每次选择图片吧之前的图片删除
             clearCropFile(buildUri(activity));
-
             Intent intent = new Intent(Intent.ACTION_PICK, null);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
 
@@ -126,8 +124,8 @@ public class PhotoUtils {
         cropIntent.putExtra("outputY",200);
         cropIntent.putExtra("return-data",false);
         cropIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        Uri cropuri=buildUri(activity);
-        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT,cropuri);
+        Uri cropUri=buildUri(activity);
+        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT,cropUri);
         if(!isIntentAvailable(activity,cropIntent)){
             return false;
         }else {

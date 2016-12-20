@@ -110,7 +110,7 @@ public class CameraUtils {
         i.setDataAndType(imgUri, "image/*");
         i.putExtra("scale", true);
         i.putExtra("aspectX", 4);
-        i.putExtra("aspectY", 3);
+        i.putExtra("aspectY", 4);
         i.putExtra(MediaStore.EXTRA_OUTPUT, CameraUtils.imgUri);//裁剪后重新保存
         fragment.startActivityForResult(i, PHOTO_CROP);
     }

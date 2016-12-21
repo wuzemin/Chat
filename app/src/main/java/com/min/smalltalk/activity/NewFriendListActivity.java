@@ -160,7 +160,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                         friendInfoDAO.save(friendInfo);*/
                         T.showShort(mContext, "你们现在是好友了");
                         LoadDialog.dismiss(mContext);
-//                        finish();
+                        finish();
                         break;
                     case 2000:
                         T.showShort(mContext, "忽略成功");

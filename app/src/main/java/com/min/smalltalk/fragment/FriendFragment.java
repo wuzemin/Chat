@@ -221,6 +221,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData2() {
+        friendInfoDAO.delete(mId);
         mSourceFriendList = friendInfoDAO.findAll(mId);
 //        if(mSourceFriendList.size()>0){
         //实例化汉字转拼音类
@@ -228,12 +229,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 .getInstance();
         mPinyinComparator = PinyinComparator.getInstance();
         initList();
-        /*}else {
-            mFriendListAdapter = new FriendListAdapter(getActivity(), mFriendList);
-            mListView.setAdapter(mFriendListAdapter);
-            tvShowNoFriend.setVisibility(View.VISIBLE);
-//            T.showShort(getActivity(),"您暂没好友，请点击有上角按钮来添加好友吧！");
-        }*/
 
     }
 

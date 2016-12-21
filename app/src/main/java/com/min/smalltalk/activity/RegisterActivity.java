@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.AMUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.ClearWriteEditText;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
@@ -191,6 +192,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext,"请输入验证码");
                     etCode.requestFocus();
                 }
+                LoadDialog.show(mContext);
                 initRegister();
                 break;
             default:
@@ -217,10 +219,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     intent.putExtra("phone",phone);
                     intent.putExtra("password",password);
                     setResult(RESULT_OK,intent);
+                    LoadDialog.dismiss(mContext);
                     RegisterActivity.this.finish();
                 }else if(code1==0){
+                    LoadDialog.dismiss(mContext);
                     T.showShort(mContext,"一个号码只能注册一个用户哦");
                 }else if(code1==1000){
+                    LoadDialog.dismiss(mContext);
                     T.showShort(mContext,"数据库插入失败或连接融云失败");
                 }
             }

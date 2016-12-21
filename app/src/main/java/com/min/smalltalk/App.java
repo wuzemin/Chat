@@ -6,11 +6,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.dumpapp.DumperPlugin;
+import com.facebook.stetho.inspector.database.DefaultDatabaseConnectionProvider;
+import com.facebook.stetho.inspector.protocol.ChromeDevtoolsDomain;
 import com.min.smalltalk.Exception.CrashHandler;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.db.GroupMemberDAOImpl;
 import com.min.smalltalk.db.GroupsDAOImpl;
+import com.min.smalltalk.wedget.RongDatabaseDriver;
+import com.min.smalltalk.wedget.RongDatabaseFilesProvider;
 
 import io.rong.imageloader.cache.disc.naming.Md5FileNameGenerator;
 import io.rong.imageloader.core.DisplayImageOptions;
@@ -18,6 +24,7 @@ import io.rong.imageloader.core.ImageLoader;
 import io.rong.imageloader.core.ImageLoaderConfiguration;
 import io.rong.imageloader.core.display.FadeInBitmapDisplayer;
 import io.rong.imkit.RongIM;
+import io.rong.imkit.widget.provider.RealTimeLocationMessageProvider;
 import io.rong.imlib.ipc.RongExceptionHandler;
 
 /**
@@ -37,6 +44,20 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance=this;
+        //
+        Stetho.initialize(new Stetho.Initializer(this) {
+            @Override
+            protected Iterable<DumperPlugin> getDumperPlugins() {
+                return new Stetho.DefaultDumperPluginsBuilder(App.this).finish();
+            }
+
+            @Override
+            protected Iterable<ChromeDevtoolsDomain> getInspectorModules() {
+                Stetho.DefaultInspectorModulesBuilder defaultInspectorModulesBuilder = new Stetho.DefaultInspectorModulesBuilder(App.this);
+                defaultInspectorModulesBuilder.provideDatabaseDriver(new RongDatabaseDriver(App.this, new RongDatabaseFilesProvider(App.this), new DefaultDatabaseConnectionProvider()));
+                return defaultInspectorModulesBuilder.finish();
+            }
+        });
         //在这里为应用设置异常处理，然后程序才能获取未处理的异常
         CrashHandler crashHandler=CrashHandler.getsInstance();
         crashHandler.init(this);
@@ -69,6 +90,12 @@ public class App extends Application {
             AppContext.init(this);
             SharedPreferencesContext.init(this);
             Thread.setDefaultUncaughtExceptionHandler(new RongExceptionHandler(this));
+
+            try {
+                RongIM.registerMessageTemplate(new RealTimeLocationMessageProvider());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             openSealDBIfHasCachedToken();
 

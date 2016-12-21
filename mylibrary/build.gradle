@@ -28,7 +28,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile files('libs/Msc.jar')
     compile files('libs/MobCommons-2016.0714.1402.jar')
     compile files('libs/MobTools-2016.0714.1402.jar')
     compile 'com.jakewharton:butterknife:8.4.0'

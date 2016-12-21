@@ -11,11 +11,16 @@ import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
 import com.min.smalltalk.activity.NewFriendListActivity;
 import com.min.smalltalk.bean.ContactNotificationMessageData;
+import com.min.smalltalk.message.module.TalkExtensionModule;
 import com.min.smalltalk.server.broadcast.BroadcastManager;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
+import io.rong.imkit.DefaultExtensionModule;
+import io.rong.imkit.IExtensionModule;
+import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.model.UIConversation;
 import io.rong.imlib.RongIMClient;
@@ -105,6 +110,21 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
 
         RongIM.setOnReceiveMessageListener(this);
         RongIM.setConnectionStatusListener(this);
+
+        List<IExtensionModule> moduleList = RongExtensionManager.getInstance().getExtensionModules();
+        IExtensionModule defaultModule = null;
+        if (moduleList != null) {
+            for (IExtensionModule module : moduleList) {
+                if (module instanceof DefaultExtensionModule) {
+                    defaultModule = module;
+                    break;
+                }
+            }
+            if (defaultModule != null) {
+                RongExtensionManager.getInstance().unregisterExtensionModule(defaultModule);
+                RongExtensionManager.getInstance().registerExtensionModule(new TalkExtensionModule());
+            }
+        }
 
         /*InputProvider.ExtendProvider[] singleProvider = {
                 new ImageInputProvider(RongContext.getInstance()),

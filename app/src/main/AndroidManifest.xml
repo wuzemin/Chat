@@ -21,8 +21,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <!-- 发送短信 -->
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
@@ -115,10 +114,11 @@
         <activity android:name=".activity.GroupAddFlexibleActivity" />
         <activity android:name=".activity.FlexibleDetailActivity" />
         <activity android:name=".activity.PersonSettingActivity" />
-        <activity android:name=".activity.MyPhoneActivity"></activity>
-        <activity android:name=".activity.SelectPicPopupWindow"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
+        <activity android:name=".activity.MyPhoneActivity" />
+        <activity
+            android:name=".activity.SelectPicPopupWindow"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".activity.IatSettings"></activity>
     </application>
 
 </manifest>

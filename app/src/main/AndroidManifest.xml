@@ -117,8 +117,9 @@
         <activity android:name=".activity.MyPhoneActivity" />
         <activity
             android:name=".activity.SelectPicPopupWindow"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
-        <activity android:name=".activity.IatSettings"></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".activity.IatSettings" />
+        <activity android:name=".activity.AMAPLocationActivity"></activity>
     </application>
 
 </manifest>

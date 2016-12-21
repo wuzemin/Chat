@@ -9,6 +9,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
+import com.min.smalltalk.activity.AMAPLocationActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
 import com.min.smalltalk.bean.ContactNotificationMessageData;
 import com.min.smalltalk.message.module.TalkExtensionModule;
@@ -39,13 +40,14 @@ import io.rong.message.ImageMessage;
 
 public class AppContext implements RongIMClient.ConnectionStatusListener,
          RongIM.ConversationBehaviorListener, RongIM.ConversationListBehaviorListener
-        ,RongIMClient.OnReceiveMessageListener{
+        ,RongIMClient.OnReceiveMessageListener, RongIM.LocationProvider {
 
     public static final String UPDATE_FRIEND = "update_friend";
     public static final String UPDATE_RED_DOT = "update_red_dot";
     private Context mContext;
 
     private static AppContext mRongCloudInstance;
+    private RongIM.LocationProvider.LocationCallback mLastLocationCallback;
 
     private static ArrayList<Activity> mActivities;
 
@@ -91,6 +93,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
 //        RongIM.setUserInfoProvider(this,true);  //用户信息提供者
         RongIM.setConversationListBehaviorListener(this);  //会话列表界面
 //        RongIM.setGroupInfoProvider(this, true);  //群组用户提供者
+        RongIM.setLocationProvider(this);//设置地理位置提供者,不用位置的同学可以注掉此行代码
         setInputProvider();
 //        setUserInfoEngineListener();
         setReadReceiptConversationType();
@@ -318,5 +321,21 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
             Log.e("imageMessage", imageMessage.getRemoteUri().toString());
         }
         return false;
+    }
+
+    @Override
+    public void onStartLocation(Context context, LocationCallback locationCallback) {
+        AppContext.getInstance().setLastLocationCallback(locationCallback);
+
+        Intent intent = new Intent(context, AMAPLocationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+    public RongIM.LocationProvider.LocationCallback getLastLocationCallback() {
+        return mLastLocationCallback;
+    }
+
+    public void setLastLocationCallback(RongIM.LocationProvider.LocationCallback lastLocationCallback) {
+        this.mLastLocationCallback = lastLocationCallback;
     }
 }

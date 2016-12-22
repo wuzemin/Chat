@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 
 import com.min.smalltalk.R;
 
@@ -32,7 +33,8 @@ public class LocationPlugin implements IPluginModule {
 
     @Override
     public Drawable obtainDrawable(Context context) {
-        return context.getResources().getDrawable(R.mipmap.ic_launcher);
+//        return context.getResources().getDrawable(R.mipmap.ic_launcher);
+        return ContextCompat.getDrawable(context,R.mipmap.location);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class MyStartRecognizePlugin implements IPluginModule {
 
     @Override
     public Drawable obtainDrawable(Context context) {
-        return ContextCompat.getDrawable(context, R.mipmap.ic_launcher);
+        return ContextCompat.getDrawable(context, R.mipmap. volume_0);
     }
 
     @Override

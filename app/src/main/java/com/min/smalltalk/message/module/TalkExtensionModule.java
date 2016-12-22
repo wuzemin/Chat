@@ -13,20 +13,20 @@ import io.rong.imlib.model.Conversation;
  */
 
 public class TalkExtensionModule extends DefaultExtensionModule {
-    private MyStartRecognizePlugin myStartRecognizePlugin;
-    private MyEndRecognizePlugin myEndRecognizePlugin;
-    private LocationPlugin locationPlugin;
+//    private MyStartRecognizePlugin myStartRecognizePlugin;
+//    private MyEndRecognizePlugin myEndRecognizePlugin;
+//    private LocationPlugin locationPlugin;
 
     @Override
     public void onAttachedToExtension(RongExtension extension) {
 //        recognize = new RecognizePlugin();
-        myStartRecognizePlugin=new MyStartRecognizePlugin();
-        myEndRecognizePlugin=new MyEndRecognizePlugin();
-        locationPlugin = new LocationPlugin();
+//        myStartRecognizePlugin=new MyStartRecognizePlugin();
+//        myEndRecognizePlugin=new MyEndRecognizePlugin();
+//        locationPlugin = new LocationPlugin();
 //        recognize.init(extension.getContext());
-        myStartRecognizePlugin.init(extension.getContext());
-        myEndRecognizePlugin.init(extension.getContext());
-        locationPlugin.init(extension.getContext());
+//        myStartRecognizePlugin.init(extension.getContext());
+//        myEndRecognizePlugin.init(extension.getContext());
+//        locationPlugin.init(extension.getContext());
         super.onAttachedToExtension(extension);
     }
 
@@ -39,9 +39,9 @@ public class TalkExtensionModule extends DefaultExtensionModule {
     public List<IPluginModule> getPluginModules(Conversation.ConversationType conversationType) {
         List<IPluginModule> pluginModules =  super.getPluginModules(conversationType);
 //        pluginModules.add(recognize);
-        pluginModules.add(myStartRecognizePlugin);
-        pluginModules.add(myEndRecognizePlugin);
-        pluginModules.add(locationPlugin);
+//        pluginModules.add(myStartRecognizePlugin);
+//        pluginModules.add(myEndRecognizePlugin);
+//        pluginModules.add(locationPlugin);
         return pluginModules;
     }
 

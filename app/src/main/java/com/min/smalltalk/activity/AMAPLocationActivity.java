@@ -1,6 +1,35 @@
 package com.min.smalltalk.activity;
 
-/*
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.min.smalltalk.AppContext;
+import com.min.smalltalk.R;
+import com.min.smalltalk.base.BaseActivity;
+import com.min.smalltalk.bean.LocationEntity;
+import com.min.smalltalk.listener.OnLocationGetListener;
+import com.min.smalltalk.wedget.location.LocationTask;
+import com.min.smalltalk.wedget.location.RegeocodeTask;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.rong.message.LocationMessage;
+
 public class AMAPLocationActivity extends BaseActivity implements OnLocationGetListener {
 
     @BindView(R.id.map)
@@ -143,4 +172,3 @@ public class AMAPLocationActivity extends BaseActivity implements OnLocationGetL
         mapView.onSaveInstanceState(outState);
     }
 }
-*/

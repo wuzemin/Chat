@@ -7,6 +7,11 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
+    <!--<android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/id_swipe_ly"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >-->
+
     <EditText
         android:id="@+id/et_search"
         android:layout_width="match_parent"
@@ -33,19 +38,18 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <!--<LinearLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"-->
-            android:orientation="vertical">
-            <!--<include layout="@layout/item_friend_list_header"/>-->
+            android:layout_height="match_parent" >
+
             <ListView
                 android:id="@+id/lv_friends"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:divider="@null"/>
-        <!--</LinearLayout>-->
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/tv_group_dialog"

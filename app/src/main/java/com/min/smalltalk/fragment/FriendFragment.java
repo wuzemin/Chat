@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +54,7 @@ import butterknife.ButterKnife;
 import io.rong.imageloader.core.ImageLoader;
 import okhttp3.Call;
 
-public class FriendFragment extends Fragment implements View.OnClickListener {
+public class FriendFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.et_search)
     EditText etSearch;
@@ -63,6 +66,9 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     SideBar sb;
     @BindView(R.id.tv_show_no_friend)
     TextView tvShowNoFriend;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
+
 
     private PinyinComparator mPinyinComparator;
 
@@ -94,6 +100,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     private SelectableRoundedImageView sivMe;
 
     private static final int CLICK_CONTACT_FRAGMENT_FRIEND = 2;
+    private static final int REFRESH_COMPLETE=0;
 
     private FriendInfoDAOImpl friendInfoDAO;
 
@@ -107,19 +114,33 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         mFriendList = new ArrayList<>();
         mFilteredFriendList = new ArrayList<>();
         initView();
+        initText();
         friendInfoDAO.delete(mId);
         initData();
         refreshUIListener();
         return view;
     }
 
-
-    private void initView() {
+    private void initText(){
         sb.setTextView(tvGroupDialog);
         sp = getActivity().getSharedPreferences("config", Context.MODE_PRIVATE);
         mId = sp.getString(Const.LOGIN_ID, "");
         mCacheName = sp.getString(Const.LOGIN_NICKNAME, "");
         header = sp.getString(Const.LOGIN_PORTRAIT, "");
+
+        tvMe.setText(mCacheName);
+        if (!TextUtils.isEmpty(header)) {
+            ImageLoader.getInstance().displayImage(header, sivMe);
+        } else {
+            sivMe.setImageResource(R.mipmap.default_portrait);
+        }
+    }
+
+
+    private void initView() {
+        //刷新
+        mSwipeRefresh.setOnRefreshListener(this);
+
         //自己信息
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         mHeadView = inflater.inflate(R.layout.item_friend_list_header, null);
@@ -130,13 +151,6 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
         rlMeItem = (RelativeLayout) mHeadView.findViewById(R.id.rl_me_item);
         sivMe = (SelectableRoundedImageView) mHeadView.findViewById(R.id.siv_me);
         tvMe = (TextView) mHeadView.findViewById(R.id.tv_me);
-
-        tvMe.setText(mCacheName);
-        if (!TextUtils.isEmpty(header)) {
-            ImageLoader.getInstance().displayImage(header, sivMe);
-        } else {
-            sivMe.setImageResource(R.mipmap.default_portrait);
-        }
 
         mListView.addHeaderView(mHeadView);
 
@@ -221,8 +235,10 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData2() {
-        friendInfoDAO.delete(mId);
+        mSourceFriendList.clear();
+        mFriendList.clear();
         mSourceFriendList = friendInfoDAO.findAll(mId);
+//        mFriendListAdapter.notifyDataSetChanged();
 //        if(mSourceFriendList.size()>0){
         //实例化汉字转拼音类
         mCharacterParser = CharacterParser
@@ -235,6 +251,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
     private void initList() {
         if (mSourceFriendList != null && mSourceFriendList.size() > 0) {
             mFriendList = labelSourceFriendList(mSourceFriendList); //过滤数据为有字母的字段  现在有字母 别的数据没有
+            tvShowNoFriend.setVisibility(View.GONE);
         } else {
             tvShowNoFriend.setVisibility(View.VISIBLE);
         }
@@ -409,4 +426,28 @@ public class FriendFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
+    @Override
+    public void onRefresh() {
+        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
+    }
+
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case REFRESH_COMPLETE:
+                    mSourceFriendList.clear();
+                    mFriendList.clear();
+//                    initView();
+                    initText();
+                    friendInfoDAO.delete(mId);
+                    initData();
+                    /*mSourceFriendList=friendInfoDAO.findAll(mId);
+                    initList();
+                    mFriendListAdapter.notifyDataSetChanged();*/
+                    mSwipeRefresh.setRefreshing(false);
+            }
+        }
+    };
 }

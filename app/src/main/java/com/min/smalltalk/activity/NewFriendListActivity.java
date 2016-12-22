@@ -149,15 +149,21 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
                         finish();
                         break;
                     case 200:
-                        /*FriendInfo friendInfo=code.getMsg();
+                        String friendId=code.getMsg().getUserId();
+                        String friendName=code.getMsg().getName();
+                        String friendPortraitUri=HttpUtils.IMAGE_RUL+code.getMsg().getPortraitUri();
+                        String friendDisplayName=code.getMsg().getDisplayName();
+                        String friendPhone=code.getMsg().getPhone();
+                        String friendEmail=code.getMsg().getEmail();
+                        FriendInfo friendInfo=code.getMsg();
                         friendInfo.setMyId(userid);
-                        friendInfo.setUserId(friendInfo.getUserId());
-                        friendInfo.setName(friendInfo.getName());
-                        friendInfo.setPortraitUri(friendInfo.getPortraitUri());
-                        friendInfo.setDisplayName(friendInfo.getDisplayName());
-                        friendInfo.setPhone(friendInfo.getPhone());
-                        friendInfo.setEmail(friendInfo.getEmail());
-                        friendInfoDAO.save(friendInfo);*/
+                        friendInfo.setUserId(friendId);
+                        friendInfo.setName(friendName);
+                        friendInfo.setPortraitUri(friendPortraitUri);
+                        friendInfo.setDisplayName(friendDisplayName);
+                        friendInfo.setPhone(friendPhone);
+                        friendInfo.setEmail(friendEmail);
+                        friendInfoDAO.save(friendInfo);
                         T.showShort(mContext, "你们现在是好友了");
                         LoadDialog.dismiss(mContext);
                         finish();

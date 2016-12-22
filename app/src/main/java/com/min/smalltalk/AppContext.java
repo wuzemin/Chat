@@ -32,6 +32,7 @@ import io.rong.imlib.model.UserInfo;
 import io.rong.message.ContactNotificationMessage;
 import io.rong.message.GroupNotificationMessage;
 import io.rong.message.ImageMessage;
+import io.rong.message.LocationMessage;
 
 /**
  * Created by Min on 2016/11/24.
@@ -128,41 +129,6 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
                 RongExtensionManager.getInstance().registerExtensionModule(new TalkExtensionModule());
             }
         }
-
-        /*InputProvider.ExtendProvider[] singleProvider = {
-                new ImageInputProvider(RongContext.getInstance()),
-                new FileInputProvider(RongContext.getInstance())//文件消息
-        };
-
-        InputProvider.ExtendProvider[] muiltiProvider = {
-                new ImageInputProvider(RongContext.getInstance()),
-                new LocationInputProvider(RongContext.getInstance()),//地理位置
-                new FileInputProvider(RongContext.getInstance()),//文件消息
-                new CameraInputProvider(RongContext.getInstance()), //相机
-                new ContactsProvider(RongContext.getInstance()),  //自定义
-                new SpeechProvider(RongContext.getInstance()),  //语音
-                new TestProvider(RongContext.getInstance()),  //开始录音
-                new TestEndProvider(RongContext.getInstance()) //结束录音
-        };
-
-        InputProvider.ExtendProvider[] provider= {
-                new ImageInputProvider(RongContext.getInstance()), //图片
-                new CameraInputProvider(RongContext.getInstance()), //相机
-                new FileInputProvider(RongContext.getInstance()),   //文件
-                new LocationInputProvider(RongContext.getInstance()), //位置
-                new ContactsProvider(RongContext.getInstance()),  //自定义
-                new SpeechProvider(RongContext.getInstance()),  //语音
-                new TestProvider(RongContext.getInstance()),  //开始录音
-                new TestEndProvider(RongContext.getInstance()) //结束录音
-        };
-
-        RongIM.resetInputExtensionProvider(Conversation.ConversationType.PRIVATE, muiltiProvider);
-        RongIM.resetInputExtensionProvider(Conversation.ConversationType.DISCUSSION, muiltiProvider);
-        RongIM.resetInputExtensionProvider(Conversation.ConversationType.CUSTOMER_SERVICE, muiltiProvider);
-        RongIM.resetInputExtensionProvider(Conversation.ConversationType.GROUP, muiltiProvider);
-        RongIM.resetInputExtensionProvider(Conversation.ConversationType.CHATROOM, muiltiProvider);*/
-//        RongIM.resetInputExtensionProvider(Conversation.ConversationType.PRIVATE,provider);
-//        RongIM.resetInputExtensionProvider(Conversation.ConversationType.GROUP,provider);
     }
 
     @Override
@@ -192,6 +158,12 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         /**
          * demo 代码  开发者需替换成自己的代码。
          */
+        if (message.getContent() instanceof LocationMessage) {
+            Intent intent = new Intent(context, AMAPLocationActivity.class);
+            intent.putExtra("location", message.getContent());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
         if (message.getContent() instanceof ImageMessage) {
 //            Intent intent = new Intent(context, PhotoActivity.class);
 //            intent.putExtra("message", message);

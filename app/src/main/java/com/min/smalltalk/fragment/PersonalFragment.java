@@ -146,18 +146,6 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
-
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        sp = getActivity().getSharedPreferences("config", MODE_PRIVATE);
-        userId = sp.getString(Const.LOGIN_ID, "");
-        nickName=sp.getString(Const.LOGIN_NICKNAME,"");
-        phone = sp.getString(Const.LOGIN_PHONE, "");
-        userPortraitUri=sp.getString(Const.LOGIN_PORTRAIT,"");
-        initView();
-    }*/
-
     private void initView() {
         userId = sp.getString(Const.LOGIN_ID, "");
         nickName=sp.getString(Const.LOGIN_NICKNAME,"");
@@ -373,7 +361,7 @@ public class PersonalFragment extends Fragment {
                                 editor.putString(Const.LOGIN_NICKNAME, nickName);
                                 editor.commit();
                                 tvNickname.setText(nickName);
-                                T.showShort(getActivity(),"修改昵称成功");
+                                T.showShort(getActivity(),"修改昵称成功，请在好友界面进行刷新");
                                 break;
                             case 2:   //性别
                                 editor.putString(Const.LOGIN_SEX, sex1);
@@ -427,7 +415,7 @@ public class PersonalFragment extends Fragment {
                     if (code.getCode() == 200) {
                         editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
                         editor.commit();
-                        T.showShort(getActivity(), "修改成功");
+                        T.showShort(getActivity(), "修改头像成功，请在好友界面进行刷新");
                     } else {
                         T.showShort(getActivity(), "修改失败");
                     }
@@ -531,6 +519,7 @@ public class PersonalFragment extends Fragment {
                 imageFile=new File(CameraUtils.getMyPhoto(getContext()));
                 Log.i("1256", imageFile+" 11");
                 changePerson(0);
+                imageUrl="file://" + CameraUtils.getMyPhoto(getActivity());
                 ImageLoader.getInstance().displayImage("file://" + CameraUtils.getMyPhoto(getActivity()), civIcon);
 //                bitmapUtils.display(civIcon, CameraUtils.getMyPhoto(getContext()));
             }

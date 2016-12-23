@@ -46,6 +46,9 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
     public static final String UPDATE_FRIEND = "update_friend";
     public static final String UPDATE_RED_DOT = "update_red_dot";
     private Context mContext;
+//    private SharedPreferences sp;
+//    private List<FriendInfo> list;
+//    private FriendInfoDAOImpl friendInfoDAO;
 
     private static AppContext mRongCloudInstance;
     private RongIM.LocationProvider.LocationCallback mLastLocationCallback;
@@ -56,6 +59,9 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         this.mContext = mContext;
         initListener();
         mActivities = new ArrayList<>();
+//        sp = mContext.getSharedPreferences("config", Context.MODE_PRIVATE);
+//        friendInfoDAO= new FriendInfoDAOImpl(mContext);
+//        initPortrait();
     }
 
     /**
@@ -248,6 +254,12 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         return false;
     }
 
+    /**
+     * 好友请求
+     * @param message
+     * @param i
+     * @return
+     */
     @Override
     public boolean onReceived(Message message, int i) {
         MessageContent messageContent = message.getContent();
@@ -295,6 +307,11 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         return false;
     }
 
+    /**
+     * 定位
+     * @param context
+     * @param locationCallback
+     */
     @Override
     public void onStartLocation(Context context, LocationCallback locationCallback) {
         AppContext.getInstance().setLastLocationCallback(locationCallback);
@@ -310,4 +327,81 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
     public void setLastLocationCallback(RongIM.LocationProvider.LocationCallback lastLocationCallback) {
         this.mLastLocationCallback = lastLocationCallback;
     }
+
+    /**
+     * 头像
+     */
+    /*private void initPortrait() {
+        //用户头像
+        list = new ArrayList<>();
+        String userId=sp.getString(Const.LOGIN_ID,"");
+        String name=sp.getString(Const.LOGIN_NICKNAME,"");
+        String portrait;
+        if(TextUtils.isEmpty(sp.getString(Const.LOGIN_PORTRAIT,""))){
+            portrait="http://192.168.0.209/public/effect/assets/avatars/avatar.jpg";
+        }else {
+            portrait = sp.getString(Const.LOGIN_PORTRAIT, "");
+            L.e("-----------",portrait);
+        }
+        String displayName="";
+        String phone=sp.getString(Const.LOGIN_PHONE,"");
+        String email=sp.getString(Const.LOGIN_EMAIL,"");
+        list.clear();
+        list=friendInfoDAO.findAll(userId);
+        list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
+        RongIM.setUserInfoProvider(this, true);
+    }*/
+
+    /*@Override
+    public UserInfo getUserInfo(String s) {
+        for (FriendInfo i : list) {
+            if (i.getUserId().equals(s)) {
+                UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
+                return userInfo;
+            }
+        }
+        return null;*/
+        /*if (TextUtils.isEmpty(userId)) {
+            return;
+        }
+        if (mUserInfoCache != null) {
+            UserInfo userInfo = mUserInfoCache.get(userId);
+            if (userInfo != null) {
+                RongIM.getInstance().refreshUserInfoCache(userInfo);
+                NLog.d(TAG, "SealUserInfoManager getUserInfo from cache " + userId + " "
+                        + userInfo.getName() + " " + userInfo.getPortraitUri());
+                return;
+            }
+        }
+        mWorkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                UserInfo userInfo;
+                Friend friend = getFriendByID(userId);
+                if (friend != null) {
+                    String name = friend.getName();
+                    if (friend.isExitsDisplayName()) {
+                        name = friend.getDisplayName();
+                    }
+                    userInfo = new UserInfo(friend.getUserId(), name,
+                            Uri.parse(friend.getPortraitUri()));
+                    NLog.d(TAG, "SealUserInfoManager getUserInfo from Friend db " + userId + " "
+                            + userInfo.getName() + " " + userInfo.getPortraitUri());
+                    RongIM.getInstance().refreshUserInfoCache(userInfo);
+                    return;
+                }
+                List<GroupMember> groupMemberList = getGroupMembersWithUserId(userId);
+                if (groupMemberList != null && groupMemberList.size() > 0) {
+                    GroupMember groupMember = groupMemberList.get(0);
+                    userInfo = new UserInfo(groupMember.getUserId(), groupMember.getName(),
+                            Uri.parse(groupMember.getPortraitUri()));
+                    NLog.d(TAG, "SealUserInfoManager getUserInfo from GroupMember db " + userId + " "
+                            + userInfo.getName() + " " + userInfo.getPortraitUri());
+                    RongIM.getInstance().refreshUserInfoCache(userInfo);
+                    return;
+                }
+                UserInfoEngine.getInstance(mContext).startEngine(userId);
+            }
+        });*/
+//    }
 }

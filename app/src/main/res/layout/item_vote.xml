@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_gravity="center"
+            android:src="@mipmap/a_5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <com.min.mylibrary.widget.ClearWriteEditText
+            android:layout_gravity="center"
+            android:hint="@string/nickname"
+            android:id="@+id/et_vote_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:maxLength="11"
+            android:ems="11"
+            android:inputType="text"
+            android:background="@color/white"/>
+
+    </LinearLayout>
+</merge>

@@ -70,29 +70,29 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     @BindView(R.id.tv_group_member_size)
     TextView tvGroupMemberSize;
     @BindView(R.id.rl_group_member_size_item)    //全体成员
-    RelativeLayout rlGroupMemberSizeItem;
+            RelativeLayout rlGroupMemberSizeItem;
     @BindView(R.id.ll_search_chatting_records)   //查看聊天记录
-    LinearLayout llSearchChattingRecords;
+            LinearLayout llSearchChattingRecords;
     @BindView(R.id.siv_group_header)
     SelectableRoundedImageView sivGroupHeader;
     @BindView(R.id.ll_group_port)                //群头像
-    LinearLayout llGroupPort;
+            LinearLayout llGroupPort;
     @BindView(R.id.tv_group_name)
     TextView tvGroupName;
     @BindView(R.id.ll_group_name)               //群名
-    LinearLayout llGroupName;
+            LinearLayout llGroupName;
     @BindView(R.id.ll_group_announcement_divider)  //线
-    LinearLayout llGroupAnnouncementDivider;
+            LinearLayout llGroupAnnouncementDivider;
     @BindView(R.id.ll_group_announcement)       //公告
-    LinearLayout llGroupAnnouncement;
+            LinearLayout llGroupAnnouncement;
     @BindView(R.id.ll_group_code)               //群二维码
-    LinearLayout llGroupCode;
+            LinearLayout llGroupCode;
     @BindView(R.id.sw_group_notfaction)         //消息免打扰
-    SwitchButton swGroupNotfaction;
+            SwitchButton swGroupNotfaction;
     @BindView(R.id.sw_group_top)                //消息置顶
-    SwitchButton swGroupTop;
+            SwitchButton swGroupTop;
     @BindView(R.id.ll_group_clean)              //清除聊天记录
-    LinearLayout llGroupClean;
+            LinearLayout llGroupClean;
     @BindView(R.id.tv_group_displayname_text)
     TextView tvGroupDisplaynameText;
     @BindView(R.id.ll_group_displayname)
@@ -109,6 +109,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     LinearLayout llMyNickname;
     @BindView(R.id.tv_my_name)
     TextView tvMyName;
+    @BindView(R.id.ll_group_vote)
+    LinearLayout llGroupVote;
 
 
     private List<GroupMember> mGroupMember;
@@ -121,7 +123,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     private PhotoUtils photoUtils;
     private String imageUrl;
     private File imageFile;              //群头像
-//    private String changeGroupName;
+    //    private String changeGroupName;
     private BottomMenuDialog dialog;
     private Bitmap bitmap;
     private String userId;
@@ -167,15 +169,15 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     private void initSQLite() {
         dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
         dbOpenHelper.getWritableDatabase();
-        sqLiteDAO= new GroupsDAOImpl(mContext);
+        sqLiteDAO = new GroupsDAOImpl(mContext);
     }
 
 
     private void initView() {
         tvTitle.setText("群组信息");
-        sp=getSharedPreferences("config",MODE_PRIVATE);
+        sp = getSharedPreferences("config", MODE_PRIVATE);
         userId = sp.getString(Const.LOGIN_ID, "");   //个人id
-        nickname= sp.getString(Const.LOGIN_NICKNAME,"");  //个人昵称
+        nickname = sp.getString(Const.LOGIN_NICKNAME, "");  //个人昵称
         tvMyName.setText(nickname);
         swGroupTop.setOnCheckedChangeListener(this);
         swGroupNotfaction.setOnCheckedChangeListener(this);
@@ -185,28 +187,29 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
      * 图片
      */
     private void setPortraitChangListener() {
-        photoUtils=new PhotoUtils(new PhotoUtils.OnPhotoResultListener() {
+        photoUtils = new PhotoUtils(new PhotoUtils.OnPhotoResultListener() {
             @Override
             public void onPhotoResult(Uri uri) {
-                if(uri!=null && !TextUtils.isEmpty(uri.getPath())){
-                    imageFile=new File(uri.getPath());
-                    imageUrl=uri.toString();
-                    ImageLoader.getInstance().displayImage(imageUrl,sivGroupHeader);
-                    HttpUtils.postChangeGroupName("/change_groupName", groupId, "",imageFile, new StringCallback() {
+                if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
+                    imageFile = new File(uri.getPath());
+                    imageUrl = uri.toString();
+                    ImageLoader.getInstance().displayImage(imageUrl, sivGroupHeader);
+                    HttpUtils.postChangeGroupName("/change_groupName", groupId, "", imageFile, new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            T.showShort(mContext,"/group/change_groupHead-------网络连接错误");
+                            T.showShort(mContext, "/group/change_groupHead-------网络连接错误");
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            Gson gson=new Gson();
-                            Type type=new TypeToken<Code<Integer>>(){}.getType();
-                            Code<Integer> code=gson.fromJson(response,type);
-                            if(code.getCode()==200){
-                                T.showShort(mContext,"修改成");
-                            }else {
-                                T.showShort(mContext,"修改失败");
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<Code<Integer>>() {
+                            }.getType();
+                            Code<Integer> code = gson.fromJson(response, type);
+                            if (code.getCode() == 200) {
+                                T.showShort(mContext, "修改成");
+                            } else {
+                                T.showShort(mContext, "修改失败");
                             }
                         }
                     });
@@ -224,14 +227,14 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
      * 群组信息
      */
 
-    private void getGroupsSqlite(){
-        Groups groups=sqLiteDAO.find(groupId);
-        groupName=groups.getGroupName();
+    private void getGroupsSqlite() {
+        Groups groups = sqLiteDAO.find(groupId);
+        groupName = groups.getGroupName();
         tvGroupName.setText(groupName);   //群名
         mGroup = new Groups(groups.getGroupId(), groupName,
                 groups.getGroupPortraitUri(), groups.getRole());
         initGroupData();
-        L.e("--------------====",mGroup+"");
+        L.e("--------------====", mGroup + "");
     }
 
 
@@ -314,7 +317,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         //成员角色---1：群主
 
         if (mGroup.getRole().equals("1")) {
-              isCreated = true;
+            isCreated = true;
 //            isCreator=mGroup.getRole();
         }
         if (!isCreated) {
@@ -348,7 +351,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
      * 群组成员
      */
     private void getGroupMembers(final boolean isCreator) {
-        HttpUtils.postGroupsRequest("/group_member", groupId,userId, new StringCallback() {
+        HttpUtils.postGroupsRequest("/group_member", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "group_member------" + "网络连接错误");
@@ -357,13 +360,14 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<GroupMember>>>() {}.getType();
+                Type type = new TypeToken<Code<List<GroupMember>>>() {
+                }.getType();
                 Code<List<GroupMember>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     mGroupMember = code.getMsg();
                     if (mGroupMember != null && mGroupMember.size() > 0) {
                         tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
-                        adapter=new MyGridView(mContext, mGroupMember, isCreator,mGroup);
+                        adapter = new MyGridView(mContext, mGroupMember, isCreator, mGroup);
                         mGridView.setAdapter(adapter);
                     } else {
                         return;
@@ -385,28 +389,29 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //点击事件
     @OnClick({R.id.iv_title_back, R.id.rl_group_member_size_item, R.id.ll_group_port, R.id.ll_group_name,
-                R.id.ll_group_code, R.id.sw_group_top, R.id.sw_group_notfaction,R.id.btn_group_quit,
-                R.id.btn_group_dismiss, R.id.ll_group_announcement, R.id.ll_group_activity ,R.id.ll_my_nickname})
+            R.id.ll_group_code, R.id.sw_group_top, R.id.sw_group_notfaction, R.id.btn_group_quit,
+            R.id.btn_group_dismiss, R.id.ll_group_announcement, R.id.ll_group_activity, R.id.ll_my_nickname,
+            R.id.ll_group_vote})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_title_back:  //返回
                 GroupDetailActivity.this.finish();
                 break;
             case R.id.rl_group_member_size_item:  //群成员
-                Intent intent=new Intent(mContext,GroupMemberActivity.class);
+                Intent intent = new Intent(mContext, GroupMemberActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
                 break;
             case R.id.ll_group_port:   //群头像
-                if(isCreated){
-                    if(dialog!=null && dialog.isShowing()){
+                if (isCreated) {
+                    if (dialog != null && dialog.isShowing()) {
                         dialog.dismiss();
                     }
-                    dialog=new BottomMenuDialog(mContext);
+                    dialog = new BottomMenuDialog(mContext);
                     dialog.setPhotographListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(dialog!=null && dialog.isShowing()){
+                            if (dialog != null && dialog.isShowing()) {
                                 dialog.dismiss();
                             }
                             photoUtils.takePicture(GroupDetailActivity.this);
@@ -415,7 +420,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     dialog.setLocalphotoListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(dialog!=null && dialog.isShowing()){
+                            if (dialog != null && dialog.isShowing()) {
                                 dialog.dismiss();
                             }
                             photoUtils.selectPicture(GroupDetailActivity.this);
@@ -423,20 +428,20 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     });
                     dialog.show();
                     break;
-                }else {
-                    T.showShort(mContext,"只有群主才能修改群头像");
+                } else {
+                    T.showShort(mContext, "只有群主才能修改群头像");
                 }
                 break;
             case R.id.ll_group_name:   //群名称
-                if(isCreated){
-                    final EditText editText=new EditText(mContext);
+                if (isCreated) {
+                    final EditText editText = new EditText(mContext);
                     AlertDialog dialog = new AlertDialog.Builder(mContext)
                             .setTitle("修改群名称")
                             .setView(editText)
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    String et=editText.getText().toString();
+                                    String et = editText.getText().toString();
                                     changGroupName(et);
                                 }
                             })
@@ -447,19 +452,19 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                                 }
                             })
                             .show();
-                }else {
-                    T.showShort(mContext,"只有群主才能修改群名称");
+                } else {
+                    T.showShort(mContext, "只有群主才能修改群名称");
                     break;
                 }
                 break;
             case R.id.ll_group_code:   //二维码
-                Intent intent1=new Intent(mContext,ZxingActivity.class);
+                Intent intent1 = new Intent(mContext, ZxingActivity.class);
                 intent1.putExtra("Id", groupId);
-                intent1.putExtra("Head",bitmap);
+                intent1.putExtra("Head", bitmap);
                 startActivity(intent1);
                 break;
             case R.id.btn_group_quit:   //退出群
-                AlertDialog quit=new AlertDialog.Builder(mContext)
+                AlertDialog quit = new AlertDialog.Builder(mContext)
                         .setTitle("退出群")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
@@ -475,7 +480,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                         .show();
                 break;
             case R.id.btn_group_dismiss:  //解散群
-                AlertDialog dismiss=new AlertDialog.Builder(mContext)
+                AlertDialog dismiss = new AlertDialog.Builder(mContext)
                         .setTitle("退出群")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
@@ -491,20 +496,20 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                         .show();
                 break;
             case R.id.ll_group_announcement:  //群公告
-                Intent intent2=new Intent(mContext,GroupNoticeActivity.class);
+                Intent intent2 = new Intent(mContext, GroupNoticeActivity.class);
                 intent2.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
                 intent2.putExtra("targetId", groupId);
                 startActivity(intent2);
                 break;
             case R.id.ll_group_activity:   //群活动
-                Intent intent3=new Intent(mContext,GroupFlexibleActivity.class);
-                intent3.putExtra("actCreator",userId);
+                Intent intent3 = new Intent(mContext, GroupFlexibleActivity.class);
+                intent3.putExtra("actCreator", userId);
                 intent3.putExtra("groupId", groupId);
                 startActivity(intent3);
                 break;
             case R.id.ll_my_nickname:  //修改群个人昵称
-                editText=new EditText(mContext);
-                AlertDialog dialog3=new AlertDialog.Builder(mContext)
+                editText = new EditText(mContext);
+                new AlertDialog.Builder(mContext)
                         .setTitle("修改个人昵称")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -520,6 +525,9 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                         })
                         .show();
                 break;
+            case R.id.ll_group_vote:   //投票
+                startActivity(new Intent(mContext, GroupVoteActivity.class));
+                break;
             default:
                 break;
         }
@@ -530,7 +538,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         HttpUtils.postChangeNameGroup("/change_userName", groupId, userId, groupName, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/change_userName------"+e);
+                T.showShort(mContext, "/change_userName------" + e);
             }
 
             @Override
@@ -541,8 +549,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Code<Integer> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     tvMyName.setText(editText.getText());
-                }else {
-                    T.showShort(mContext,"修改失败");
+                } else {
+                    T.showShort(mContext, "修改失败");
                 }
             }
         });
@@ -553,17 +561,18 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         HttpUtils.postQuitGroup("/GroupPullUser", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/quit_group------"+e);
+                T.showShort(mContext, "/quit_group------" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<Integer>>(){}.getType();
-                Code<Integer> code=gson.fromJson(response,type);
-                if(code.getCode()==200){
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Integer>>() {
+                }.getType();
+                Code<Integer> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
                     RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, groupId,
-                            new RongIMClient.ResultCallback<Conversation>(){
+                            new RongIMClient.ResultCallback<Conversation>() {
 
                                 @Override
                                 public void onSuccess(Conversation conversation) {
@@ -571,7 +580,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                                             groupId, new RongIMClient.ResultCallback<Boolean>() {
                                                 @Override
                                                 public void onSuccess(Boolean aBoolean) {
-                                                    RongIM.getInstance().removeConversation(Conversation.ConversationType.GROUP, groupId,null);
+                                                    RongIM.getInstance().removeConversation(Conversation.ConversationType.GROUP, groupId, null);
                                                 }
 
                                                 @Override
@@ -587,7 +596,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                                 }
                             });
                     BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
-                    T.showShort(mContext,"退出成功");
+                    T.showShort(mContext, "退出成功");
                     finish();
                 }
             }
@@ -596,11 +605,11 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     }
 
     //解散群
-    private void dismissGroup(){
+    private void dismissGroup() {
         HttpUtils.postDismissGroup("/dissolutionGroup", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/dismiss_group------"+e);
+                T.showShort(mContext, "/dismiss_group------" + e);
             }
 
             @Override
@@ -637,8 +646,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     T.showShort(mContext, "解散群成功");
 //                    BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
                     finish();
-                }else {
-                    T.showShort(mContext,"解散群失败");
+                } else {
+                    T.showShort(mContext, "解散群失败");
                 }
             }
         });
@@ -647,21 +656,22 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //修改群名称
     private void changGroupName(String groupName) {
-        HttpUtils.postChangeGroupName("/change_groupName", groupId, groupName,imageFile, new StringCallback() {
+        HttpUtils.postChangeGroupName("/change_groupName", groupId, groupName, imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/change_groupName------网络连接错误");
+                T.showShort(mContext, "/change_groupName------网络连接错误");
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<Groups>>(){}.getType();
-                Code<Groups> code = gson.fromJson(response,type);
-                if(code.getCode()==200){
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Groups>>() {
+                }.getType();
+                Code<Groups> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
                     tvGroupName.setText(code.getMsg().getGroupName());
-                }else {
-                    T.showShort(mContext,"连接错误");
+                } else {
+                    T.showShort(mContext, "连接错误");
                 }
             }
         });
@@ -669,7 +679,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case PhotoUtils.INTENT_CROP:
             case PhotoUtils.INTENT_TAKE:
             case PhotoUtils.INTENT_SELECT:
@@ -680,8 +690,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     //消息设置
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        switch (compoundButton.getId()){
-             case R.id.sw_group_top:  //消息置顶
+        switch (compoundButton.getId()) {
+            case R.id.sw_group_top:  //消息置顶
                 if (isChecked) {
                     if (mGroup != null) {
                         Operation.setConversationTop(mContext, Conversation.ConversationType.GROUP, mGroup.getGroupId(), true);

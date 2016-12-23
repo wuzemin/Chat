@@ -3,7 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.1"
     defaultConfig {
         applicationId "com.min.smalltalk"
         minSdkVersion 16
@@ -70,5 +70,6 @@ dependencies {
     compile files('libs/Msc.jar')
     compile files('libs/AMap3DMap_3.3.3_AMapNavi_1.9.1_20160726.jar')
     compile files('libs/AMap_Location_V2.4.1_20160414.jar')
+    //    compile files('libs/AMap_Search_V3.3.0_20160616.jar')
     compile files('libs/AMap_Search_V3.3.0_20160616.jar')
 }

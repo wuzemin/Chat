@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.min.smalltalk">
+
     <!-- //定位包、导航包需要的额外权限（注：基础权限也需要） -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <!-- 用于进行网络定位 -->
@@ -20,8 +21,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- 写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -61,7 +60,7 @@
             android:name="RONG_CLOUD_APP_KEY"
             android:value="vnroth0krtq9o" />
 
-        <!--高德-->
+        <!-- 高德 -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="b33391dfeda238bf662d23c34bdfde07" />
@@ -145,7 +144,10 @@
             android:name=".activity.SelectPicPopupWindow"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".activity.IatSettings" />
-        <activity android:name=".activity.AMAPLocationActivity"></activity>
+        <activity android:name=".activity.AMAPLocationActivity" />
+        <activity android:name=".activity.GroupVoteActivity" />
+        <activity android:name=".activity.VoteDetailActivity" />
+        <activity android:name=".activity.AddVoteActivity"></activity>
     </application>
 
 </manifest>

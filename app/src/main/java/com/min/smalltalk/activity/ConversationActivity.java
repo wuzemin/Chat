@@ -52,7 +52,7 @@ import okhttp3.Call;
 /**
  * 会话页面
  */
-public class ConversationActivity extends BaseActivity implements RongIM.UserInfoProvider, View.OnClickListener {
+public class ConversationActivity extends BaseActivity implements View.OnClickListener, RongIM.UserInfoProvider {
 
     /*@BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -85,8 +85,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        //
-
         friendInfoDAO= new FriendInfoDAOImpl(mContext);
 
         ivTitleBack= (ImageView) findViewById(R.id.iv_title_back);
@@ -96,7 +94,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
         ivTitleBack.setOnClickListener(this);
         ivTitleRight.setOnClickListener(this);
 
-//        ButterKnife.bind(this);
         sp = getSharedPreferences("config", MODE_PRIVATE);
 
         Intent intent = getIntent();
@@ -184,10 +181,12 @@ public class ConversationActivity extends BaseActivity implements RongIM.UserInf
             portrait="http://192.168.0.209/public/effect/assets/avatars/avatar.jpg";
         }else {
             portrait = sp.getString(Const.LOGIN_PORTRAIT, "");
+            L.e("-----------",portrait);
         }
         String displayName="";
         String phone=sp.getString(Const.LOGIN_PHONE,"");
         String email=sp.getString(Const.LOGIN_EMAIL,"");
+        list.clear();
         list=friendInfoDAO.findAll(userId);
         list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
         RongIM.setUserInfoProvider(this, true);

@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
@@ -37,6 +37,7 @@ import com.min.smalltalk.activity.LoginActivity;
 import com.min.smalltalk.activity.MyPopuWindow;
 import com.min.smalltalk.activity.ZxingActivity;
 import com.min.smalltalk.bean.Code;
+import com.min.smalltalk.bean.Image;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.db.GroupMemberDAOImpl;
@@ -117,6 +118,7 @@ public class PersonalFragment extends Fragment {
     private String sex1;
     private int sex;
     private String birthday;
+    private String myBirthday;
     private String address;
     private int age;
 
@@ -131,6 +133,8 @@ public class PersonalFragment extends Fragment {
     private int str;
     private SharedPreferences.Editor editor;
 //    private BitmapUtils bitmapUtils;
+    private String string;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -160,7 +164,7 @@ public class PersonalFragment extends Fragment {
         tvUserid.setText(userId);
         tvNickname.setText(nickName);
         tvSex.setText(sex1);
-        tvBirthday.setText(birthday);
+        tvBirthday.setText(myBirthday);
         tvAge.setText(age+"岁");
         tvAddress.setText(address);
         tvPhone.setText(phone);
@@ -233,7 +237,7 @@ public class PersonalFragment extends Fragment {
                 dialog_sex.setSingleChoiceItems(test, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String string=test[i];
+                        string=test[i];
                         if("男".equals(string)){
                             sex1=string;
                             sex=1;
@@ -245,7 +249,6 @@ public class PersonalFragment extends Fragment {
                             sex=0;
                         }
                         dialogInterface.dismiss();
-                        tvSex.setText(string);
                         changePerson(2);
                     }
                 });
@@ -268,7 +271,7 @@ public class PersonalFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 email=editText.getText().toString();
-                                tvEmail.setText(email);
+//                                tvEmail.setText(email);
                                 changePerson(3);
                             }
                         })
@@ -289,7 +292,7 @@ public class PersonalFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 address=editText.getText().toString();
-                                tvAddress.setText(address);
+//                                tvAddress.setText(address);
                                 changePerson(4);
                             }
                         })
@@ -302,8 +305,10 @@ public class PersonalFragment extends Fragment {
                         .show();
                 break;
             case R.id.rl_phone:  //手机
+                editText=new EditText(getActivity());
                 new AlertDialog.Builder(getActivity())
                         .setTitle("修改手机号")
+                        .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -316,7 +321,8 @@ public class PersonalFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                             }
-                        }).show();
+                        })
+                        .show();
                 break;
             default:
                 break;
@@ -342,7 +348,7 @@ public class PersonalFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String string=jsonArray.toString();
+        final String string=jsonArray.toString();
         if(index!=0){
             HttpUtils.postChangePerson("/editUserInfo", string, new StringCallback() {
                 @Override
@@ -352,9 +358,10 @@ public class PersonalFragment extends Fragment {
 
                 @Override
                 public void onResponse(String response, int id) {
+                    L.e("--------------",response);
                     Gson gson=new Gson();
-                    Type type=new TypeToken<Code<Integer>>(){}.getType();
-                    Code<Integer> code = gson.fromJson(response,type);
+                    Type type=new TypeToken<Code<Object>>(){}.getType();
+                    Code<Object> code = gson.fromJson(response,type);
                     if(code.getCode()==200){
                         switch (index){
                             case 1:   //昵称
@@ -366,23 +373,27 @@ public class PersonalFragment extends Fragment {
                             case 2:   //性别
                                 editor.putString(Const.LOGIN_SEX, sex1);
                                 editor.commit();
+                                tvSex.setText(sex1);
                                 T.showShort(getActivity(),"修改性别成功");
                                 break;
                             case 3:   //邮箱
                                 editor.putString(Const.LOGIN_EMAIL, email);
                                 editor.commit();
+                                tvEmail.setText(email);
                                 T.showShort(getActivity(),"修改邮箱成功");
                                 break;
                             case 4:   //地址
                                 editor.putString(Const.LOGIN_ADDRESS, address);
                                 editor.commit();
+                                tvAddress.setText(address);
                                 T.showShort(getActivity(),"修改地址成功");
                                 break;
                             case 5:   //生日
-                                tvAge.setText(age+"");
-                                editor.putString(Const.LOGIN_BIRTHDAY, birthday);
+                                editor.putString(Const.LOGIN_BIRTHDAY, myBirthday);
                                 editor.putInt(Const.LOGIN_AGE,0);
                                 editor.commit();
+                                tvBirthday.setText(myBirthday);
+                                tvAge.setText(age+"");
                                 T.showShort(getActivity(),"修改生日成功");
                                 break;
                             case 6:   //电话
@@ -410,10 +421,11 @@ public class PersonalFragment extends Fragment {
                 @Override
                 public void onResponse(String response, int id) {
                     Gson gson = new Gson();
-                    Type type = new TypeToken<Code<Integer>>() {}.getType();
-                    Code<Integer> code = gson.fromJson(response, type);
+                    Type type = new TypeToken<Code<Image>>() {}.getType();
+                    Code<Image> code = gson.fromJson(response, type);
                     if (code.getCode() == 200) {
-                        editor.putString(Const.LOGIN_PORTRAIT, imageUrl);
+                        String port=HttpUtils.IMAGE_RUL+code.getMsg().getAvatar_image();
+                        editor.putString(Const.LOGIN_PORTRAIT, port);
                         editor.commit();
                         T.showShort(getActivity(), "修改头像成功，请在好友界面进行刷新");
                     } else {
@@ -479,7 +491,8 @@ public class PersonalFragment extends Fragment {
             public void onClick(View arg0) {
                 beginTime = wheelMainDate.getTime().toString();
                 birthday=DateUtils.formateStringH(beginTime, DateUtils.yyyyMMddHHmm);
-                tvBirthday.setText(birthday);
+                myBirthday=birthday.substring(0,10);
+//                tvBirthday.setText(birthday);
                 int birth= Integer.parseInt(birthday.substring(0,4));
                 age= str-birth;
                 changePerson(5);
@@ -504,11 +517,9 @@ public class PersonalFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("234", "5555555555555555555555555555555555555555555555555555");
         if (requestCode == CameraUtils.CHOOSE_FROM_CAMERA) {  //调用摄像头
             if (resultCode == Activity.RESULT_OK) {
                 //呼叫裁剪应用程序
-                Log.i("234", "111111111111111111111111111111111111111111111");
                 CameraUtils.cropPhotos(getContext(), this, CameraUtils.imgUri);
             }
         }
@@ -517,7 +528,6 @@ public class PersonalFragment extends Fragment {
                 CameraUtils.saveMyPhoto(getContext(), CameraUtils.img.getAbsolutePath());
 //                imageView.setImageBitmap(CameraUtils.getBitmap(this));
                 imageFile=new File(CameraUtils.getMyPhoto(getContext()));
-                Log.i("1256", imageFile+" 11");
                 changePerson(0);
                 imageUrl="file://" + CameraUtils.getMyPhoto(getActivity());
                 ImageLoader.getInstance().displayImage("file://" + CameraUtils.getMyPhoto(getActivity()), civIcon);

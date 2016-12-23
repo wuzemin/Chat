@@ -18,6 +18,8 @@ import java.util.GregorianCalendar;
 
 public class DateUtils {
     public static final String yyyyMMddHHmm = "yyyy-MM-dd HH:mm";
+    public static final String yyyyMMdd = "yyyy-MM-dd";
+
     public static String currentTime() {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");// 格式化对象
@@ -36,6 +38,19 @@ public class DateUtils {
             return dateStr;
         }
     }
+    //设置生日
+    public static String formateStringBirthday(String dateStr, String pattren) {
+        Date date = parseDate(dateStr, pattren);
+        try {
+            String str = dateToString(date, DateUtils.yyyyMMdd);
+            return str;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dateStr;
+        }
+    }
+
+
     public static Date parseDate(String dateStr, String type) {
         SimpleDateFormat df = new SimpleDateFormat(type);
         Date date = null;

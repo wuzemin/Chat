@@ -63,14 +63,15 @@ public class GroupVoteActivity extends BaseActivity {
         tvTitle.setText("投票活动");
         tvTitleRight.setVisibility(View.VISIBLE);
         tvTitleRight.setText("添加");
+        groupId=getIntent().getStringExtra("group_id");
     }
 
     private void initListView() {
         String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        HttpUtils.postGroupActiivity("/listVote", userid, groupId, new StringCallback() {
+        HttpUtils.postVoteList("/vote_list", groupId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/group/groupAcitivity------onError");
+                T.showShort(mContext, "/vote_list------"+e);
             }
 
             @Override
@@ -81,13 +82,12 @@ public class GroupVoteActivity extends BaseActivity {
                 if (code.getCode() == 200) {
                     List<GroupVote> voteList = code.getMsg();
                     for (GroupVote groupVote : voteList) {
-                        voteId=groupVote.getVoteId();
-                        String voteTitle=groupVote.getVoidTitle();
-                        String voteCreate=groupVote.getCreateTime();
-                        int status=groupVote.getStatus();
-                        List<String> contentList=groupVote.getContentList();
-                        String groupId=groupVote.getGroupId();
-
+                        voteId=groupVote.getVote_id();
+                        String voteTitle=groupVote.getVote_title();
+                        String voteCreate=groupVote.getAdd_time();
+                        String voteEndTime=groupVote.getEnd_time();
+                        GroupVote groupVotes=new GroupVote(voteId,voteTitle,voteCreate,voteEndTime);
+                        list.add(groupVotes);
                     }
                     initAdapter();
                 }else{
@@ -101,14 +101,14 @@ public class GroupVoteActivity extends BaseActivity {
         adapter = new BaseRecyclerAdapter<GroupVote>(mContext, list, R.layout.item_group_vote) {
             @Override
             public void convert(BaseRecyclerHolder holder, GroupVote item, int position, boolean isScrolling) {
-                holder.setText(R.id.tv_vote_title, item.getVoidTitle());
-                holder.setText(R.id.tv_vote_time,item.getCreateTime());
+                holder.setText(R.id.tv_vote_title, item.getVote_title());
+                holder.setText(R.id.tv_vote_time,item.getAdd_time());
                 int status=item.getStatus();
-                if(status==0){
+                /*if(status==0){
                     holder.setText(R.id.tv_vote_status,"进行中");
                 }else {
                     holder.setText(R.id.tv_vote_status,"已结束");
-                }
+                }*/
             }
         };
         rvGroupVote.setAdapter(adapter);
@@ -121,6 +121,7 @@ public class GroupVoteActivity extends BaseActivity {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
                 Intent intent=new Intent(mContext,VoteDetailActivity.class);
+                intent.putExtra("group_id",groupId);
                 intent.putExtra("voteId",voteId);
                 startActivity(intent);
             }
@@ -134,6 +135,9 @@ public class GroupVoteActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_title_right:
+                Intent intent=new Intent(mContext,AddVoteActivity.class);
+                intent.putExtra("group_id",groupId);
+                startActivity(intent);
                 break;
         }
     }

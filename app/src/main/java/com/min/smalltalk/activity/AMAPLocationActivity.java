@@ -1,6 +1,7 @@
 package com.min.smalltalk.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -19,7 +20,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.R;
-import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.LocationEntity;
 import com.min.smalltalk.listener.OnLocationGetListener;
 import com.min.smalltalk.wedget.location.LocationTask;
@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.message.LocationMessage;
 
-public class AMAPLocationActivity extends BaseActivity implements OnLocationGetListener {
+public class AMAPLocationActivity extends Activity implements OnLocationGetListener {
 
     @BindView(R.id.map)
     MapView mapView;

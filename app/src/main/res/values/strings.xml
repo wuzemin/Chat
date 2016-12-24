@@ -73,6 +73,7 @@
     <string name="fetching">获取中……</string>
     <string name="location">位置</string>
     <string name="vote">投票</string>
+    <string name="create">创建</string>
     <string name="group_vote">群投票</string>
     <string name="vote_title">投票标题</string>
     <string name="vote_time">投票时间</string>

@@ -298,5 +298,36 @@ public class HttpUtils {
                 .addParams("userId",userId).build().execute(callback);
     }
 
+    //投票列表
+    public static void postVoteList(String url, String groupId ,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("group_id",groupId)
+                .build().execute(callback);
+    }
+
+    //创建投票
+    public static void postAddVote(String url,String userId,String group_id,String vote_title,
+                                   String vote_option, int mode, String end_time,StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("userId",userId)
+                .addParams("group_id",group_id)
+                .addParams("vote_title",vote_title)
+                .addParams("vote_option",vote_option)
+                .addParams("mode", String.valueOf(mode))
+                .addParams("end_time",end_time)
+                .build().execute(callback);
+    }
+
+    //投票详情
+    public static void postVoteDetails(String url,String group_id, String vote_id, StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("group_id",group_id)
+                .addParams("vote_id",vote_id)
+                .build().execute(callback);
+    }
+
 
 }

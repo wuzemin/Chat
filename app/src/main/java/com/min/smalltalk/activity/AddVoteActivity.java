@@ -2,6 +2,7 @@ package com.min.smalltalk.activity;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -25,7 +26,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.ClearWriteEditText;
 import com.min.mylibrary.widget.dialog.LoadDialog;
@@ -53,6 +53,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.rong.imkit.RongContext;
+import io.rong.imkit.RongIM;
+import io.rong.imlib.IRongCallback;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.MentionedInfo;
+import io.rong.imlib.model.Message;
+import io.rong.message.TextMessage;
 import okhttp3.Call;
 
 public class AddVoteActivity extends BaseActivity {
@@ -97,6 +105,8 @@ public class AddVoteActivity extends BaseActivity {
     private View view;
     private EditText editText;
     private String addContent;
+    private Conversation.ConversationType mConversationType;
+    private String targetId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +125,9 @@ public class AddVoteActivity extends BaseActivity {
         groupId = getIntent().getStringExtra("group_id");
         view = LayoutInflater.from(mContext).inflate(R.layout.item_vote, null);
 //        editText = (EditText) view.findViewById(R.id.et_vote_content);
+        Intent intent=getIntent();
+        targetId=getIntent().getStringExtra("targetId");
+        mConversationType= Conversation.ConversationType.setValue(intent.getIntExtra("conversationType",0));
 
     }
 
@@ -126,7 +139,7 @@ public class AddVoteActivity extends BaseActivity {
             public void convert(BaseRecyclerHolder holder, String item, int position, boolean isScrolling) {
 //                String ss=item;
 //                L.e("----------++",ss);
-//                holder.setText(R.id.et_vote_content, "");
+                holder.setText(R.id.tv_content, contentList.get(position));
             }
         };
         rvVote.setAdapter(adapter);
@@ -138,11 +151,8 @@ public class AddVoteActivity extends BaseActivity {
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
-                if (data.size() < 3) {
-                    return;
-                }
                 removeData(position);
-                L.e("----------++", contentList.get(position));
+//                L.e("----------++", contentList.get(position));
             }
         });
     }
@@ -154,16 +164,13 @@ public class AddVoteActivity extends BaseActivity {
             case R.id.iv_title_back:
                 finish();
                 break;
-            /*case R.id.ll_add_new:   //新增选项
-                if (contentList.size() > 13) {
-                    return;
-                }
-                addData(contentList.size()
-                );
-                break;*/
             case R.id.rl_add_content:
                 addContent=etAddContent.getText().toString();
                 if(contentList.size()>13){
+                    return;
+                }
+                if(TextUtils.isEmpty(addContent)){
+                    T.showShort(mContext,"新增的内容不能为空");
                     return;
                 }
                 addData(contentList.size());
@@ -186,6 +193,7 @@ public class AddVoteActivity extends BaseActivity {
                 }
                 if(TextUtils.isEmpty(period)){
                     T.showShort(mContext,"期限不能为空");
+                    return;
                 }
                 LoadDialog.show(mContext);
                 addPeriod();
@@ -195,6 +203,9 @@ public class AddVoteActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 创建投票
+     */
     private void addPeriod() {
         int mode;
         if (!select) {
@@ -222,6 +233,9 @@ public class AddVoteActivity extends BaseActivity {
                 if (code.getCode() == 200) {
                     T.showShort(mContext, "创建投票成功");
                     LoadDialog.dismiss(mContext);
+                    sendMessage();
+                    Intent intent=new Intent();
+                    setResult(0,intent);
                     finish();
                 } else {
                     T.showShort(mContext, "创建投票失败");
@@ -229,6 +243,30 @@ public class AddVoteActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void sendMessage() {
+            TextMessage textMessage=TextMessage.obtain(RongContext.getInstance().getString(R.string.group_notice_prefix)+"投票活动");
+            MentionedInfo mentionedInfo=new MentionedInfo(MentionedInfo.MentionedType.ALL,null,null);
+            textMessage.setMentionedInfo(mentionedInfo);
+            RongIM.getInstance().sendMessage(Message.obtain(targetId, mConversationType, textMessage),
+                    null, null, new IRongCallback.ISendMessageCallback() {
+                        @Override
+                        public void onAttached(Message message) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(Message message) {
+
+                        }
+
+                        @Override
+                        public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+
+                        }
+                    });
+            finish();
     }
 
     /**
@@ -314,10 +352,11 @@ public class AddVoteActivity extends BaseActivity {
         contentList.add(position, addContent);
         adapter.notifyItemChanged(position);
         adapter.notifyItemRangeChanged(position, contentList.size());
+        etAddContent.setText("");
     }
 
     public void removeData(int position) {
-        data.remove(position);
+        contentList.remove(position);
         adapter.notifyItemChanged(position);
         adapter.notifyItemRangeChanged(position, contentList.size());
     }

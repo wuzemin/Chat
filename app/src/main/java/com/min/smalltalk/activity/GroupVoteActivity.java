@@ -2,6 +2,9 @@ package com.min.smalltalk.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -23,7 +26,12 @@ import com.min.smalltalk.wedget.ItemDivider;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-public class GroupVoteActivity extends BaseActivity {
+public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -41,12 +49,16 @@ public class GroupVoteActivity extends BaseActivity {
     TextView tvTitleRight;
     @BindView(R.id.rv_group_vote)
     RecyclerView rvGroupVote;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     private BaseRecyclerAdapter<GroupVote> adapter;
     private List<GroupVote> list = new ArrayList<>();
 
     private String groupId;
     private String voteId;
+    private static final int REFRESH_COMPLETE=0;
+    private int status;
 
 
     @Override
@@ -63,38 +75,68 @@ public class GroupVoteActivity extends BaseActivity {
         tvTitle.setText("投票活动");
         tvTitleRight.setVisibility(View.VISIBLE);
         tvTitleRight.setText("添加");
-        groupId=getIntent().getStringExtra("group_id");
+        groupId = getIntent().getStringExtra("group_id");
+        swipeRefresh.setOnRefreshListener(this);
+
     }
 
     private void initListView() {
-        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        String userid = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
         HttpUtils.postVoteList("/vote_list", groupId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/vote_list------"+e);
+                T.showShort(mContext, "/vote_list------" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
                 Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<GroupVote>>>() {}.getType();
+                Type type = new TypeToken<Code<List<GroupVote>>>() {
+                }.getType();
                 Code<List<GroupVote>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
-                    List<GroupVote> voteList = code.getMsg();
-                    for (GroupVote groupVote : voteList) {
-                        voteId=groupVote.getVote_id();
-                        String voteTitle=groupVote.getVote_title();
-                        String voteCreate=groupVote.getAdd_time();
-                        String voteEndTime=groupVote.getEnd_time();
-                        GroupVote groupVotes=new GroupVote(voteId,voteTitle,voteCreate,voteEndTime);
+                    list = code.getMsg();
+                    /*for (GroupVote groupVote : voteList) {
+                        voteId = groupVote.getVote_id();
+                        String voteTitle = groupVote.getVote_title();
+                        String voteCreate = groupVote.getAdd_time();
+                        String voteEndTime = groupVote.getEnd_time();
+                        status=groupVote.getStatus();
+                        GroupVote groupVotes = new GroupVote(groupId,voteId, voteTitle, voteCreate, voteEndTime,status);
                         list.add(groupVotes);
-                    }
+                    }*/
+                    //
+                    Collections.sort(list, new Comparator<GroupVote>() {
+                        @Override
+                        public int compare(GroupVote groupVote, GroupVote t1) {
+                            Date date1 = stringToDate(groupVote);
+                            Date date2 = stringToDate(t1);
+                            if (date1.before(date2)) {
+                                return 1;
+                            }
+                            return -1;
+                        }
+                    });
+
                     initAdapter();
-                }else{
-                    T.showShort(mContext,"没有群活动");
+                } else {
+                    T.showShort(mContext, "没有活动");
                 }
             }
         });
+    }
+
+    private Date stringToDate(GroupVote groupVote) {
+        String updatedAt = groupVote.getAdd_time();
+        String updatedAtDateStr = updatedAt.substring(0, 10) + " " + updatedAt.substring(11, 16);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date updateAtDate = null;
+        try {
+            updateAtDate = simpleDateFormat.parse(updatedAtDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return updateAtDate;
     }
 
     private void initAdapter() {
@@ -102,27 +144,26 @@ public class GroupVoteActivity extends BaseActivity {
             @Override
             public void convert(BaseRecyclerHolder holder, GroupVote item, int position, boolean isScrolling) {
                 holder.setText(R.id.tv_vote_title, item.getVote_title());
-                holder.setText(R.id.tv_vote_time,item.getAdd_time());
-                int status=item.getStatus();
-                /*if(status==0){
-                    holder.setText(R.id.tv_vote_status,"进行中");
-                }else {
+                holder.setText(R.id.tv_vote_time, item.getAdd_time());
+                if(item.getStatus()==0){
                     holder.setText(R.id.tv_vote_status,"已结束");
-                }*/
+                }else {
+                    holder.setText(R.id.tv_vote_status,"进行中");
+                }
             }
         };
         rvGroupVote.setAdapter(adapter);
-        LinearLayoutManager lm=new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvGroupVote.setLayoutManager(lm);
-        rvGroupVote.addItemDecoration(new ItemDivider(mContext,ItemDivider.VERTICAL_LIST));
+        rvGroupVote.addItemDecoration(new ItemDivider(mContext, ItemDivider.VERTICAL_LIST));
 
         //点击事件
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
-                Intent intent=new Intent(mContext,VoteDetailActivity.class);
-                intent.putExtra("group_id",groupId);
-                intent.putExtra("voteId",voteId);
+                Intent intent = new Intent(mContext, VoteDetailActivity.class);
+                intent.putExtra("group_id", list.get(position).getGroupId());
+                intent.putExtra("vote_id", list.get(position).getVote_id());
                 startActivity(intent);
             }
         });
@@ -135,10 +176,37 @@ public class GroupVoteActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_title_right:
-                Intent intent=new Intent(mContext,AddVoteActivity.class);
-                intent.putExtra("group_id",groupId);
-                startActivity(intent);
+                Intent intent = new Intent(mContext, AddVoteActivity.class);
+                intent.putExtra("group_id", groupId);
+//                startActivity(intent);
+                startActivityForResult(intent, 0);
                 break;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            list.clear();
+            initListView();
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
+    }
+
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case REFRESH_COMPLETE:
+                    list.clear();
+                    initListView();
+                    swipeRefresh.setRefreshing(false);
+            }
+        }
+    };
 }

@@ -3,7 +3,7 @@ package com.min.smalltalk.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Min on 2016/12/23.
@@ -14,16 +14,27 @@ public class GroupVote implements Parcelable{
     private String vote_title;
     private String add_time;
     private String end_time;
-    private int status;
-    private List<String> option;
+    private int mode;
+    private Map<String,String> option;
     private String groupId;
     private String userId;
+    private int status;
 
-    public GroupVote(String vote_id, String vote_title, String add_time, String end_time) {
+    public GroupVote(String vote_id, String vote_title, String add_time, String end_time, String groupId, int status) {
+        this.groupId=groupId;
         this.vote_id = vote_id;
         this.vote_title = vote_title;
         this.add_time = add_time;
         this.end_time = end_time;
+        this.status=status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     protected GroupVote(Parcel in) {
@@ -31,10 +42,29 @@ public class GroupVote implements Parcelable{
         vote_title = in.readString();
         add_time = in.readString();
         end_time = in.readString();
-        status = in.readInt();
-        option = in.createStringArrayList();
         groupId = in.readString();
         userId = in.readString();
+    }
+
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    public Map<String, String> getOption() {
+        return option;
+    }
+
+    public void setOption(Map<String, String> option) {
+        this.option = option;
+    }
+
+    public static Creator<GroupVote> getCREATOR() {
+        return CREATOR;
     }
 
     public static final Creator<GroupVote> CREATOR = new Creator<GroupVote>() {
@@ -81,22 +111,6 @@ public class GroupVote implements Parcelable{
         this.end_time = end_time;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public List<String> getOption() {
-        return option;
-    }
-
-    public void setOption(List<String> option) {
-        this.option = option;
-    }
-
     public String getGroupId() {
         return groupId;
     }
@@ -124,8 +138,6 @@ public class GroupVote implements Parcelable{
         dest.writeString(vote_title);
         dest.writeString(add_time);
         dest.writeString(end_time);
-        dest.writeInt(status);
-        dest.writeStringList(option);
         dest.writeString(groupId);
         dest.writeString(userId);
     }

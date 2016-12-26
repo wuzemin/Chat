@@ -234,7 +234,7 @@
                     android:ellipsize="end"
                     android:gravity="right"
                     android:maxLines="1"
-                    android:text="@string/code"
+                    android:drawableRight="@mipmap/rp_arrow"
                     android:textColor="#999"
                     android:textSize="14sp" />
             </LinearLayout>

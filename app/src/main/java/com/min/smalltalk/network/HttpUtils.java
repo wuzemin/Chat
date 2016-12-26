@@ -328,6 +328,16 @@ public class HttpUtils {
                 .addParams("vote_id",vote_id)
                 .build().execute(callback);
     }
+    //投票详情
+    public static void postVote(String url,String userId, String group_id, String vote_id, String vote_option, StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("userId",userId)
+                .addParams("group_id",group_id)
+                .addParams("vote_id",vote_id)
+                .addParams("vote_option",vote_option)
+                .build().execute(callback);
+    }
 
 
 }

@@ -48,7 +48,7 @@ public class GroupNoticeActivity extends BaseActivity {
         setContentView(R.layout.activity_group_notice);
         ButterKnife.bind(this);
         Intent intent=getIntent();
-        targetId=getIntent().getStringExtra("targetId");
+        targetId=intent.getStringExtra("targetId");
         mConversationType= Conversation.ConversationType.setValue(intent.getIntExtra("conversationType",0));
         tvTitle.setText("群公告");
         tvTitleRight.setVisibility(View.VISIBLE);

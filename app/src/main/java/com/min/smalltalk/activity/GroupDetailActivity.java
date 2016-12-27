@@ -527,6 +527,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 break;
             case R.id.ll_group_vote:   //投票
                 Intent intent4=new Intent(mContext, GroupVoteActivity.class);
+                intent4.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
                 intent4.putExtra("group_id",groupId);
                 startActivity(intent4);
                 break;

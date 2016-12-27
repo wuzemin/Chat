@@ -37,6 +37,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.rong.imlib.model.Conversation;
 import okhttp3.Call;
 
 public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -59,6 +60,7 @@ public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayou
     private String voteId;
     private static final int REFRESH_COMPLETE=0;
     private int status;
+    private Conversation.ConversationType conversationType;
 
 
     @Override
@@ -75,7 +77,9 @@ public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayou
         tvTitle.setText("投票活动");
         tvTitleRight.setVisibility(View.VISIBLE);
         tvTitleRight.setText("添加");
-        groupId = getIntent().getStringExtra("group_id");
+        Intent intent=getIntent();
+        groupId = intent.getStringExtra("group_id");
+        conversationType=Conversation.ConversationType.setValue(intent.getIntExtra("conversationType",0));
         swipeRefresh.setOnRefreshListener(this);
 
     }
@@ -178,7 +182,7 @@ public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayou
             case R.id.tv_title_right:
                 Intent intent = new Intent(mContext, AddVoteActivity.class);
                 intent.putExtra("group_id", groupId);
-//                startActivity(intent);
+                intent.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
                 startActivityForResult(intent, 0);
                 break;
         }

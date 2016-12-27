@@ -63,6 +63,9 @@ import io.rong.imlib.model.Message;
 import io.rong.message.TextMessage;
 import okhttp3.Call;
 
+/**
+ * 创建投票
+ */
 public class AddVoteActivity extends BaseActivity {
 
     @BindView(R.id.iv_title_back)
@@ -107,6 +110,7 @@ public class AddVoteActivity extends BaseActivity {
     private String addContent;
     private Conversation.ConversationType mConversationType;
     private String targetId;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +130,7 @@ public class AddVoteActivity extends BaseActivity {
         view = LayoutInflater.from(mContext).inflate(R.layout.item_vote, null);
 //        editText = (EditText) view.findViewById(R.id.et_vote_content);
         Intent intent=getIntent();
-        targetId=getIntent().getStringExtra("targetId");
+        targetId=intent.getStringExtra("targetId");
         mConversationType= Conversation.ConversationType.setValue(intent.getIntExtra("conversationType",0));
 
     }
@@ -186,7 +190,7 @@ public class AddVoteActivity extends BaseActivity {
                 showSTimePopupWindow();
                 break;
             case R.id.btn_create_vote:   //投票
-                String title = etVoteTitle.getText().toString();
+                title = etVoteTitle.getText().toString();
                 if (TextUtils.isEmpty(title)) {
                     T.showShort(mContext, "标题不能为空");
                     return;
@@ -246,27 +250,54 @@ public class AddVoteActivity extends BaseActivity {
     }
 
     private void sendMessage() {
-            TextMessage textMessage=TextMessage.obtain(RongContext.getInstance().getString(R.string.group_notice_prefix)+"投票活动");
+        /*RichContentMessage richContentMessage=RichContentMessage.obtain("投票活动",title,"http://rongcloud.cn/images/logo.png");
+        Message myMessage=Message.obtain(groupId,mConversationType,richContentMessage);
+        MentionedInfo mentionedInfo=new MentionedInfo(MentionedInfo.MentionedType.ALL,null,null);
+        richContentMessage.setMentionedInfo(mentionedInfo);
+        RongIM.getInstance().sendMessage(myMessage, null, null, new IRongCallback.ISendMessageCallback() {
+            @Override
+            public void onAttached(Message message) {
+
+            }
+
+            @Override
+            public void onSuccess(Message message) {
+
+            }
+
+            @Override
+            public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+
+            }
+        });*/
+        String string="有人发起了投票活动，请点击右上角进入该活动进行投票";
+        if(!TextUtils.isEmpty(string)){
+            TextMessage textMessage=TextMessage.obtain(RongContext.getInstance().getString(
+                    R.string.group_notice_prefix)+string);
             MentionedInfo mentionedInfo=new MentionedInfo(MentionedInfo.MentionedType.ALL,null,null);
             textMessage.setMentionedInfo(mentionedInfo);
-            RongIM.getInstance().sendMessage(Message.obtain(targetId, mConversationType, textMessage),
+            RongIM.getInstance().sendMessage(Message.obtain(groupId, mConversationType, textMessage),
                     null, null, new IRongCallback.ISendMessageCallback() {
                         @Override
                         public void onAttached(Message message) {
-
+//                            T.showLong(mContext,"onAttached--"+message);
                         }
 
                         @Override
                         public void onSuccess(Message message) {
-
+//                          T.showLong(mContext,"onSuccess--"+message);
                         }
 
                         @Override
                         public void onError(Message message, RongIMClient.ErrorCode errorCode) {
-
+//                            T.showLong(mContext,"onError--"+message+"---"+errorCode);
                         }
                     });
             finish();
+
+        }else {
+            T.showShort(mContext,"内容不能为空");
+        }
     }
 
     /**

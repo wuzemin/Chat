@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
 import com.min.smalltalk.activity.AMAPLocationActivity;
+import com.min.smalltalk.activity.GroupVoteActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
 import com.min.smalltalk.bean.ContactNotificationMessageData;
 import com.min.smalltalk.message.module.TalkExtensionModule;
@@ -33,6 +34,7 @@ import io.rong.message.ContactNotificationMessage;
 import io.rong.message.GroupNotificationMessage;
 import io.rong.message.ImageMessage;
 import io.rong.message.LocationMessage;
+import io.rong.message.RichContentMessage;
 
 /**
  * Created by Min on 2016/11/24.
@@ -170,11 +172,15 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
-        if (message.getContent() instanceof ImageMessage) {
+        if(message.getContent() instanceof RichContentMessage){
+            Intent intent=new Intent(context, GroupVoteActivity.class);
+            context.startActivity(intent);
+        }
+//        if (message.getContent() instanceof ImageMessage) {
 //            Intent intent = new Intent(context, PhotoActivity.class);
 //            intent.putExtra("message", message);
 //            context.startActivity(intent);
-        }
+//        }
 
         return false;
     }

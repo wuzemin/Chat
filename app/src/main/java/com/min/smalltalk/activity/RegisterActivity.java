@@ -176,7 +176,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext,"手机号不能为空");
                     return;
                 }
-                if(TextUtils.isEmpty(password) && password.length()>4){
+                if(TextUtils.isEmpty(password) || password.length()<4){
                     T.showShort(mContext,"密码不能为空且长度不能小于4");
                     return;
                 }
@@ -187,10 +187,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     } else {
                         T.showShort(mContext,"请输入完整验证码");
                         etCode.requestFocus();
+                        return;
                     }
                 } else {
                     T.showShort(mContext,"请输入验证码");
                     etCode.requestFocus();
+                    return;
                 }
                 LoadDialog.show(mContext);
                 initRegister();
@@ -257,6 +259,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     btnGetCord.setVisibility(View.VISIBLE);
                     Toast.makeText(RegisterActivity.this, "验证码获取失败，请重新获取", Toast.LENGTH_SHORT).show();
                     etPhone.requestFocus();
+                    return;
                 } else {
                     ((Throwable) data).printStackTrace();
                     int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
@@ -265,6 +268,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     if (resId > 0) {
                         Toast.makeText(RegisterActivity.this, resId + "", Toast.LENGTH_SHORT).show();
                     }
+                    return;
                 }
             }
         }

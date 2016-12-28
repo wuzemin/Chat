@@ -1,6 +1,7 @@
 package com.min.smalltalk.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,8 +33,6 @@ import butterknife.ButterKnife;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import okhttp3.Call;
-
-import static com.mob.tools.utils.R.getStringRes;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
@@ -98,7 +97,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         T.showShort(mContext,"请输入正确的手机号码");
                         return;
                     }
+                    btnGetCord.setClickable(true);
+                    btnGetCord.setBackgroundColor(Color.argb(255,0,121,255));
+                }else {
+                    btnGetCord.setClickable(false);
+                    btnGetCord.setBackgroundColor(Color.argb(204,199,199,199));
                 }
+
             }
 
             @Override
@@ -106,36 +111,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             }
         });
-    }
-
-    Handler handlerText = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                if (time > 0) {
-                    tvMessage.setVisibility(View.VISIBLE);
-                    tvMessage.setText("验证码已发送" + time + "秒");
-                    time--;
-                    handlerText.sendEmptyMessageDelayed(1, 1000);
-                } else {
-                    tvMessage.setText("提示信息");
-                    time = 60;
-                    tvMessage.setVisibility(View.GONE);
-                    btnGetCord.setVisibility(View.VISIBLE);
-                }
-            } else {
-                etCode.setText("");
-                tvMessage.setText("提示信息");
-                time = 60;
-                tvMessage.setVisibility(View.GONE);
-                btnGetCord.setVisibility(View.VISIBLE);
-            }
-        }
-    };
-
-    //验证码送成功后提示文字
-    private void reminderText() {
-        tvMessage.setVisibility(View.VISIBLE);
-        handlerText.sendEmptyMessageDelayed(1, 1000);
     }
 
     private void initView() {
@@ -150,7 +125,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 phone=etPhone.getText().toString().trim();
                 if (!TextUtils.isEmpty(phone)) {
                     if (phone.length() == 11) {
-//                        isExit();
                         SMSSDK.getVerificationCode("86", phone);
                         etCode.requestFocus();
                         btnGetCord.setVisibility(View.GONE);
@@ -234,6 +208,35 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         });
     }
 
+    //验证码送成功后提示文字
+    private void reminderText() {
+        tvMessage.setVisibility(View.VISIBLE);
+        handlerText.sendEmptyMessageDelayed(1, 1000);
+    }
+
+    Handler handlerText = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                if (time > 0) {
+                    tvMessage.setVisibility(View.VISIBLE);
+                    tvMessage.setText("验证码已发送" + time + "秒");
+                    time--;
+                    handlerText.sendEmptyMessageDelayed(1, 1000);
+                } else {
+                    tvMessage.setText("提示信息");
+                    time = 60;
+                    tvMessage.setVisibility(View.GONE);
+                    btnGetCord.setVisibility(View.VISIBLE);
+                }
+            } else {
+                etCode.setText("");
+                tvMessage.setText("提示信息");
+                time = 60;
+                tvMessage.setVisibility(View.GONE);
+                btnGetCord.setVisibility(View.VISIBLE);
+            }
+        }
+    };
 
     Handler handler = new Handler() {
         @Override
@@ -248,6 +251,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {//提交验证码成功,验证通过
                     Toast.makeText(getApplicationContext(), "验证码校验成功", Toast.LENGTH_SHORT).show();
                     handlerText.sendEmptyMessage(2);
+                    LoadDialog.show(mContext);
+                    initRegister();
                 } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {//服务器验证码发送成功
                     reminderText();
                     Toast.makeText(getApplicationContext(), "验证码已经发送", Toast.LENGTH_SHORT).show();
@@ -262,12 +267,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     return;
                 } else {
                     ((Throwable) data).printStackTrace();
-                    int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
+//                    int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
                     Toast.makeText(RegisterActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
                     etCode.selectAll();
-                    if (resId > 0) {
-                        Toast.makeText(RegisterActivity.this, resId + "", Toast.LENGTH_SHORT).show();
-                    }
+//                    if (resId > 0) {
+//                        Toast.makeText(RegisterActivity.this, resId + "", Toast.LENGTH_SHORT).show();
+//                    }
                     return;
                 }
             }

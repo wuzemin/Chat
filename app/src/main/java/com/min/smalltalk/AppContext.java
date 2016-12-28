@@ -3,6 +3,8 @@ package com.min.smalltalk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -13,6 +15,9 @@ import com.min.smalltalk.activity.AMAPLocationActivity;
 import com.min.smalltalk.activity.GroupVoteActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
 import com.min.smalltalk.bean.ContactNotificationMessageData;
+import com.min.smalltalk.bean.FriendInfo;
+import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.message.module.TalkExtensionModule;
 import com.min.smalltalk.server.broadcast.BroadcastManager;
 
@@ -43,14 +48,14 @@ import io.rong.message.RichContentMessage;
 
 public class AppContext implements RongIMClient.ConnectionStatusListener,
          RongIM.ConversationBehaviorListener, RongIM.ConversationListBehaviorListener
-        ,RongIMClient.OnReceiveMessageListener, RongIM.LocationProvider {
+        ,RongIMClient.OnReceiveMessageListener, RongIM.LocationProvider, RongIM.UserInfoProvider {
 
     public static final String UPDATE_FRIEND = "update_friend";
     public static final String UPDATE_RED_DOT = "update_red_dot";
     private Context mContext;
-//    private SharedPreferences sp;
-//    private List<FriendInfo> list;
-//    private FriendInfoDAOImpl friendInfoDAO;
+    private SharedPreferences sp;
+    private List<FriendInfo> list;
+    private FriendInfoDAOImpl friendInfoDAO;
 
     private static AppContext mRongCloudInstance;
     private RongIM.LocationProvider.LocationCallback mLastLocationCallback;
@@ -61,8 +66,9 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         this.mContext = mContext;
         initListener();
         mActivities = new ArrayList<>();
-//        sp = mContext.getSharedPreferences("config", Context.MODE_PRIVATE);
-//        friendInfoDAO= new FriendInfoDAOImpl(mContext);
+        sp = mContext.getSharedPreferences("config", Context.MODE_PRIVATE);
+        friendInfoDAO= new FriendInfoDAOImpl(mContext);
+        UserInfoManager.init(mContext);
 //        initPortrait();
     }
 
@@ -99,7 +105,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
      */
     private void initListener() {
         RongIM.setConversationBehaviorListener(this);//设置会话界面操作的监听器。
-//        RongIM.setUserInfoProvider(this,true);  //用户信息提供者
+        RongIM.setUserInfoProvider(this,true);  //用户信息提供者
         RongIM.setConversationListBehaviorListener(this);  //会话列表界面
 //        RongIM.setGroupInfoProvider(this, true);  //群组用户提供者
         RongIM.setLocationProvider(this);//设置地理位置提供者,不用位置的同学可以注掉此行代码
@@ -337,7 +343,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
     /**
      * 头像
      */
-    /*private void initPortrait() {
+    private void initPortrait() {
         //用户头像
         list = new ArrayList<>();
         String userId=sp.getString(Const.LOGIN_ID,"");
@@ -356,20 +362,33 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         list=friendInfoDAO.findAll(userId);
         list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
         RongIM.setUserInfoProvider(this, true);
-    }*/
+    }
 
-    /*@Override
+    @Override
     public UserInfo getUserInfo(String s) {
-        for (FriendInfo i : list) {
+        UserInfoManager.getInstance().getUserInfo(s);
+        return null;
+        /*if (TextUtils.isEmpty(s)) {
+            return null;
+        }
+        if (list != null) {
+            UserInfo userInfo = mUserInfoCache.get(userId);
+            if (userInfo != null) {
+                RongIM.getInstance().refreshUserInfoCache(userInfo);
+                L.e("-------", "SealUserInfoManager getUserInfo from cache " + s + " "
+                        + userInfo.getName() + " " + userInfo.getPortraitUri());
+                return userInfo;
+            }
+        }*/
+    }
+
+        /*for (FriendInfo i : list) {
             if (i.getUserId().equals(s)) {
                 UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
                 return userInfo;
             }
         }
-        return null;*/
-        /*if (TextUtils.isEmpty(userId)) {
-            return;
-        }
+
         if (mUserInfoCache != null) {
             UserInfo userInfo = mUserInfoCache.get(userId);
             if (userInfo != null) {

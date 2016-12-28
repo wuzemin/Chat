@@ -282,7 +282,7 @@ public class HttpUtils {
     public static void postAddFlexible(String url, String userId,String actives_id,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL+url)
                 .addHeader("Connection", "close")
-                .addParams("actives_id",userId)
+                .addParams("userId",userId)
                 .addParams("actives_id",actives_id)
                 .build().execute(callback);
     }

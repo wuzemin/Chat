@@ -124,6 +124,10 @@ public class GroupAddFlexibleActivity extends BaseActivity {
                 showSTimePopupWindow(number);
                 break;
             case R.id.tv_title_right:
+                if(imageFile==null){
+                    T.showShort(mContext,"群活动图标不能为空");
+                    return;
+                }
                 addFlexible();
 
                 break;
@@ -150,7 +154,7 @@ public class GroupAddFlexibleActivity extends BaseActivity {
             e.printStackTrace();
         }
         String string = jsonArray.toString();
-        HttpUtils.postChangePerson("/foundActives", string, imageFile, new StringCallback() {
+        HttpUtils.postAddGroupFlexible("/foundActives", string, imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/foundActives---------"+e);
@@ -288,6 +292,7 @@ public class GroupAddFlexibleActivity extends BaseActivity {
                     selectUri=uri;
                     imageFile=new File(selectUri.getPath());
                     imageUri=selectUri.toString();
+                    ImageLoader.getInstance().clearDiskCache();
                     ImageLoader.getInstance().displayImage(imageUri,ivGroupActivityHead);
                 }
             }

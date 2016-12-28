@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -27,6 +28,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.AMUtils;
+import com.min.mylibrary.util.CommonUtils;
 import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
@@ -56,6 +59,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +68,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.imageloader.core.ImageLoader;
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.UserInfo;
 import okhttp3.Call;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -134,6 +140,8 @@ public class PersonalFragment extends Fragment {
     private SharedPreferences.Editor editor;
 //    private BitmapUtils bitmapUtils;
     private String string;
+    private SimpleDateFormat format;
+    private Date date;
 
 
     @Override
@@ -141,6 +149,8 @@ public class PersonalFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         ButterKnife.bind(this, view);
+        format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        date=new Date(System.currentTimeMillis());
 //        bitmapUtils=new BitmapUtils(getContext());
         groupsDAO=new GroupsDAOImpl(getActivity());
         friendInfoDAO=new FriendInfoDAOImpl(getActivity());
@@ -246,6 +256,7 @@ public class PersonalFragment extends Fragment {
                             sex=2;
                         }else {
                             sex1=string;
+//                            sex1="0";
                             sex=0;
                         }
                         dialogInterface.dismiss();
@@ -264,6 +275,7 @@ public class PersonalFragment extends Fragment {
                 break;
             case R.id.rl_email:  //邮箱
                 editText=new EditText(getActivity());
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 new android.app.AlertDialog.Builder(getActivity())
                         .setTitle("修改邮箱")
                         .setView(editText)
@@ -271,6 +283,10 @@ public class PersonalFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 email=editText.getText().toString();
+                                if(!CommonUtils.isEmail(email)){
+                                    T.showShort(getActivity(),"邮箱格式不正确");
+                                    return;
+                                }
 //                                tvEmail.setText(email);
                                 changePerson(3);
                             }
@@ -313,6 +329,10 @@ public class PersonalFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 phone=editText.getText().toString();
+                                if(!AMUtils.isMobile(phone)){
+                                    T.showShort(getActivity(),"手机号不正确");
+                                    return;
+                                }
                                 changePerson(6);
                             }
                         })
@@ -427,6 +447,7 @@ public class PersonalFragment extends Fragment {
                         String port=HttpUtils.IMAGE_RUL+code.getMsg().getAvatar_image();
                         editor.putString(Const.LOGIN_PORTRAIT, port);
                         editor.commit();
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(userId,nickName,Uri.parse(port)));
                         T.showShort(getActivity(), "修改头像成功，请在好友界面进行刷新");
                     } else {
                         T.showShort(getActivity(), "修改失败");
@@ -478,19 +499,24 @@ public class PersonalFragment extends Fragment {
         TextView tv_ensure = (TextView) menuView.findViewById(R.id.tv_ensure);
         TextView tv_pop_title = (TextView) menuView.findViewById(R.id.tv_pop_title);
         tv_pop_title.setText("选择时间");
-        tv_cancle.setOnClickListener(new View.OnClickListener() {
+        tv_cancle.setOnClickListener(new View.OnClickListener() {   //取消
             @Override
             public void onClick(View arg0) {
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
             }
         });
-        tv_ensure.setOnClickListener(new View.OnClickListener() {
+        tv_ensure.setOnClickListener(new View.OnClickListener() {  //确认
 
             @Override
             public void onClick(View arg0) {
                 beginTime = wheelMainDate.getTime().toString();
                 birthday=DateUtils.formateStringH(beginTime, DateUtils.yyyyMMddHHmm);
+                Date dateBir=stringToDate(birthday);
+                if(date.before(dateBir)){
+                    T.showLong(getActivity(),"不能大于当前时间");
+                    return;
+                }
                 myBirthday=birthday.substring(0,10);
 //                tvBirthday.setText(birthday);
                 int birth= Integer.parseInt(birthday.substring(0,4));
@@ -498,6 +524,13 @@ public class PersonalFragment extends Fragment {
                 changePerson(5);
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
+
+                /*Date date1 = stringToDate(allAddFriends);
+                Date date2 = stringToDate(t1);
+                if (date1.before(date2)) {
+                    return 1;
+                }
+                return -1;*/
             }
         });
     }
@@ -544,6 +577,22 @@ public class PersonalFragment extends Fragment {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 判断时间
+     * @return
+     */
+    private Date stringToDate(String string) {
+        String updatedAtDateStr = string.substring(0, 10) + " " + string.substring(11, 16);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date updateAtDate = null;
+        try {
+            updateAtDate = simpleDateFormat.parse(updatedAtDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return updateAtDate;
     }
 
       /**

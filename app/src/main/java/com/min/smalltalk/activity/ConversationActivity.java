@@ -97,7 +97,8 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         sp = getSharedPreferences("config", MODE_PRIVATE);
 
         Intent intent = getIntent();
-        initPortrait();
+
+        initPortrait();   //头像
 
         if (intent == null || intent.getData() == null)
             return;

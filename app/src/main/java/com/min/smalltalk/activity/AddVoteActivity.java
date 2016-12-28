@@ -45,6 +45,8 @@ import com.min.smalltalk.wedget.Wheel.WheelMain;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -111,12 +113,16 @@ public class AddVoteActivity extends BaseActivity {
     private Conversation.ConversationType mConversationType;
     private String targetId;
     private String title;
+    private SimpleDateFormat format;
+    private Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_vote);
         ButterKnife.bind(this);
+        format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        date=new Date(System.currentTimeMillis());
         initView();
         initAdapter();
     }
@@ -355,6 +361,11 @@ public class AddVoteActivity extends BaseActivity {
             public void onClick(View arg0) {
                 beginTime = wheelMainDate.getTime().toString();
                 period = DateUtils.formateStringH(beginTime, DateUtils.yyyyMMddHHmm);
+                Date dateBir=stringToDate(period);
+                if(dateBir.before(date)){
+                    T.showLong(mContext,"不能小于当前时间");
+                    return;
+                }
                 tvVotePeriod.setText(period);
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
@@ -373,6 +384,22 @@ public class AddVoteActivity extends BaseActivity {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = bgAlpha;
         getWindow().setAttributes(lp);
+    }
+
+    /**
+     * 判断时间
+     * @return
+     */
+    private Date stringToDate(String string) {
+        String updatedAtDateStr = string.substring(0, 10) + " " + string.substring(11, 16);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date updateAtDate = null;
+        try {
+            updateAtDate = simpleDateFormat.parse(updatedAtDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return updateAtDate;
     }
 
 

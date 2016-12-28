@@ -98,17 +98,17 @@ public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayou
                 Type type = new TypeToken<Code<List<GroupVote>>>() {
                 }.getType();
                 Code<List<GroupVote>> code = gson.fromJson(response, type);
+                List<GroupVote> voteList = code.getMsg();
                 if (code.getCode() == 200) {
-                    list = code.getMsg();
-                    /*for (GroupVote groupVote : voteList) {
+                    for (GroupVote groupVote : voteList) {
                         voteId = groupVote.getVote_id();
                         String voteTitle = groupVote.getVote_title();
                         String voteCreate = groupVote.getAdd_time();
                         String voteEndTime = groupVote.getEnd_time();
                         status=groupVote.getStatus();
-                        GroupVote groupVotes = new GroupVote(groupId,voteId, voteTitle, voteCreate, voteEndTime,status);
+                        GroupVote groupVotes = new GroupVote(voteId, voteTitle, voteCreate, voteEndTime,groupId,status);
                         list.add(groupVotes);
-                    }*/
+                    }
                     //
                     Collections.sort(list, new Comparator<GroupVote>() {
                         @Override

@@ -128,7 +128,7 @@ public class CreateGroupActivity extends BaseActivity {
             return;
         }
 
-        String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        final String userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
         if(groupIds.size() >= 1){
             Gson gson=new Gson();
             String sss=gson.toJson(groupIds);
@@ -146,9 +146,11 @@ public class CreateGroupActivity extends BaseActivity {
                     if(code.getCode()==200){
                         groupId=code.getMsg().getGroupId();
                         Groups groups = new Groups();
+                        groups.setUserId(userid);
                         groups.setGroupId(groupId);  //groupId
                         groups.setGroupName(groupName);  //groupName
                         groups.setGroupPortraitUri(imageUrl);
+                        groups.setRole("1");
                         sqLiteDAO.save(groups);
                         Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
                         LoadDialog.dismiss(mContext);

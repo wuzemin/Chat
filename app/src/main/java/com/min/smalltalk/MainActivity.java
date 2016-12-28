@@ -162,7 +162,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(), "false") //设置私聊会话非聚合显示
                     .appendQueryParameter(Conversation.ConversationType.GROUP.getName(), "false")//设置群组会话聚合显示
                     .appendQueryParameter(Conversation.ConversationType.DISCUSSION.getName(), "false")//设置讨论组会话非聚合显示
-                    .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "false")//设置系统会话非聚合显示
+//                    .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "false")//设置系统会话非聚合显示
+                    .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "true")//系统
                     .build();
             listFragment.setUri(uri);
             return listFragment;

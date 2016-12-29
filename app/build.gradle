@@ -64,12 +64,6 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     testCompile 'junit:junit:4.12'
     compile project(':libzxing')
-    //    compile 'org.greenrobot:greendao:3.2.0'
-    //    compile 'org.greenrobot:greendao-generator:3.2.0'
     compile 'com.facebook.stetho:stetho:1.4.2'
     compile files('libs/Msc.jar')
-    compile files('libs/AMap3DMap_3.3.3_AMapNavi_1.9.1_20160726.jar')
-    compile files('libs/AMap_Location_V2.4.1_20160414.jar')
-    //    compile files('libs/AMap_Search_V3.3.0_20160616.jar')
-    compile files('libs/AMap_Search_V3.3.0_20160616.jar')
 }

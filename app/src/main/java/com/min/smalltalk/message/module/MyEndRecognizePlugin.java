@@ -83,7 +83,7 @@ public class MyEndRecognizePlugin  implements IPluginModule {
 
     @Override
     public Drawable obtainDrawable(Context context) {
-        return ContextCompat.getDrawable(context, R.mipmap.volume_24);
+        return ContextCompat.getDrawable(context, R.mipmap.end_audio);
     }
 
     @Override

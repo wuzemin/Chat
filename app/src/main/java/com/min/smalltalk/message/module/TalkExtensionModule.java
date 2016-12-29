@@ -41,7 +41,7 @@ public class TalkExtensionModule extends DefaultExtensionModule {
 //        pluginModules.add(recognize);
         pluginModules.add(myStartRecognizePlugin);
         pluginModules.add(myEndRecognizePlugin);
-//        pluginModules.add(locationPlugin);
+        pluginModules.add(locationPlugin);
         return pluginModules;
 
     }

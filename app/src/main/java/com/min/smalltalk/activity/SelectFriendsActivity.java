@@ -23,7 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
-import com.min.mylibrary.widget.image.SelectableRoundedImageView;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;

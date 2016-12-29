@@ -12,7 +12,7 @@
         android:background="@color/blue3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.min.mylibrary.widget.image.CircleImageView
+        <com.min.smalltalk.wedget.image.CircleImageView
             android:layout_marginTop="10dp"
             android:id="@+id/civ_user_head"
             android:layout_width="80dp"

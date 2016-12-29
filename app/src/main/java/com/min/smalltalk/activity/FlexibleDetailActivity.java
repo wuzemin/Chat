@@ -23,9 +23,11 @@ import com.min.smalltalk.bean.GroupFlexible;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,7 +46,7 @@ public class FlexibleDetailActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_group_activity_head)
-    ImageView ivGroupActivityHead;
+    SelectableRoundedImageView ivGroupActivityHead;
     @BindView(R.id.activity_name)
     TextView tvActivityName;
     @BindView(R.id.tv_activity_start_time)
@@ -65,13 +67,15 @@ public class FlexibleDetailActivity extends BaseActivity {
     private String flexibleId,flexibleName,flexiblePort,flexibleStartTime,flexibleEndTime,flexiblePlace,flexibleContent;
     private List<GroupFlexible> list;
     private BaseRecyclerAdapter<FlexibleMember> adapter;
-    private List<FlexibleMember> loginBeenList;
+    private List<FlexibleMember> flexibleMemberList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flexible_detail);
         ButterKnife.bind(this);
+        list=new ArrayList<>();
+        flexibleMemberList=new ArrayList<>();
         Intent intent=getIntent();
         groupFlexible=intent.getParcelableExtra("flexible");
         flexibleId=groupFlexible.getActives_id();
@@ -79,7 +83,7 @@ public class FlexibleDetailActivity extends BaseActivity {
         flexibleStartTime=groupFlexible.getActives_start();
         flexibleEndTime=groupFlexible.getActives_end();
         flexiblePlace=groupFlexible.getActives_address();
-        flexiblePort=groupFlexible.getActives_image();
+        flexiblePort=HttpUtils.IMAGE_RUL+groupFlexible.getActives_image();
         flexibleContent=groupFlexible.getActives_content();
         initView();
         initData();  //群活动成员
@@ -119,15 +123,16 @@ public class FlexibleDetailActivity extends BaseActivity {
                 Type type=new TypeToken<Code<List<FlexibleMember>>>(){}.getType();
                 Code<List<FlexibleMember>> beanCode=gson.fromJson(response,type);
                 if(beanCode.getCode()==200){
-                    List<FlexibleMember> bean=beanCode.getMsg();
-                    initAdapter(bean);
+//                    List<FlexibleMember> bean=beanCode.getMsg();
+                    flexibleMemberList=beanCode.getMsg();
+                    initAdapter();
                 }
             }
         });
     }
 
-    private void initAdapter(List<FlexibleMember> bean) {
-        adapter=new BaseRecyclerAdapter<FlexibleMember>(mContext,bean,R.layout.item_group) {
+    private void initAdapter() {
+        adapter=new BaseRecyclerAdapter<FlexibleMember>(mContext,flexibleMemberList,R.layout.item_group) {
             @Override
             public void convert(BaseRecyclerHolder holder, FlexibleMember item, int position, boolean isScrolling) {
                 holder.setImageByUrl(R.id.siv_group_head,HttpUtils.IMAGE_RUL+item.getAvatar_image());

@@ -12,7 +12,7 @@
         android:layout_height="52dp"
         android:clickable="true">
 
-        <com.min.mylibrary.widget.image.SelectableRoundedImageView
+        <com.min.smalltalk.wedget.image.SelectableRoundedImageView
             android:id="@+id/siv_avatar"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -64,7 +64,7 @@
         android:layout_height="52dp"
         android:clickable="true">
 
-        <com.min.mylibrary.widget.image.SelectableRoundedImageView
+        <com.min.smalltalk.wedget.image.SelectableRoundedImageView
             android:id="@+id/siv_avatar2"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -103,7 +103,7 @@
         android:layout_height="52dp"
         android:clickable="true">
 
-        <com.min.mylibrary.widget.image.SelectableRoundedImageView
+        <com.min.smalltalk.wedget.image.SelectableRoundedImageView
             android:id="@+id/siv_avatar4"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -142,7 +142,7 @@
         android:layout_height="52dp"
         android:clickable="true">
 
-        <com.min.mylibrary.widget.image.SelectableRoundedImageView
+        <com.min.smalltalk.wedget.image.SelectableRoundedImageView
             android:id="@+id/siv_me"
             android:layout_width="36dp"
             android:layout_height="36dp"

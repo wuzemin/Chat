@@ -34,7 +34,7 @@ import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
-import com.min.mylibrary.widget.image.CircleImageView;
+import com.min.smalltalk.wedget.image.CircleImageView;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.LoginActivity;
 import com.min.smalltalk.activity.MyPopuWindow;

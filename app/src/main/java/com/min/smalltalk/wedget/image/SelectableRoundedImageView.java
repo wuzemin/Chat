@@ -1,4 +1,4 @@
-package com.min.mylibrary.widget.image;
+package com.min.smalltalk.wedget.image;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

@@ -174,7 +174,7 @@
                     android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
-                <com.min.mylibrary.widget.image.SelectableRoundedImageView
+                <com.min.smalltalk.wedget.image.SelectableRoundedImageView
                     android:id="@+id/siv_group_header"
                     android:layout_width="30dp"
                     android:layout_height="30dp"

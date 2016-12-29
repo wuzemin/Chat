@@ -43,7 +43,7 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <com.min.mylibrary.widget.image.SelectableRoundedImageView
+        <com.min.smalltalk.wedget.image.SelectableRoundedImageView
             android:id="@+id/siv_friend"
             android:layout_width="60dp"
             android:layout_height="60dp"

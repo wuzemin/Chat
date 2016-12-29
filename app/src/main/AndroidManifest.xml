@@ -147,7 +147,7 @@
         <activity android:name=".activity.AMAPLocationActivity" />
         <activity android:name=".activity.GroupVoteActivity" />
         <activity android:name=".activity.VoteDetailActivity" />
-        <activity android:name=".activity.AddVoteActivity"></activity>
+        <activity android:name=".activity.AddVoteActivity" />
     </application>
 
 </manifest>

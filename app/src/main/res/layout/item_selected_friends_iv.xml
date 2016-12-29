@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.min.mylibrary.widget.image.SelectableRoundedImageView
+    <com.min.smalltalk.wedget.image.SelectableRoundedImageView
         android:id="@+id/iv_selected_friends"
         android:layout_width="36dp"
         android:layout_height="36dp"

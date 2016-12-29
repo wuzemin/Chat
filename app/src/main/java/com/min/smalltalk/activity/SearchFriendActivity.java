@@ -19,7 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.AMUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
-import com.min.mylibrary.widget.image.SelectableRoundedImageView;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.AddFriend;

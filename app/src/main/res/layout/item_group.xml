@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <com.min.mylibrary.widget.image.SelectableRoundedImageView
+        <com.min.smalltalk.wedget.image.SelectableRoundedImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/siv_group_head"

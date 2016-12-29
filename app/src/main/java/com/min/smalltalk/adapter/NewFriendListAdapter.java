@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.min.mylibrary.widget.image.CircleImageView;
+import com.min.smalltalk.wedget.image.CircleImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseAdapters;

@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-import com.min.mylibrary.widget.image.SelectableRoundedImageView;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.R;
 import com.min.smalltalk.bean.FriendInfo;
 

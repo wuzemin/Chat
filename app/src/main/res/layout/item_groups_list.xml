@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="55dp"
     android:layout_height="wrap_content">
-    <com.min.mylibrary.widget.image.SelectableRoundedImageView
+    <com.min.smalltalk.wedget.image.SelectableRoundedImageView
         android:layout_gravity="center_horizontal"
         android:layout_margin="10dp"
         android:layout_width="40dp"

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
 
-    <ImageView
+    <com.min.smalltalk.wedget.image.SelectableRoundedImageView
         android:layout_width="100dp"
         android:layout_height="120dp"
         app:srcCompat="@mipmap/load_image_2"
@@ -19,7 +19,7 @@
 
     <!--活动名-->
     <TextView
-        android:layout_marginTop="10dp"
+        android:maxLines="1"
         android:text="@string/group_activity_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
 
     <!--开始时间-->
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         android:layout_marginStart="20dp"
         android:id="@+id/activity_start_time" />
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
 
     <!--结束时间-->
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:layout_marginStart="20dp"
         android:id="@+id/activity_end_time" />
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
 
     <!--地点-->
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/activity_place"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,7 +91,8 @@
         android:layout_marginStart="20dp"
         android:id="@+id/activity_place" />
     <TextView
-        android:layout_marginTop="10dp"
+        android:maxLines="1"
+        android:layout_marginTop="8dp"
         android:text="@string/place"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -104,7 +105,7 @@
 
     <!--活动简介-->
     <TextView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="@string/activity_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,7 +116,8 @@
         android:layout_marginStart="20dp"
         android:id="@+id/activity_content" />
     <TextView
-        android:maxLines="2"
+        android:layout_marginBottom="5dp"
+        android:maxLines="1"
         android:layout_marginTop="10dp"
         android:text="@string/activity_content"
         android:layout_width="wrap_content"

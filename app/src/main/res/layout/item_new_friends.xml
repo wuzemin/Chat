@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.min.mylibrary.widget.image.CircleImageView
+    <com.min.smalltalk.wedget.image.CircleImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:srcCompat="@mipmap/default_portrait"

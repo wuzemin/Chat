@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
-import com.min.mylibrary.widget.image.SelectableRoundedImageView;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.R;
@@ -429,7 +429,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener, Sw
 
     @Override
     public void onRefresh() {
-        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
+        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 1000);
     }
 
     private Handler mHandler=new Handler(){

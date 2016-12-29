@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
@@ -22,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
@@ -124,10 +126,34 @@ public class GroupAddFlexibleActivity extends BaseActivity {
                 showSTimePopupWindow(number);
                 break;
             case R.id.tv_title_right:
+                actives_title=etActivityName.getText().toString();
+                actives_content=etdActivityContent.getText().toString();
+                actives_address=etActivityPlace.getText().toString();
                 if(imageFile==null){
                     T.showShort(mContext,"群活动图标不能为空");
                     return;
                 }
+                if(TextUtils.isEmpty(actives_title)){
+                    T.showShort(mContext,"群活动标题不能为空");
+                    return;
+                }
+                if(TextUtils.isEmpty(actives_content)){
+                    T.showShort(mContext,"群活动内容不能为空");
+                    return;
+                }
+                if(TextUtils.isEmpty(actives_start)){
+                    T.showShort(mContext,"群活动开始时间不能为空");
+                    return;
+                }
+                if(TextUtils.isEmpty(actives_end)){
+                    T.showShort(mContext,"群活动结束时间不能为空");
+                    return;
+                }
+                if(TextUtils.isEmpty(actives_address)){
+                    T.showShort(mContext,"群活动地址不能为空");
+                    return;
+                }
+                LoadDialog.show(mContext);
                 addFlexible();
 
                 break;
@@ -135,9 +161,6 @@ public class GroupAddFlexibleActivity extends BaseActivity {
     }
 
     private void addFlexible() {
-        actives_title=etActivityName.getText().toString();
-        actives_content=etdActivityContent.getText().toString();
-        actives_address=etActivityPlace.getText().toString();
         JSONArray jsonArray=new JSONArray();
         JSONObject row=new JSONObject();
         try {
@@ -167,9 +190,13 @@ public class GroupAddFlexibleActivity extends BaseActivity {
                 Code<Integer> code = gson.fromJson(response,type);
                 if(code.getCode()==200){
                     T.showShort(mContext,"创建成功");
+                    Intent intent=new Intent();
+                    setResult(0,intent);
                     finish();
+                    LoadDialog.dismiss(mContext);
                 }else {
                     T.showShort(mContext,"创建失败");
+                    LoadDialog.dismiss(mContext);
                 }
             }
         });

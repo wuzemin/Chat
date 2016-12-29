@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
-import com.min.mylibrary.widget.image.CircleImageView;
+import com.min.smalltalk.wedget.image.CircleImageView;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;

@@ -4,6 +4,8 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
+import com.min.mylibrary.util.L;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,8 +46,8 @@ public class AudioRecordFunc {
         //判断是否有外部存储设备sdcard
         if (AudioFileFunc.isSdcardExit()) {
             if (isRecord) {
-//                return ErrorCode.E_STATE_RECODING;
-                return ErrorCode.E_STATE_RECODING;
+//                return AudioErrorCode.E_STATE_RECODING;
+                return AudioErrorCode.E_STATE_RECODING;
             } else {
                 if (audioRecord == null)
                     creatAudioRecord();
@@ -56,11 +58,12 @@ public class AudioRecordFunc {
                 // 开启音频文件写入线程
                 new Thread(new AudioRecordThread()).start();
 
-                return ErrorCode.SUCCESS;
+                L.e("------------audio",AudioErrorCode.SUCCESS+"");
+                return AudioErrorCode.SUCCESS;
             }
 
         } else {
-            return ErrorCode.E_NOSDCARD;
+            return AudioErrorCode.E_NOSDCARD;
         }
 
     }

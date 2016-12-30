@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -26,7 +27,6 @@ import com.min.mylibrary.util.T;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.IatSettings;
 import com.min.smalltalk.wedget.audio.AudioRecordFunc;
-import com.min.smalltalk.wedget.audio.ErrorCode;
 import com.min.smalltalk.wedget.audio.FucUtil;
 import com.min.smalltalk.wedget.audio.JsonParser;
 
@@ -58,7 +58,7 @@ public class MyEndRecognizePlugin  implements IPluginModule {
     private SpeechRecognizer mIat;  //语音听写对象
     private HashMap<String,String> mIatResults=new LinkedHashMap<>();
 
-    private String mEngineType;
+    private String mEngineType = SpeechConstant.TYPE_CLOUD;
     private Toast mToast;
 
     private String message;
@@ -108,15 +108,14 @@ public class MyEndRecognizePlugin  implements IPluginModule {
 
     int ret=0;
     private void initSpeech() {
-        SpeechUtility.createUtility(context, SpeechConstant.APPID+"=585a524b");
+        SpeechUtility.createUtility(context,SpeechConstant.APPID+"=586605fb");
         mIat = SpeechRecognizer.createRecognizer(context,mInitListener);
         setParam();
-        // 设置音频来源为外部文件
-        mIat.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");
+        mIat.setParameter(SpeechConstant.AUDIO_SOURCE,"-1");
         ret = mIat.startListening(recognizerListener);
-        if (ret != ErrorCode.SUCCESS) {
-            T.showShort(context,"识别失败,错误码：" + ret);
-        } else {
+        if(ret !=ErrorCode.SUCCESS){
+            T.showShort(context,"听写失败，错误码："+ret);
+        }else {
             byte[] audioData= FucUtil.readAudio(Environment.getExternalStorageDirectory()+"/FinalAudio.wav");
             if (null != audioData) {
                 mIat.writeAudio(audioData, 0, audioData.length);
@@ -157,6 +156,7 @@ public class MyEndRecognizePlugin  implements IPluginModule {
         @Override
         public void onError(SpeechError speechError) {
             Log.e("========onError","onError:"+speechError);
+            T.showLong(context,"onError"+speechError);
 //            mIat.stopListening();
         }
 
@@ -220,7 +220,7 @@ public class MyEndRecognizePlugin  implements IPluginModule {
             }
 
             @Override
-            public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+            public void onError(Message message, RongIMClient.AudioErrorCode errorCode) {
 
             }
         });

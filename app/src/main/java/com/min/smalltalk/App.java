@@ -61,6 +61,7 @@ public class App extends Application {
         //在这里为应用设置异常处理，然后程序才能获取未处理的异常
         CrashHandler crashHandler=CrashHandler.getsInstance();
         crashHandler.init(this);
+//        CrashHandler.getInstance().init(this);
 
         userid=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
 

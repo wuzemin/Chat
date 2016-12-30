@@ -10,7 +10,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
-import com.min.smalltalk.activity.AMAPLocationActivity;
+import com.min.smalltalk.activity.AmapActivity;
 import com.min.smalltalk.activity.GroupVoteActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
 import com.min.smalltalk.bean.ContactNotificationMessageData;
@@ -171,7 +171,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
          * demo 代码  开发者需替换成自己的代码。
          */
         if (message.getContent() instanceof LocationMessage) {
-            Intent intent = new Intent(context, AMAPLocationActivity.class);
+            Intent intent = new Intent(context, AmapActivity.class);
             intent.putExtra("location", message.getContent());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
@@ -325,7 +325,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
     @Override
     public void onStartLocation(Context context, LocationCallback locationCallback) {
         AppContext.getInstance().setLastLocationCallback(locationCallback);
-        Intent intent = new Intent(context, AMAPLocationActivity.class);
+        Intent intent = new Intent(context, AmapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 

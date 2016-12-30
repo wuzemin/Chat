@@ -272,7 +272,7 @@ public class AddVoteActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+            public void onError(Message message, RongIMClient.AudioErrorCode errorCode) {
 
             }
         });*/

@@ -24,7 +24,6 @@ import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
 import com.min.mylibrary.widget.dialog.LoadDialog;
-import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
 import com.min.smalltalk.adapter.MyGridView;
@@ -36,11 +35,11 @@ import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.DBOpenHelper;
 import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
-import com.min.smalltalk.server.broadcast.BroadcastManager;
 import com.min.smalltalk.wedget.DemoGridView;
 import com.min.smalltalk.wedget.Generate;
 import com.min.smalltalk.wedget.Operation;
 import com.min.smalltalk.wedget.SwitchButton;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
@@ -193,6 +192,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 if (uri != null && !TextUtils.isEmpty(uri.getPath())) {
                     imageFile = new File(uri.getPath());
                     imageUrl = uri.toString();
+                    ImageLoader.getInstance().clearDiskCache();
                     ImageLoader.getInstance().displayImage(imageUrl, sivGroupHeader);
                     HttpUtils.postChangeGroupName("/change_groupName", groupId, "", imageFile, new StringCallback() {
                         @Override
@@ -207,7 +207,11 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                             }.getType();
                             Code<Integer> code = gson.fromJson(response, type);
                             if (code.getCode() == 200) {
-                                T.showShort(mContext, "修改成");
+                                T.showShort(mContext, "修改成功");
+                                ImageLoader.getInstance().clearDiskCache();
+                                ImageLoader.getInstance().displayImage(imageUrl,sivGroupHeader);
+//                                sqLiteDAO.updatePic(Group);
+
                             } else {
                                 T.showShort(mContext, "修改失败");
                             }
@@ -435,7 +439,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             case R.id.ll_group_name:   //群名称
                 if (isCreated) {
                     final EditText editText = new EditText(mContext);
-                    AlertDialog dialog = new AlertDialog.Builder(mContext)
+                    new AlertDialog.Builder(mContext)
                             .setTitle("修改群名称")
                             .setView(editText)
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -561,7 +565,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     //退出群
     private void quitGroup() {
-        HttpUtils.postQuitGroup("/GroupPullUser", groupId, userId, new StringCallback() {
+        HttpUtils.postQuitGroup("/dissolutionGroup", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/quit_group------" + e);
@@ -573,7 +577,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Type type = new TypeToken<Code<Integer>>() {
                 }.getType();
                 Code<Integer> code = gson.fromJson(response, type);
-                if (code.getCode() == 200) {
+                if (code.getCode() == 100) {
                     RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, groupId,
                             new RongIMClient.ResultCallback<Conversation>() {
 
@@ -598,7 +602,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
                                 }
                             });
-                    BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
+//                    BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
+                    sqLiteDAO.deleteOne(groupId);
                     T.showShort(mContext, "退出成功");
                     finish();
                 }
@@ -646,6 +651,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
                                 }
                             });
+                    sqLiteDAO.deleteOne(groupId);
                     T.showShort(mContext, "解散群成功");
 //                    BroadcastManager.getInstance(mContext).sendBroadcast(Const.GROUP_LIST_UPDATE);
                     finish();
@@ -658,7 +664,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     }
 
     //修改群名称
-    private void changGroupName(String groupName) {
+    private void changGroupName(final String groupName) {
         HttpUtils.postChangeGroupName("/change_groupName", groupId, groupName, imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -672,7 +678,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 }.getType();
                 Code<Groups> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
-                    tvGroupName.setText(code.getMsg().getGroupName());
+                    tvGroupName.setText(groupName);
                 } else {
                     T.showShort(mContext, "连接错误");
                 }

@@ -76,7 +76,7 @@
         <activity android:name="io.rong.imkit.activity.FilePreviewActivity" /> <!-- imlib config begin -->
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
-            android:value="vnroth0krtq9o" />
+            android:value="tdrvipkstdnk5" />
 
         <service
             android:name="io.rong.imlib.ipc.RongService"

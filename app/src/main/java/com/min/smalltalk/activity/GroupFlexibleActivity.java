@@ -162,7 +162,9 @@ public class GroupFlexibleActivity extends BaseActivity implements SwipeRefreshL
         if (requestCode == 0) {
             list.clear();
             initListView();
-            adapter.notifyDataSetChanged();
+            if(list.size()!=0) {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 

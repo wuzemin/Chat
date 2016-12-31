@@ -83,10 +83,15 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
         } else {
             viewHolder.tvLetter.setVisibility(View.GONE);
         }
-        if (mContent.isExitsDisplayName()) {
+        /*if (mContent.isExitsDisplayName()) {
             viewHolder.tvTitle.setText(this.list.get(position).getDisplayName());
         } else {
             viewHolder.tvTitle.setText(this.list.get(position).getName());
+        }*/
+        if(TextUtils.isEmpty(list.get(position).getDisplayName())){
+            viewHolder.tvTitle.setText(this.list.get(position).getName());
+        }else {
+            viewHolder.tvTitle.setText(this.list.get(position).getDisplayName());
         }
         if (TextUtils.isEmpty(list.get(position).getPortraitUri())) {
             String s = Generate.generateDefaultAvatar(list.get(position).getName(), list.get(position).getUserId());

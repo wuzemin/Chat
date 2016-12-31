@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
-import com.min.smalltalk.wedget.image.CircleImageView;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
@@ -27,6 +26,7 @@ import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
+import com.min.smalltalk.wedget.image.CircleImageView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
@@ -36,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
+import io.rong.imlib.model.UserInfo;
 import okhttp3.Call;
 
 /**
@@ -71,8 +72,10 @@ public class UserDetailActivity extends BaseActivity {
     Button btnDeleteFriend;
     @BindView(R.id.ll_email)
     LinearLayout llEmail;
+    @BindView(R.id.tv_nickname)
+    TextView tvNickName;
 
-    private String userId, userName, userPort, userPhone, userEmail;
+    private String userId, userName, userDisplayName, userPort, userPhone, userEmail;
     private FriendInfo friendInfo;
 
     private FriendInfoDAOImpl friendInfoDAO;
@@ -83,7 +86,7 @@ public class UserDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_user_detail);
         ButterKnife.bind(this);
 
-        friendInfoDAO=new FriendInfoDAOImpl(mContext);
+        friendInfoDAO = new FriendInfoDAOImpl(mContext);
 
         Intent intent = getIntent();
         tvTitleRight.setVisibility(View.VISIBLE);
@@ -91,6 +94,7 @@ public class UserDetailActivity extends BaseActivity {
         friendInfo = intent.getParcelableExtra("friends");
         userId = friendInfo.getUserId();
         userName = friendInfo.getName();
+        userDisplayName = friendInfo.getDisplayName();
         userPort = friendInfo.getPortraitUri();
         userPhone = friendInfo.getUserId();
         userEmail = friendInfo.getEmail();
@@ -99,9 +103,16 @@ public class UserDetailActivity extends BaseActivity {
     }
 
     private void initView() {
-        tvTitle.setText(userName);
+
         ImageLoader.getInstance().displayImage(userPort, civUserHead);
-        tvUsername.setText(userName);
+        if(TextUtils.isEmpty(userDisplayName)){
+            tvUsername.setText(userName);
+            tvTitle.setText(userName);
+        }else {
+            tvUsername.setText(userDisplayName);
+            tvTitle.setText(userDisplayName);
+        }
+        tvNickName.setText(userName);
         tvTelephone.setText(userPhone);
         if (TextUtils.isEmpty(userEmail)) {
             llEmail.setVisibility(View.GONE);
@@ -159,14 +170,14 @@ public class UserDetailActivity extends BaseActivity {
                 RongIM.getInstance().startPrivateChat(mContext, userId, userName);
                 break;
             case R.id.tv_title_right:
-                final EditText editText=new EditText(mContext);
+                final EditText editText = new EditText(mContext);
                 new AlertDialog.Builder(mContext)
                         .setTitle("修改备注名")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                String et=editText.getText().toString();
+                                String et = editText.getText().toString();
                                 changeDiaplayName(et);
                             }
                         })
@@ -179,7 +190,7 @@ public class UserDetailActivity extends BaseActivity {
                         .show();
                 break;
             case R.id.btn_delete_friend:
-                AlertDialog dialog=new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(mContext)
                         .setTitle("删除好友")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
@@ -201,7 +212,7 @@ public class UserDetailActivity extends BaseActivity {
     }
 
     private void deleteFriends() {
-        String mId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        String mId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
         HttpUtils.postDelFriendRequest("/deleteUser", mId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -228,23 +239,25 @@ public class UserDetailActivity extends BaseActivity {
 
     //修改备注名
     private void changeDiaplayName(final String string) {
-        String myId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        HttpUtils.postChangeFriendName("/editFriendName", myId, userId, userName, new StringCallback() {
+        String myId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+        HttpUtils.postChangeFriendName("/editFriendName", myId, userId, string, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/editFriendName----"+e);
+                T.showShort(mContext, "/editFriendName----" + e);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<Integer>>(){}.getType();
-                Code<Integer> code=gson.fromJson(response,type);
-                if(code.getCode()==200){
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Integer>>() {
+                }.getType();
+                Code<Integer> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
                     tvUsername.setText(string);
-                    T.showShort(mContext,"修改成功");
-                }else {
-                    T.showShort(mContext,"修改失败");
+                    RongIM.getInstance().refreshUserInfoCache(new UserInfo(userId,string,Uri.parse(userPort)));
+                    T.showShort(mContext, "修改成功");
+                } else {
+                    T.showShort(mContext, "修改失败");
                 }
             }
         });

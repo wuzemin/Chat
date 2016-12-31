@@ -18,12 +18,12 @@ import okhttp3.OkHttpClient;
 public class HttpUtils {
     //    private static final String LOCAL_RUL ="http://192.168.0.178:8080";
 //    private static final String BASE_RUL ="http://192.168.0.178:8080";
-//    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
-//    public static final String IMAGE_RUL ="http://192.168.0.209:80";
+    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+    public static final String IMAGE_RUL ="http://192.168.0.209:80";
     //    public static final String IMAGE_RUL ="http://15q990d559.iok.la";
 //    private static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
-    private static final String BASE_RUL ="http://192.168.0.178:80/appapi/app";
-    public static final String IMAGE_RUL ="http://192.168.0.178:80";
+//    private static final String BASE_RUL ="http://192.168.0.178:80/appapi/app";
+//    public static final String IMAGE_RUL ="http://192.168.0.178:80";
 
 
 
@@ -250,7 +250,7 @@ public class HttpUtils {
                 .addHeader("Connection", "close")
                 .addParams("userId",userId)
                 .addParams("f_userid",f_userId)
-                .addParams("nickname",nickname)
+                .addParams("displayname",nickname)
                 .build().execute(callback);
     }
 

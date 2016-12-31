@@ -47,7 +47,7 @@ public class GroupMemberActivity extends BaseActivity {
     RecyclerView rvGroupMember;
 
     private String groupId;
-    private String userId,userName,userPort,userPhone,userEmail;
+    private String userId,userName,userPort,userPhone,userEmail,userDisplayName;
     private BaseRecyclerAdapter<GroupMember> adapter;
     private List<GroupMember> list=new ArrayList<>();
     private List<FriendInfo> friendInfoList=new ArrayList<>();
@@ -83,9 +83,10 @@ public class GroupMemberActivity extends BaseActivity {
                         userId = member.getUserId();
                         userName = member.getUserName();
                         userPort = HttpUtils.IMAGE_RUL+member.getUserPortraitUri();
+                        userDisplayName=member.getDisplayName();
                         userPhone=member.getPhone();
                         userEmail=member.getEmail();
-                        list.add(new GroupMember(userId, userName, userPort));
+                        list.add(new GroupMember(userId, userName, userPort,userDisplayName));
                         friendInfoList.add(new FriendInfo(userId,userName,userPort,userPhone,userEmail));
                         groupMembers=new GroupMember(userId,userName,userPort,userPhone,userEmail);
                     }
@@ -109,7 +110,17 @@ public class GroupMemberActivity extends BaseActivity {
                 }else {
                     holder.setImageResource(R.id.siv_group_head,R.mipmap.default_portrait);
                 }
-                holder.setText(R.id.tv_group_name,item.getUserName());
+                String name=item.getDisplayName();
+                if(TextUtils.isEmpty(name)){
+                    holder.setText(R.id.tv_group_name,item.getUserName());
+                }else {
+                    holder.setText(R.id.tv_group_name, name);
+                }
+                if("1".equals(item.getRole())){
+                    holder.setText(R.id.tv_role,"群主");
+                }else {
+                    holder.setText(R.id.tv_role,"");
+                }
             }
         };
         rvGroupMember.setAdapter(adapter);
@@ -122,8 +133,14 @@ public class GroupMemberActivity extends BaseActivity {
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
+
                 L.e("-------------",list.get(position).getUserId()+list.get(position).getUserName()+list.get(position).getUserPortraitUri());
                 FriendInfo friend=friendInfoList.get(position);
+                String mId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+                if(friend.getUserId().equals(mId)){
+                    T.showShort(mContext,"这是自己");
+                    return;
+                }
                 Intent intent=new Intent(mContext,UserDetailActivity.class);
                 intent.putExtra("friends",friend);
 

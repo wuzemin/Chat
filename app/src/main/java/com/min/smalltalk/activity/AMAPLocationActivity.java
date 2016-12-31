@@ -178,6 +178,7 @@ public class AMAPLocationActivity extends ActionBarActivity implements OnLocatio
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+
     }
 
     @Override

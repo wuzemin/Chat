@@ -2,6 +2,7 @@ package com.min.smalltalk.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -29,7 +30,7 @@ import io.rong.imkit.RongIM;
 /**
  * 群列表
  */
-public class GroupListActivity extends BaseActivity {
+public class GroupListActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -41,6 +42,8 @@ public class GroupListActivity extends BaseActivity {
     RecyclerView rvGroupList;
     @BindView(R.id.tv_no_group)
     TextView tvNoGroup;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     private BaseRecyclerAdapter<Groups> adapter;
     private List<Groups> list = new ArrayList<>();
@@ -56,20 +59,28 @@ public class GroupListActivity extends BaseActivity {
         setContentView(R.layout.activity_group_list);
         ButterKnife.bind(this);
 
-        sqLiteDAO= new GroupsDAOImpl(mContext);
+        sqLiteDAO = new GroupsDAOImpl(mContext);
 
         tvTitle.setText("我的群组");
+        ivTitleRight.setVisibility(View.VISIBLE);
         ivTitleRight.setImageResource(R.mipmap.add_more);
+        swipeRefresh.setOnRefreshListener(this);
         LoadDialog.show(mContext);
         initData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
+
     private void initData() {
-        String userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        list=sqLiteDAO.findAll(userId);
-        if(list.size()>0){
+        String userId = getSharedPreferences("config", MODE_PRIVATE).getString(Const.LOGIN_ID, "");
+        list = sqLiteDAO.findAll(userId);
+        if (list.size() > 0) {
             initAdapter();
-        }else {
+        } else {
             rvGroupList.setVisibility(View.GONE);
             tvNoGroup.setVisibility(View.VISIBLE);
             tvNoGroup.setText("你暂时未加入任何一个群组");
@@ -111,13 +122,19 @@ public class GroupListActivity extends BaseActivity {
 
     @OnClick({R.id.iv_title_back, R.id.iv_title_right})
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_title_back:
                 GroupListActivity.this.finish();
                 break;
             case R.id.iv_title_right:
-                startActivity(new Intent(mContext,SelectFriendsActivity.class));
+                startActivity(new Intent(mContext, SelectFriendsActivity.class));
                 break;
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        initData();
+        swipeRefresh.setRefreshing(false);
     }
 }

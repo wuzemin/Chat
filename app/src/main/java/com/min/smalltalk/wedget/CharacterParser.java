@@ -8,7 +8,9 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
 import com.min.smalltalk.bean.Friend;
+import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.bean.GroupMember;
+import com.min.smalltalk.network.HttpUtils;
 
 import java.util.List;
 
@@ -370,14 +372,14 @@ public class CharacterParser {
     }
 
 
-    public Friend generateFriendFromUserInfo(UserInfo userInfo) {
-        Friend friend = new Friend();
+    public FriendInfo generateFriendFromUserInfo(UserInfo userInfo) {
+        FriendInfo friend = new FriendInfo();
         if (userInfo != null) {
             friend.setUserId(userInfo.getUserId());
             friend.setName(userInfo.getName());
             Uri uri = userInfo.getPortraitUri();
             friend.setPortraitUri(uri != null ?
-                    uri.toString() : null);
+                    HttpUtils.IMAGE_RUL+uri.toString() : null);
         }
         return friend;
     }

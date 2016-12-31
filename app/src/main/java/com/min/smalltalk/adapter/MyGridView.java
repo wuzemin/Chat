@@ -10,17 +10,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
+import com.min.mylibrary.util.T;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.SelectFriendsActivity;
 import com.min.smalltalk.activity.UserDetailActivity;
-import com.min.smalltalk.bean.Friend;
+import com.min.smalltalk.bean.FriendInfo;
 import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.CharacterParser;
 import com.min.smalltalk.wedget.Generate;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +118,12 @@ public class MyGridView extends BaseAdapter {
             });
         } else { // 普通成员
             final GroupMember bean = list.get(position);
-            holder.tvGroupDetailsName.setText(bean.getUserName());
+            String name=bean.getDisplayName();
+            if(TextUtils.isEmpty(name)){
+                holder.tvGroupDetailsName.setText(bean.getUserName());
+            }else {
+                holder.tvGroupDetailsName.setText(name);
+            }
             if (TextUtils.isEmpty(bean.getUserPortraitUri())) {
                 ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getUserName(), bean.getUserId()), holder.sivGroupDetails, App.getOptions());
             } else {
@@ -125,11 +132,16 @@ public class MyGridView extends BaseAdapter {
             holder.sivGroupDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String mId=context.getSharedPreferences("config",Context.MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+                    if(bean.getUserId().equals(mId)){
+                        T.showShort(context,"这是自己");
+                        return;
+                    }
                     UserInfo userInfo = new UserInfo(bean.getUserId(), bean.getUserName(),
                             Uri.parse(TextUtils.isEmpty(bean.getUserPortraitUri()) ? Generate.generateDefaultAvatar(bean.getUserName(), bean.getUserId()) : bean.getUserPortraitUri()));
                     Intent intent = new Intent(context, UserDetailActivity.class);
-                    Friend friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
-                    intent.putExtra("friend", friend);
+                    FriendInfo friend = CharacterParser.getInstance().generateFriendFromUserInfo(userInfo);
+                    intent.putExtra("friends", friend);
                     intent.putExtra("conversationType", Conversation.ConversationType.GROUP.getValue());
                     //Groups not Serializable,just need group name
                     intent.putExtra("groupName", list.get(position).getGroupName());

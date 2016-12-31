@@ -226,6 +226,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
             }
         });
+        LoadDialog.dismiss(mContext);
     }
 
     /**

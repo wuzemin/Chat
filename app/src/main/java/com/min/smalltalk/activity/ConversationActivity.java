@@ -395,6 +395,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         for (FriendInfo i : list) {
             if (i.getUserId().equals(s)) {
                 UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
+                RongIM.getInstance().refreshUserInfoCache(userInfo);
                 return userInfo;
             }
         }

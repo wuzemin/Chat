@@ -32,10 +32,22 @@ public class GroupsDAOImpl {
         db.execSQL("delete from t_groupInfo where userId=?", new Object[] { id.toString() });
         db.close();
     }
+    public void deleteOne(String id) {// 删除纪录
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        db.execSQL("delete from t_groupInfo where groupId=?", new Object[] { id.toString() });
+        db.close();
+    }
 
     public void update(Groups groups) {// 修改纪录
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         db.execSQL("update t_groupInfo set diaplay=? where" + " id=?",
+                new Object[] { groups.getGroupName(), groups.getGroupId() });
+        db.close();
+    }
+
+    public void updatePic(Groups groups) {// 修改图片
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        db.execSQL("update t_groupInfo set groupPortraitUri = ? where" + " id=?",
                 new Object[] { groups.getGroupName(), groups.getGroupId() });
         db.close();
     }

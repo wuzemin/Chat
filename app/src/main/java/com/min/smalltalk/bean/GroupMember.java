@@ -30,6 +30,13 @@ public class GroupMember implements Parcelable{
         this.userPortraitUri = userPortraitUri;
     }
 
+    public GroupMember(String userId, String userName, String userPortraitUri, String displayName) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPortraitUri = userPortraitUri;
+        this.displayName = displayName;
+    }
+
     public GroupMember(String userId, String userName, String userPortraitUri, String phone, String email) {
         this.userId = userId;
         this.userName = userName;

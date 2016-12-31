@@ -23,13 +23,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
-import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.GroupListActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
-import com.min.smalltalk.activity.PersonSettingActivity;
 import com.min.smalltalk.activity.UserDetailActivity;
 import com.min.smalltalk.adapter.FriendListAdapter;
 import com.min.smalltalk.bean.Code;
@@ -42,6 +40,7 @@ import com.min.smalltalk.wedget.CharacterParser;
 import com.min.smalltalk.wedget.Generate;
 import com.min.smalltalk.wedget.PinyinComparator;
 import com.min.smalltalk.wedget.SideBar;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
@@ -420,8 +419,8 @@ public class FriendFragment extends Fragment implements View.OnClickListener, Sw
                 T.showShort(getActivity(), "PublicServiceActivity.class");
                 break;
             case R.id.rl_me_item:
-//                T.showShort(getActivity(),"这是自己");
-                startActivity(new Intent(getActivity(), PersonSettingActivity.class));
+                T.showShort(getActivity(),"不能和自己聊天喔！");
+//                startActivity(new Intent(getActivity(), PersonSettingActivity.class));
 //                RongIM.getInstance().startPrivateChat(getActivity(), mId, mCacheName);
                 break;
         }

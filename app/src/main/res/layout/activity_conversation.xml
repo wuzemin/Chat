@@ -10,6 +10,11 @@
         android:id="@+id/rong_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <!--<LinearLayout
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+    </LinearLayout>-->
     <include layout="@layout/layout_title_top"/>
     <!--<RelativeLayout
         android:id="@+id/layout"

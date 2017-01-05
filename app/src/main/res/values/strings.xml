@@ -82,4 +82,9 @@
     <string name="vote_status">投票状态</string>
     <string name="multiselect">允许多选</string>
     <string name="voting_period">投票期限</string>
+
+    <string-array name="spinners">
+        <item>我的名字？</item>
+        <item>我的手机号？</item>
+    </string-array>
 </resources>

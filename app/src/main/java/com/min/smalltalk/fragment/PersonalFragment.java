@@ -268,7 +268,7 @@ public class PersonalFragment extends Fragment {
             case R.id.rl_birthday:   //生日
                 showSTimePopupWindow();
                 break;
-            case R.id.rl_QR_code:
+            case R.id.rl_QR_code:   //二维码
                 Intent intent1=new Intent(getActivity(),ZxingActivity.class);
                 intent1.putExtra("Id",userId);
                 startActivity(intent1);

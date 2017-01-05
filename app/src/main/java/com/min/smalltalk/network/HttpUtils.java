@@ -122,12 +122,16 @@ public class HttpUtils {
     }
 
     //注册
-    public static void postRegisterRequest(String url, String nickname, String phone,String password, StringCallback callback){
+    public static void postRegisterRequest(String url, String nickname, String phone,String password,
+                                           String question,String answer,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
                 .addHeader("Connection", "close")
                 .addParams("nickname",nickname)
                 .addParams("phone",phone)
-                .addParams("password",password).build().execute(callback);
+                .addParams("password",password)
+                .addParams("question",question)
+                .addParams("answer",answer)
+                .build().execute(callback);
     }
 
     //好友信息

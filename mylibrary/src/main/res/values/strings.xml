@@ -57,5 +57,7 @@
     <string name="QR_code">二维码</string>
     <string name="delete_friend">删除该好友</string>
     <string name="add_new">新增选项</string>
+    <string name="question">认领问题</string>
+    <string name="answer">认领答案</string>
 
 </resources>

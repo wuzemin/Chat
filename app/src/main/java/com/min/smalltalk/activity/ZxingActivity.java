@@ -33,7 +33,7 @@ public class ZxingActivity extends BaseActivity {
         String input=intent.getStringExtra("Id");
 
         Bitmap bitmap= EncodingUtils.createQRCode(input,500,500,
-                BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher));
+                BitmapFactory.decodeResource(getResources(),0));
         ivZxing.setImageBitmap(bitmap);
     }
 

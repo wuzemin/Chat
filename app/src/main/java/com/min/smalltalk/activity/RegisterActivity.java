@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.min.smalltalk.network.HttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,15 +54,24 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     ClearWriteEditText etPassword;
     @BindView(R.id.btn_register)
     Button btnRegister;
+    @BindView(R.id.et_answer)
+    ClearWriteEditText etAnswer;
+    @BindView(R.id.et_question)
+    ClearWriteEditText etQuestion;
 
     private String phone;
     private String iCord;
     private String nickname;
     private String password;
+    private String question;
+    private String answer;
     private int time = 60;
     private boolean flag = true;
     private static String APPKEY = "15cfe7a51e5c4";
     private static String APPSECRET = "f9b566453fc559487eb0f6419aa42030";
+
+    private List<String> data_list;
+    private ArrayAdapter<String> arr_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +80,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         ButterKnife.bind(this);
         initView();
         addEditTextListener();
-        SMSSDK.initSDK(mContext,APPKEY,APPSECRET);
+        SMSSDK.initSDK(mContext, APPKEY, APPSECRET);
         EventHandler eventHandler = new EventHandler() {
             @Override
             public void afterEvent(int event, int result, Object data) {
@@ -92,16 +103,16 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()==11){
-                    if(!AMUtils.isMobile(etPhone.getText().toString().trim())){
-                        T.showShort(mContext,"请输入正确的手机号码");
+                if (charSequence.length() == 11) {
+                    if (!AMUtils.isMobile(etPhone.getText().toString().trim())) {
+                        T.showShort(mContext, "请输入正确的手机号码");
                         return;
                     }
                     btnGetCord.setClickable(true);
-                    btnGetCord.setBackgroundColor(Color.argb(255,0,121,255));
-                }else {
+                    btnGetCord.setBackgroundColor(Color.argb(255, 0, 121, 255));
+                } else {
                     btnGetCord.setClickable(false);
-                    btnGetCord.setBackgroundColor(Color.argb(204,199,199,199));
+                    btnGetCord.setBackgroundColor(Color.argb(204, 199, 199, 199));
                 }
 
             }
@@ -122,7 +133,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_get_cord:
-                phone=etPhone.getText().toString().trim();
+                phone = etPhone.getText().toString().trim();
                 if (!TextUtils.isEmpty(phone)) {
                     if (phone.length() == 11) {
                         SMSSDK.getVerificationCode("86", phone);
@@ -138,20 +149,30 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 }
                 break;
             case R.id.btn_register:
-                nickname=etNickname.getText().toString();
-                password=etPassword.getText().toString();
-                phone=etPhone.getText().toString();
+                nickname = etNickname.getText().toString();
+                password = etPassword.getText().toString();
+                phone = etPhone.getText().toString();
                 iCord = etCode.getText().toString().trim();
-                if(TextUtils.isEmpty(nickname)){
-                    T.showShort(mContext,"昵称不能为空");
+                question = etQuestion.getText().toString();
+                answer = etAnswer.getText().toString();
+                if (TextUtils.isEmpty(nickname)) {
+                    T.showShort(mContext, "昵称不能为空");
                     return;
                 }
-                if(TextUtils.isEmpty(phone)){
-                    T.showShort(mContext,"手机号不能为空");
+                if (TextUtils.isEmpty(phone)) {
+                    T.showShort(mContext, "手机号不能为空");
                     return;
                 }
-                if(TextUtils.isEmpty(password) || password.length()<4){
-                    T.showShort(mContext,"密码不能为空且长度不能小于4");
+                if (TextUtils.isEmpty(password) || password.length() < 4) {
+                    T.showShort(mContext, "密码不能为空且长度不能小于4");
+                    return;
+                }
+                if(TextUtils.isEmpty(question)){
+                    T.showShort(mContext,"认领问题不能为空");
+                    return;
+                }
+                if(TextUtils.isEmpty(answer)){
+                    T.showShort(mContext,"认领答案不能为空");
                     return;
                 }
                 if (!TextUtils.isEmpty(iCord)) {
@@ -159,12 +180,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         SMSSDK.submitVerificationCode("86", phone, iCord);
                         flag = false;
                     } else {
-                        T.showShort(mContext,"请输入完整验证码");
+                        T.showShort(mContext, "请输入完整验证码");
                         etCode.requestFocus();
                         return;
                     }
                 } else {
-                    T.showShort(mContext,"请输入验证码");
+                    T.showShort(mContext, "请输入验证码");
                     etCode.requestFocus();
                     return;
                 }
@@ -177,32 +198,33 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initRegister() {
-        HttpUtils.postRegisterRequest("/register", nickname, phone, password, new StringCallback() {
+        HttpUtils.postRegisterRequest("/register", nickname, phone, password, question, answer,  new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/register-------onError");
+                T.showShort(mContext, "/register-------onError");
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<Integer>>(){}.getType();
-                Code<Integer> code=gson.fromJson(response,type);
-                int code1=code.getCode();
-                if(code1==200){
-                    T.showShort(mContext,"注册成功");
-                    Intent intent=new Intent(mContext,LoginActivity.class);
-                    intent.putExtra("phone",phone);
-                    intent.putExtra("password",password);
-                    setResult(RESULT_OK,intent);
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<Integer>>() {
+                }.getType();
+                Code<Integer> code = gson.fromJson(response, type);
+                int code1 = code.getCode();
+                if (code1 == 200) {
+                    T.showShort(mContext, "注册成功");
+                    Intent intent = new Intent(mContext, LoginActivity.class);
+                    intent.putExtra("phone", phone);
+                    intent.putExtra("password", password);
+                    setResult(RESULT_OK, intent);
                     LoadDialog.dismiss(mContext);
                     RegisterActivity.this.finish();
-                }else if(code1==0){
+                } else if (code1 == 0) {
                     LoadDialog.dismiss(mContext);
-                    T.showShort(mContext,"一个号码只能注册一个用户哦");
-                }else if(code1==1000){
+                    T.showShort(mContext, "一个号码只能注册一个用户哦");
+                } else if (code1 == 1000) {
                     LoadDialog.dismiss(mContext);
-                    T.showShort(mContext,"数据库插入失败或连接融云失败");
+                    T.showShort(mContext, "数据库插入失败或连接融云失败");
                 }
             }
         });

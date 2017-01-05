@@ -3,6 +3,7 @@ package com.min.smalltalk;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.min.mylibrary.util.L;
@@ -30,6 +31,7 @@ public class UserInfoManager {
     private List<FriendInfo> list;
     private FriendInfoDAOImpl friendInfoDAO;
     private LinkedHashMap<String, UserInfo> mUserInfoCache;
+    private Handler handler;
 
     public static UserInfoManager getInstance() {
         return sInstance;
@@ -40,6 +42,7 @@ public class UserInfoManager {
         sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
         friendInfoDAO= new FriendInfoDAOImpl(mContext);
         initPortrait();
+        handler = new Handler();
     }
     public static void init(Context context) {
         L.e(TAG, "UserInfoManager init");
@@ -97,5 +100,38 @@ public class UserInfoManager {
                 return;
             }
         }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                UserInfo userInfo;
+//                FriendInfo friend = getFriendByID(userId);
+                FriendInfo friendInfo=friendInfoDAO.find(userId);
+                if (friendInfo != null) {
+                    String name = friendInfo.getName();
+                    if (friendInfo.isExitsDisplayName()) {
+                        name = friendInfo.getDisplayName();
+                    }
+                    userInfo = new UserInfo(friendInfo.getUserId(), name,
+                            Uri.parse(friendInfo.getPortraitUri()));
+                    L.e(TAG, "SealUserInfoManager getUserInfo from Friend db " + userId + " "
+                            + userInfo.getName() + " " + userInfo.getPortraitUri());
+                    RongIM.getInstance().refreshUserInfoCache(userInfo);
+                    return;
+                }
+                /*List<GroupMember> groupMemberList = getGroupMembersWithUserId(userId);
+                if (groupMemberList != null && groupMemberList.size() > 0) {
+                    GroupMember groupMember = groupMemberList.get(0);
+                    userInfo = new UserInfo(groupMember.getUserId(), groupMember.getName(),
+                            Uri.parse(groupMember.getPortraitUri()));
+                    NLog.d(TAG, "SealUserInfoManager getUserInfo from GroupMember db " + userId + " "
+                            + userInfo.getName() + " " + userInfo.getPortraitUri());
+                    RongIM.getInstance().refreshUserInfoCache(userInfo);
+                    return;
+                }
+                UserInfoEngine.getInstance(mContext).startEngine(userId);*/
+            }
+        });
+
+
     }
 }

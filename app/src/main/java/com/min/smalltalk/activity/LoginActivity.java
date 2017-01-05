@@ -2,6 +2,7 @@ package com.min.smalltalk.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
 import okhttp3.Call;
 
 /**
@@ -160,6 +162,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString("loginnickname",nickName);
                         editor.putString("loginPortrait",portraitUri);
                         editor.commit();
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
                         LoadDialog.dismiss(mContext);
 //                        initFriendInfo();
                         initGroups(uid);

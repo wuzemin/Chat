@@ -16,12 +16,12 @@ import okhttp3.OkHttpClient;
  * Created by Min on 2016/9/10.
  */
 public class HttpUtils {
-    //    private static final String LOCAL_RUL ="http://192.168.0.178:8080";
+//      private static final String LOCAL_RUL ="http://192.168.0.178:8080";
 //    private static final String BASE_RUL ="http://192.168.0.178:8080";
-    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
-    public static final String IMAGE_RUL ="http://192.168.0.209:80";
-    //    public static final String IMAGE_RUL ="http://15q990d559.iok.la";
-//    private static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
+//    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+//    public static final String IMAGE_RUL ="http://192.168.0.209:80";
+      public static final String IMAGE_RUL ="http://15q990d559.iok.la";
+      public static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
 //    private static final String BASE_RUL ="http://192.168.0.178:80/appapi/app";
 //    public static final String IMAGE_RUL ="http://192.168.0.178:80";
 
@@ -339,6 +339,12 @@ public class HttpUtils {
                 .addParams("vote_id",vote_id)
                 .addParams("vote_option",vote_option)
                 .build().execute(callback);
+    }
+
+    //好友认领
+    public static void postClaimFriends(String url,StringCallback callback){
+        OkHttpUtils.post().url("http://192.168.0.178:8080"+url)
+                .addHeader("Connection", "close").build().execute(callback);
     }
 
 

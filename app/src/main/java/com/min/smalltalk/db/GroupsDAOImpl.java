@@ -45,10 +45,10 @@ public class GroupsDAOImpl {
         db.close();
     }
 
-    public void updatePic(Groups groups) {// 修改图片
+    public void updatePic(String groupPortraitUri,String getGroupId) {// 修改图片
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         db.execSQL("update t_groupInfo set groupPortraitUri = ? where" + " id=?",
-                new Object[] { groups.getGroupName(), groups.getGroupId() });
+                new Object[] { groupPortraitUri, getGroupId });
         db.close();
     }
 

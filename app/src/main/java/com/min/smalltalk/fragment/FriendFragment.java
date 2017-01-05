@@ -26,6 +26,7 @@ import com.min.mylibrary.util.T;
 import com.min.smalltalk.App;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.R;
+import com.min.smalltalk.activity.ClaimFriendsActivity;
 import com.min.smalltalk.activity.GroupListActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
 import com.min.smalltalk.activity.UserDetailActivity;
@@ -415,8 +416,9 @@ public class FriendFragment extends Fragment implements View.OnClickListener, Sw
             case R.id.rl_group:
                 startActivity(new Intent(getActivity(), GroupListActivity.class));
                 break;
-            case R.id.rl_publicservice:
-                T.showShort(getActivity(), "PublicServiceActivity.class");
+            case R.id.rl_publicservice:   //好友认领
+                Intent intent1 = new Intent(getActivity(), ClaimFriendsActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.rl_me_item:
                 T.showShort(getActivity(),"不能和自己聊天喔！");

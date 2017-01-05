@@ -25,6 +25,7 @@ import com.min.mylibrary.util.T;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
+import com.min.smalltalk.UserInfoManager;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
@@ -392,13 +393,14 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public UserInfo getUserInfo(String s) {
-        for (FriendInfo i : list) {
+        /*for (FriendInfo i : list) {
             if (i.getUserId().equals(s)) {
                 UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
                 RongIM.getInstance().refreshUserInfoCache(userInfo);
                 return userInfo;
             }
-        }
+        }*/
+        UserInfoManager.getInstance().getUserInfo(s);
         return null;
     }
 

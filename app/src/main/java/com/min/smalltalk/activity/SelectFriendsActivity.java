@@ -136,6 +136,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "group_member------" + "网络连接错误");
+                return;
             }
 
             @Override
@@ -179,6 +180,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/friends-----"+e);
+                return;
             }
 
             @Override
@@ -364,6 +366,7 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/GroupPullUser-----"+e);
                 LoadDialog.dismiss(mContext);
+                return;
             }
 
             @Override
@@ -396,6 +399,8 @@ public class SelectFriendsActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/kickGroupUser--------"+e);
+                LoadDialog.dismiss(mContext);
+                return;
             }
 
             @Override

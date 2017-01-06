@@ -70,6 +70,7 @@ public class GroupMemberActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/group_member----------连接失败");
+                return;
             }
 
             @Override

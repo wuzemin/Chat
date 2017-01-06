@@ -181,6 +181,7 @@ public class GroupAddFlexibleActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/foundActives---------"+e);
+                return;
             }
 
             @Override

@@ -22,7 +22,6 @@ import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.App;
-import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
@@ -135,6 +134,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(mContext,"/login----"+e);
+                    return;
                 }
                 @Override
                 public void onResponse(String response, int id) {
@@ -151,6 +151,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         String token=code.getMsg().getToken();
                         String nickName=code.getMsg().getNickname();
                         String portraitUri=HttpUtils.IMAGE_RUL+code.getMsg().getPortrait();
+                        L.e("-----------","LoginActivity---connecting");
                         connect(token);
                         editor.putString("user",user);
                         editor.putString("password",password);
@@ -163,13 +164,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         editor.putString("loginPortrait",portraitUri);
                         editor.commit();
                         RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
-                        LoadDialog.dismiss(mContext);
 //                        initFriendInfo();
                         initGroups(uid);
 //                        initData(uid);
 //                        getGroupMembers();
 //                        initGroupMember();
                         finish();
+                        LoadDialog.dismiss(mContext);
                     }else if(code1==0){
                         Toast.makeText(LoginActivity.this, "账号不存在！", Toast.LENGTH_SHORT).show();
                         LoadDialog.dismiss(mContext);
@@ -198,6 +199,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/group_data-----" + e);
+                return;
             }
 
             @Override
@@ -221,7 +223,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         groups2.setGroupPortraitUri(groupPort);
                         groups2.setRole(role);
                         groupsDAO.save(groups2);
-                        L.e("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
+                        L.e("-------------==-=-", "群组列表插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
                     }
                     LoadDialog.dismiss(mContext);
                 } else {
@@ -232,51 +234,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         LoadDialog.dismiss(mContext);
     }
 
-    /**
-     * 好友列表
-     *//*
-    private void initData(final String myId) {
-        HttpUtils.postRequest("/friends",myId , new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "friends-----" + e);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<FriendInfo>>>() {
-                }.getType();
-                Code<List<FriendInfo>> code = gson.fromJson(response, type);
-                if (code.getCode() == 200) {
-                    List<FriendInfo> list = code.getMsg();
-                    for (FriendInfo friend : list) {
-                        String userId=friend.getUserId();
-                        String name=friend.getName();
-                        String portrait=HttpUtils.IMAGE_RUL+friend.getPortraitUri();
-                        String displayName=friend.getDisplayName();
-                        String phone=friend.getPhone();
-                        String email=friend.getEmail();
-                        FriendInfo friendInfo=new FriendInfo();
-                        friendInfo.setMyId(myId);
-                        friendInfo.setUserId(userId);
-                        friendInfo.setName(name);
-                        friendInfo.setPortraitUri(portrait);
-                        friendInfo.setDisplayName(displayName);
-                        friendInfo.setPhone(phone);
-                        friendInfo.setEmail(email);
-                        //存进Sqlite
-                        friendInfoDAO.save(friendInfo);
-                        L.e("---------===", "插入成功");
-                    }
-
-                } else {
-                    T.showShort(mContext,"您暂没好友，请点击有上角按钮来添加好友吧！");
-                }
-            }
-        });
-    }*/
-
 
     /**
      * 群组成员
@@ -286,6 +243,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "group_member------" + "网络连接错误");
+                return;
             }
 
             @Override
@@ -304,7 +262,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         groupMember.setUserName(userName);
                         groupMember.setUserPortraitUri(userPortraitUri);
                         groupMemberDAO.save(groupMember);
-                        Log.i("-------------==-=-", "插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
+                        Log.i("-------------==-=-", "群组成员插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
                     }
                     /*if (mGroupMember != null && mGroupMember.size() > 0) {
                         tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
@@ -341,15 +299,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 //Token 错误，在线上环境下主要是因为 Token 已经过期，您需要向 App Server 重新请求一个新的 Token
                 @Override
                 public void onTokenIncorrect() {
-                    message.what=0;
-                    handler.sendMessage(message);
+                    /*message.what=0;
+                    handler.sendMessage(message);*/
+                    T.showShort(mContext,"Token 错误，Token 已经过期");
                 }
                 //连接融云成功
                 @Override
                 public void onSuccess(String s) {
-                    message.what=1;
+                    /*message.what=1;
                     message.obj=s;
-                    handler.sendMessage(message);
+                    handler.sendMessage(message);*/
+                    T.showShort(mContext, "--onSuccess--" + s);
+                    startActivity(new Intent(mContext, LogoActivity.class));
+                    L.e("-----------","LoginActivity---connected");
+                    finish();
                 }
 
                 /**
@@ -359,9 +322,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                  */
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
-                    message.what=2;
+                    T.showShort(mContext,"--"+errorCode);
+                    /*message.what=2;
                     message.obj=errorCode;
-                    handler.sendMessage(message);
+                    handler.sendMessage(message);*/
                 }
             });
         }
@@ -375,7 +339,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     break;
                 case 1:
                     T.showShort(mContext, "--onSuccess--" + msg.obj);
-                    startActivity(new Intent(mContext, MainActivity.class));
+                    startActivity(new Intent(mContext, LogoActivity.class));
+                    L.e("-----------","LoginActivity---connected");
                     finish();
                     break;
                 case 2:

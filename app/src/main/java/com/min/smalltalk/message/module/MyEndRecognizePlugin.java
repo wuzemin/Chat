@@ -157,6 +157,7 @@ public class MyEndRecognizePlugin  implements IPluginModule {
         public void onError(SpeechError speechError) {
             Log.e("========onError","onError:"+speechError);
             T.showLong(context,"onError"+speechError);
+            return;
 //            mIat.stopListening();
         }
 

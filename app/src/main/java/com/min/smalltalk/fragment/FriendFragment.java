@@ -182,6 +182,7 @@ public class FriendFragment extends Fragment implements View.OnClickListener, Sw
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(getActivity(), "friends-----" + e);
+                return;
             }
 
             @Override

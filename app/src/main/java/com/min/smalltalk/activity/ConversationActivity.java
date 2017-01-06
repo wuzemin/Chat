@@ -146,6 +146,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/all_unread_friends--------"+e);
+                return;
             }
 
             @Override

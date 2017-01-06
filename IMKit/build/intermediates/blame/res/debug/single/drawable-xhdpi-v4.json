@@ -284,12 +284,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_picsel_pictype_normal.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\rc_ac_ram_icon.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ac_ram_icon.png"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\rc_ic_volume_wraning.png",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ic_volume_wraning.png"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\rc_ac_ram_icon.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ac_ram_icon.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\u1f3b5.png",
@@ -520,12 +520,12 @@
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_ic_location_normal.png"
     },
     {
-        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\rc_voice_icon_left.png",
-        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_voice_icon_left.png"
-    },
-    {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\u1f62e.png",
         "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\u1f62e.png"
+    },
+    {
+        "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\rc_voice_icon_left.png",
+        "source": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\src\\main\\res\\drawable-xhdpi\\rc_voice_icon_left.png"
     },
     {
         "merged": "E:\\Android\\AndroidStudioProjects\\SmallTalk\\IMKit\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\u1f382.png",

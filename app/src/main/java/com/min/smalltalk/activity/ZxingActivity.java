@@ -4,16 +4,26 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
+import com.min.smalltalk.constant.Const;
 import com.xys.libzxing.zxing.encoding.EncodingUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.R.attr.bitmap;
 
 public class ZxingActivity extends BaseActivity {
 
@@ -31,9 +41,10 @@ public class ZxingActivity extends BaseActivity {
         ButterKnife.bind(this);
         Intent intent=getIntent();
         String input=intent.getStringExtra("Id");
-
-        Bitmap bitmap= EncodingUtils.createQRCode(input,500,500,
-                BitmapFactory.decodeResource(getResources(),0));
+        String port=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_PORTRAIT,"");
+        Bitmap bitmap = null;
+            bitmap = EncodingUtils.createQRCode(input, 500, 500,
+                    BitmapFactory.decodeResource(getResources(), 0));
         ivZxing.setImageBitmap(bitmap);
     }
 

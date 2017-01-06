@@ -109,6 +109,7 @@ public class SearchFriendActivity extends BaseActivity {
             public void onError(Call call, Exception e, int id) {
                 LoadDialog.dismiss(mContext);
                 T.showShort(mContext, "addfriends-----"+e);
+                return;
             }
 
             @Override
@@ -169,10 +170,11 @@ public class SearchFriendActivity extends BaseActivity {
     }
 
     private void toProving(String message) {
-        HttpUtils.senddPostRequest("/addfriend_request", myUserId, myNickname, f_userid, message, new StringCallback() {
+        HttpUtils.sendPostRequest("/addfriend_request", myUserId, myNickname, f_userid, message, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/addfriend_request-----"+e);
+                return;
             }
 
             @Override

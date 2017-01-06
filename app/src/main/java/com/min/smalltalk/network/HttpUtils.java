@@ -18,10 +18,10 @@ import okhttp3.OkHttpClient;
 public class HttpUtils {
 //      private static final String LOCAL_RUL ="http://192.168.0.178:8080";
 //    private static final String BASE_RUL ="http://192.168.0.178:8080";
-//    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
-//    public static final String IMAGE_RUL ="http://192.168.0.209:80";
-      public static final String IMAGE_RUL ="http://15q990d559.iok.la";
-      public static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
+    private static final String BASE_RUL ="http://192.168.0.209:80/appapi/app";
+    public static final String IMAGE_RUL ="http://192.168.0.209:80";
+//      public static final String IMAGE_RUL ="http://15q990d559.iok.la";
+//      public static final String BASE_RUL ="http://15q990d559.iok.la/appapi/app";
 //    private static final String BASE_RUL ="http://192.168.0.178:80/appapi/app";
 //    public static final String IMAGE_RUL ="http://192.168.0.178:80";
 
@@ -103,11 +103,11 @@ public class HttpUtils {
                 .build().execute(callback);
     }
 
-    public static void senddPostRequest(String url,String userid, String nickname, String f_userid,String message,StringCallback callback){
+    public static void sendPostRequest(String url,String userid, String nickname, String f_userid,String message,StringCallback callback){
         OkHttpUtils.post().url(BASE_RUL +url)
                 .addHeader("Connection", "close")
                 .addParams("userid",userid)
-                .addParams("vsername",nickname)
+                .addParams("nickname",nickname)
                 .addParams("f_userid",f_userid)
                 .addParams("addFriendMessage",message)
                 .build()
@@ -129,7 +129,7 @@ public class HttpUtils {
                 .addParams("nickname",nickname)
                 .addParams("phone",phone)
                 .addParams("password",password)
-                .addParams("question",question)
+                .addParams("problem_title",question)
                 .addParams("answer",answer)
                 .build().execute(callback);
     }
@@ -345,10 +345,21 @@ public class HttpUtils {
                 .build().execute(callback);
     }
 
-    //好友认领
-    public static void postClaimFriends(String url,StringCallback callback){
-        OkHttpUtils.post().url("http://192.168.0.178:8080"+url)
-                .addHeader("Connection", "close").build().execute(callback);
+    //好友认领列表
+    public static void postClaimFriendsList(String url, String userId, StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close").addParams("userId",userId).build().execute(callback);
+    }
+
+    //认领好友
+    public static void postClaimFriends(String url, String userId, String friends_userId, String answer,
+                                        StringCallback callback){
+        OkHttpUtils.post().url(BASE_RUL+url)
+                .addHeader("Connection", "close")
+                .addParams("userId",userId)
+                .addParams("friends_userId",friends_userId)
+                .addParams("answer",answer)
+                .build().execute(callback);
     }
 
 

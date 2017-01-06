@@ -71,6 +71,7 @@ public class GroupFlexibleActivity extends BaseActivity implements SwipeRefreshL
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/group/groupAcitivity------onError");
+                return;
             }
 
             @Override

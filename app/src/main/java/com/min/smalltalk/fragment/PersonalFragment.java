@@ -34,7 +34,7 @@ import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.PhotoUtils;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.BottomMenuDialog;
-import com.min.smalltalk.wedget.image.CircleImageView;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.activity.LoginActivity;
 import com.min.smalltalk.activity.MyPopuWindow;
@@ -51,6 +51,7 @@ import com.min.smalltalk.utils.DateUtils;
 import com.min.smalltalk.wedget.Wheel.JudgeDate;
 import com.min.smalltalk.wedget.Wheel.ScreenInfo;
 import com.min.smalltalk.wedget.Wheel.WheelMain;
+import com.min.smalltalk.wedget.image.CircleImageView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONArray;
@@ -119,12 +120,11 @@ public class PersonalFragment extends Fragment {
     private GroupMemberDAOImpl groupMemberDAO;
     private FriendInfoDAOImpl friendInfoDAO;
 
-    private String userId, nickName, phone,userPortraitUri;
+    private String userId, nickName, phone, userPortraitUri;
     private String email;
     private String sex1;
     private int sex;
     private String birthday;
-    private String myBirthday;
     private String address;
     private int age;
 
@@ -138,7 +138,7 @@ public class PersonalFragment extends Fragment {
     private EditText editText;
     private int str;
     private SharedPreferences.Editor editor;
-//    private BitmapUtils bitmapUtils;
+    //    private BitmapUtils bitmapUtils;
     private String string;
     private SimpleDateFormat format;
     private Date date;
@@ -149,39 +149,39 @@ public class PersonalFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         ButterKnife.bind(this, view);
-        format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        date=new Date(System.currentTimeMillis());
+        format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        date = new Date(System.currentTimeMillis());
 //        bitmapUtils=new BitmapUtils(getContext());
-        groupsDAO=new GroupsDAOImpl(getActivity());
-        friendInfoDAO=new FriendInfoDAOImpl(getActivity());
+        groupsDAO = new GroupsDAOImpl(getActivity());
+        friendInfoDAO = new FriendInfoDAOImpl(getActivity());
         sp = getActivity().getSharedPreferences("config", MODE_PRIVATE);
-        editor=sp.edit();
+        editor = sp.edit();
         initView();
         return view;
     }
 
     private void initView() {
         userId = sp.getString(Const.LOGIN_ID, "");
-        nickName=sp.getString(Const.LOGIN_NICKNAME,"");
+        nickName = sp.getString(Const.LOGIN_NICKNAME, "");
         phone = sp.getString(Const.LOGIN_PHONE, "");
-        userPortraitUri=sp.getString(Const.LOGIN_PORTRAIT,"");
-        sex1=sp.getString(Const.LOGIN_SEX,"");
-        birthday=sp.getString(Const.LOGIN_BIRTHDAY,"");
-        age=sp.getInt(Const.LOGIN_AGE,0);
-        address=sp.getString(Const.LOGIN_ADDRESS,"");
-        email=sp.getString(Const.LOGIN_EMAIL,"");
+        userPortraitUri = sp.getString(Const.LOGIN_PORTRAIT, "");
+        sex1 = sp.getString(Const.LOGIN_SEX, "");
+        birthday = sp.getString(Const.LOGIN_BIRTHDAY, "");
+        age = sp.getInt(Const.LOGIN_AGE, 0);
+        address = sp.getString(Const.LOGIN_ADDRESS, "");
+        email = sp.getString(Const.LOGIN_EMAIL, "");
 
         tvUserid.setText(userId);
         tvNickname.setText(nickName);
         tvSex.setText(sex1);
-        tvBirthday.setText(myBirthday);
-        tvAge.setText(age+"岁");
+        tvBirthday.setText(birthday);
+        tvAge.setText(age + "岁");
         tvAddress.setText(address);
         tvPhone.setText(phone);
         tvEmail.setText(email);
-        if(TextUtils.isEmpty(userPortraitUri)){
+        if (TextUtils.isEmpty(userPortraitUri)) {
             civIcon.setImageResource(R.mipmap.default_portrait);
-        }else {
+        } else {
             ImageLoader.getInstance().displayImage(userPortraitUri, civIcon);
         }
 
@@ -196,7 +196,7 @@ public class PersonalFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case civ_icon:
-                MyPopuWindow myPopuWindow = new MyPopuWindow(getActivity(),getContext(),this);
+                MyPopuWindow myPopuWindow = new MyPopuWindow(getActivity(), getContext(), this);
                 myPopuWindow.showPopupWindow();
                 break;
             case R.id.btn_exit:   //退出
@@ -209,7 +209,7 @@ public class PersonalFragment extends Fragment {
                                 groupsDAO.delete(userId);
                                 friendInfoDAO.delete(userId);
                                 getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
-                                T.showShort(getActivity(),"退出成功");
+                                T.showShort(getActivity(), "退出成功");
                                 getActivity().finish();
                             }
                         })
@@ -221,14 +221,14 @@ public class PersonalFragment extends Fragment {
                         }).show();
                 break;
             case R.id.rl_nickname:   //昵称
-                editText=new EditText(getActivity());
+                editText = new EditText(getActivity());
                 new android.app.AlertDialog.Builder(getActivity())
                         .setTitle("修改昵称")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                nickName=editText.getText().toString();
+                                nickName = editText.getText().toString();
                                 changePerson(1);
                             }
                         })
@@ -241,23 +241,23 @@ public class PersonalFragment extends Fragment {
                         .show();
                 break;
             case R.id.rl_sex:   //性别
-                final String[] test = new String[]{"男", "女","保密"};
+                final String[] test = new String[]{"男", "女", "保密"};
                 android.app.AlertDialog.Builder dialog_sex = new android.app.AlertDialog.Builder(getActivity());
                 dialog_sex.setTitle("选择性别");
                 dialog_sex.setSingleChoiceItems(test, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        string=test[i];
-                        if("男".equals(string)){
-                            sex1=string;
-                            sex=1;
-                        }else if("女".equals(string)){
-                            sex1=string;
-                            sex=2;
-                        }else {
-                            sex1=string;
+                        string = test[i];
+                        if ("男".equals(string)) {
+                            sex1 = string;
+                            sex = 1;
+                        } else if ("女".equals(string)) {
+                            sex1 = string;
+                            sex = 2;
+                        } else {
+                            sex1 = string;
 //                            sex1="0";
-                            sex=0;
+                            sex = 0;
                         }
                         dialogInterface.dismiss();
                         changePerson(2);
@@ -269,12 +269,12 @@ public class PersonalFragment extends Fragment {
                 showSTimePopupWindow();
                 break;
             case R.id.rl_QR_code:   //二维码
-                Intent intent1=new Intent(getActivity(),ZxingActivity.class);
-                intent1.putExtra("Id",userId);
+                Intent intent1 = new Intent(getActivity(), ZxingActivity.class);
+                intent1.putExtra("Id", userId);
                 startActivity(intent1);
                 break;
             case R.id.rl_email:  //邮箱
-                editText=new EditText(getActivity());
+                editText = new EditText(getActivity());
                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 new android.app.AlertDialog.Builder(getActivity())
                         .setTitle("修改邮箱")
@@ -282,9 +282,9 @@ public class PersonalFragment extends Fragment {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                email=editText.getText().toString();
-                                if(!CommonUtils.isEmail(email)){
-                                    T.showShort(getActivity(),"邮箱格式不正确");
+                                email = editText.getText().toString();
+                                if (!CommonUtils.isEmail(email)) {
+                                    T.showShort(getActivity(), "邮箱格式不正确");
                                     return;
                                 }
 //                                tvEmail.setText(email);
@@ -300,14 +300,14 @@ public class PersonalFragment extends Fragment {
                         .show();
                 break;
             case R.id.rl_address:  //地址
-                editText=new EditText(getActivity());
+                editText = new EditText(getActivity());
                 new android.app.AlertDialog.Builder(getActivity())
                         .setTitle("修改地址")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                address=editText.getText().toString();
+                                address = editText.getText().toString();
 //                                tvAddress.setText(address);
                                 changePerson(4);
                             }
@@ -321,16 +321,16 @@ public class PersonalFragment extends Fragment {
                         .show();
                 break;
             case R.id.rl_phone:  //手机
-                editText=new EditText(getActivity());
+                editText = new EditText(getActivity());
                 new AlertDialog.Builder(getActivity())
                         .setTitle("修改手机号")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                phone=editText.getText().toString();
-                                if(!AMUtils.isMobile(phone)){
-                                    T.showShort(getActivity(),"手机号不正确");
+                                phone = editText.getText().toString();
+                                if (!AMUtils.isMobile(phone)) {
+                                    T.showShort(getActivity(), "手机号不正确");
                                     return;
                                 }
                                 changePerson(6);
@@ -353,104 +353,118 @@ public class PersonalFragment extends Fragment {
      * 修改个人资料
      */
     private void changePerson(final int index) {
-        JSONArray jsonArray=new JSONArray();
-        JSONObject row=new JSONObject();
+        LoadDialog.show(getActivity());
+        JSONArray jsonArray = new JSONArray();
+        JSONObject row = new JSONObject();
         try {
-            row.put("userId",userId);
-            row.put("nickname",nickName);
-            row.put("sex",sex);
-            row.put("email",email);
-            row.put("phone",phone);
-            row.put("address",address);
-            row.put("birth_date",birthday);
-            row.put("age",age);
+            row.put("userId", userId);
+            row.put("nickname", nickName);
+            row.put("sex", sex);
+            row.put("email", email);
+            row.put("phone", phone);
+            row.put("address", address);
+            row.put("birth_date", birthday);
+            row.put("age", age);
             jsonArray.put(row);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String string=jsonArray.toString();
-        if(index!=0){
+        final String string = jsonArray.toString();
+        if (index != 0) {
             HttpUtils.postChangePerson("/editUserInfo", string, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    T.showShort(getActivity(),"/editUserInfo----"+e);
+                    T.showShort(getActivity(), "/editUserInfo----" + e);
+                    return;
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
-                    L.e("--------------",response);
-                    Gson gson=new Gson();
-                    Type type=new TypeToken<Code<Object>>(){}.getType();
-                    Code<Object> code = gson.fromJson(response,type);
-                    if(code.getCode()==200){
-                        switch (index){
+                    L.e("--------------", response);
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<Code<Object>>() {
+                    }.getType();
+                    Code<Object> code = gson.fromJson(response, type);
+                    if (code.getCode() == 200) {
+                        switch (index) {
                             case 1:   //昵称
                                 editor.putString(Const.LOGIN_NICKNAME, nickName);
                                 editor.commit();
                                 tvNickname.setText(nickName);
-                                T.showShort(getActivity(),"修改昵称成功，请在好友界面进行刷新");
+                                T.showShort(getActivity(), "修改昵称成功，请在好友界面进行刷新");
+                                LoadDialog.dismiss(getActivity());
                                 break;
                             case 2:   //性别
                                 editor.putString(Const.LOGIN_SEX, sex1);
                                 editor.commit();
                                 tvSex.setText(sex1);
-                                T.showShort(getActivity(),"修改性别成功");
+                                T.showShort(getActivity(), "修改性别成功");
+                                LoadDialog.dismiss(getActivity());
                                 break;
                             case 3:   //邮箱
                                 editor.putString(Const.LOGIN_EMAIL, email);
                                 editor.commit();
                                 tvEmail.setText(email);
-                                T.showShort(getActivity(),"修改邮箱成功");
+                                T.showShort(getActivity(), "修改邮箱成功");
+                                LoadDialog.dismiss(getActivity());
                                 break;
                             case 4:   //地址
                                 editor.putString(Const.LOGIN_ADDRESS, address);
                                 editor.commit();
                                 tvAddress.setText(address);
-                                T.showShort(getActivity(),"修改地址成功");
+                                T.showShort(getActivity(), "修改地址成功");
+                                LoadDialog.dismiss(getActivity());
                                 break;
                             case 5:   //生日
-                                editor.putString(Const.LOGIN_BIRTHDAY, myBirthday);
-                                editor.putInt(Const.LOGIN_AGE,0);
+                                editor.putString(Const.LOGIN_BIRTHDAY, birthday);
+                                editor.putInt(Const.LOGIN_AGE, age);
                                 editor.commit();
-                                tvBirthday.setText(myBirthday);
-                                tvAge.setText(age+"");
-                                T.showShort(getActivity(),"修改生日成功");
+                                tvBirthday.setText(birthday);
+                                tvAge.setText(age + "");
+                                T.showShort(getActivity(), "修改生日成功");
+                                LoadDialog.dismiss(getActivity());
                                 break;
                             case 6:   //电话
                                 editor.putString(Const.LOGIN_PHONE, phone);
                                 editor.commit();
                                 tvPhone.setText(phone);
-                                T.showShort(getActivity(),"修改电话成功");
+                                T.showShort(getActivity(), "修改电话成功");
+                                LoadDialog.dismiss(getActivity());
                                 break;
                             default:
                                 break;
 
                         }
-                    }else {
-                        T.showShort(getActivity(),"修改失败");
+                    } else {
+                        T.showShort(getActivity(), "修改失败");
+                        LoadDialog.dismiss(getActivity());
                     }
                 }
             });
-        }else {
+        } else {
             HttpUtils.postChangePerson("/editUserInfo", string, imageFile, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(getActivity(), "/editUserInfo----" + e);
+                    return;
                 }
 
                 @Override
                 public void onResponse(String response, int id) {
                     Gson gson = new Gson();
-                    Type type = new TypeToken<Code<Image>>() {}.getType();
+                    Type type = new TypeToken<Code<Image>>() {
+                    }.getType();
                     Code<Image> code = gson.fromJson(response, type);
                     if (code.getCode() == 200) {
-                        String port=HttpUtils.IMAGE_RUL+code.getMsg().getAvatar_image();
+                        String port = HttpUtils.IMAGE_RUL + code.getMsg().getAvatar_image();
                         editor.putString(Const.LOGIN_PORTRAIT, port);
                         editor.commit();
-                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(userId,nickName,Uri.parse(port)));
+                        RongIM.getInstance().refreshUserInfoCache(new UserInfo(userId, nickName, Uri.parse(port)));
                         T.showShort(getActivity(), "修改头像成功，请在好友界面进行刷新");
+                        LoadDialog.dismiss(getActivity());
                     } else {
                         T.showShort(getActivity(), "修改失败");
+                        LoadDialog.dismiss(getActivity());
                     }
                 }
             });
@@ -466,28 +480,33 @@ public class PersonalFragment extends Fragment {
         DisplayMetrics outMetrics = new DisplayMetrics();
         defaultDisplay.getMetrics(outMetrics);
         int width = outMetrics.widthPixels;
-        View menuView = LayoutInflater.from(getActivity()).inflate(R.layout.popupwindow_select_time, null);
+        View menuView = LayoutInflater.from(getActivity()).inflate(R.layout.popupwindow_select_time2, null);
         final PopupWindow mPopupWindow = new PopupWindow(menuView, (int) (width * 0.8),
                 ActionBar.LayoutParams.WRAP_CONTENT);
         ScreenInfo screenInfoDate = new ScreenInfo(getActivity());
         wheelMainDate = new WheelMain(menuView, true);
         wheelMainDate.screenheight = screenInfoDate.getHeight();
-        String time = DateUtils.currentMonth().toString();
-        Calendar calendar = Calendar.getInstance();
-        if (JudgeDate.isDate(time, "yyyy-MM-DD")) {
-            try {
-                calendar.setTime(new Date(time));
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (TextUtils.isEmpty(birthday)) {
+            String time = DateUtils.currentMonth().toString();
+            Calendar calendar = Calendar.getInstance();
+            if (JudgeDate.isDate(time, "yyyy-MM-DD")) {
+                try {
+                    calendar.setTime(new Date(time));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            wheelMainDate.DateTimePicker(year, month, day);
+        } else {
+            int year = Integer.parseInt(birthday.substring(0, 4));
+            int month = Integer.parseInt(birthday.substring(5, 7));
+            int day = Integer.parseInt(birthday.substring(8, 10));
+
+            wheelMainDate.DateTimePicker(year, month, day);
         }
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        wheelMainDate.initDateTimePicker(year, month, day, hours, minute);
-        final String currentTime = wheelMainDate.getTime().toString();
         mPopupWindow.setAnimationStyle(R.style.AnimationPreview);
         mPopupWindow.setTouchable(true);
         mPopupWindow.setFocusable(true);
@@ -510,27 +529,19 @@ public class PersonalFragment extends Fragment {
 
             @Override
             public void onClick(View arg0) {
-                beginTime = wheelMainDate.getTime().toString();
-                birthday=DateUtils.formateStringH(beginTime, DateUtils.yyyyMMddHHmm);
-                Date dateBir=stringToDate(birthday);
-                if(date.before(dateBir)){
-                    T.showLong(getActivity(),"不能大于当前时间");
+                beginTime = wheelMainDate.getDataTime().toString();
+                birthday = DateUtils.formateStringH(beginTime, DateUtils.yyyyMMdd);
+                birthday = birthday.substring(0,10);
+                Date dateBir = stringToDate(birthday);
+                if (date.before(dateBir)) {
+                    T.showLong(getActivity(), "不能大于当前时间");
                     return;
                 }
-                myBirthday=birthday.substring(0,10);
-//                tvBirthday.setText(birthday);
-                int birth= Integer.parseInt(birthday.substring(0,4));
-                age= str-birth;
+                int birth = Integer.parseInt(birthday.substring(0, 4));
+                age = str - birth;
                 changePerson(5);
                 mPopupWindow.dismiss();
                 backgroundAlpha(1f);
-
-                /*Date date1 = stringToDate(allAddFriends);
-                Date date2 = stringToDate(t1);
-                if (date1.before(date2)) {
-                    return 1;
-                }
-                return -1;*/
             }
         });
     }
@@ -560,9 +571,9 @@ public class PersonalFragment extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
                 CameraUtils.saveMyPhoto(getContext(), CameraUtils.img.getAbsolutePath());
 //                imageView.setImageBitmap(CameraUtils.getBitmap(this));
-                imageFile=new File(CameraUtils.getMyPhoto(getContext()));
+                imageFile = new File(CameraUtils.getMyPhoto(getContext()));
                 changePerson(0);
-                imageUrl="file://" + CameraUtils.getMyPhoto(getActivity());
+                imageUrl = "file://" + CameraUtils.getMyPhoto(getActivity());
                 ImageLoader.getInstance().displayImage("file://" + CameraUtils.getMyPhoto(getActivity()), civIcon);
 //                bitmapUtils.display(civIcon, CameraUtils.getMyPhoto(getContext()));
             }
@@ -572,7 +583,7 @@ public class PersonalFragment extends Fragment {
 
                 CameraUtils.cropPhotos(getContext(), this, data.getData());
 //                civIcon.setImageBitmap(CameraUtils.getBitmap(getActivity()));
-                ImageLoader.getInstance().displayImage("file://"+CameraUtils.getMyPhoto(getActivity()),civIcon);
+                ImageLoader.getInstance().displayImage("file://" + CameraUtils.getMyPhoto(getActivity()), civIcon);
             }
         }
 
@@ -581,11 +592,12 @@ public class PersonalFragment extends Fragment {
 
     /**
      * 判断时间
+     *
      * @return
      */
     private Date stringToDate(String string) {
-        String updatedAtDateStr = string.substring(0, 10) + " " + string.substring(11, 16);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String updatedAtDateStr = string.substring(0, 10);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date updateAtDate = null;
         try {
             updateAtDate = simpleDateFormat.parse(updatedAtDateStr);
@@ -595,7 +607,7 @@ public class PersonalFragment extends Fragment {
         return updateAtDate;
     }
 
-      /**
+    /**
      * 图片*/
 
     /*private void setPortraitChangListener() {

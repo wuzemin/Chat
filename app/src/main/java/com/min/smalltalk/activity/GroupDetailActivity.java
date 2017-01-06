@@ -198,6 +198,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             T.showShort(mContext, "/group/change_groupHead-------网络连接错误");
+                            return;
                         }
 
                         @Override
@@ -359,6 +360,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "group_member------" + "网络连接错误");
+                return;
             }
 
             @Override
@@ -546,6 +548,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/change_userName------" + e);
+                return;
             }
 
             @Override
@@ -569,6 +572,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/quit_group------" + e);
+                return;
             }
 
             @Override
@@ -618,6 +622,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/dismiss_group------" + e);
+                return;
             }
 
             @Override
@@ -669,6 +674,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/change_groupName------网络连接错误");
+                return;
             }
 
             @Override

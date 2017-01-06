@@ -87,6 +87,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/all_addfriend_request--------" + e);
+                return;
             }
 
             @Override
@@ -132,6 +133,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/confirm_friend------" + e);
+                return;
             }
 
             @Override

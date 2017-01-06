@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
+import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.adapter.ClaimFriendsAdapter;
 import com.min.smalltalk.base.BaseActivity;
@@ -45,7 +46,9 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
     private List<ClaimFriends> list;
     private ClaimFriendsAdapter adapter;
 
-
+    private String userId;
+    private String friends_userId;
+    private String problem_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +56,18 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
         setContentView(R.layout.activity_claim_friends);
         ButterKnife.bind(this);
         swipeRefresh.setOnRefreshListener(this);
+        LoadDialog.show(mContext);
         initData();
     }
 
     private void initData() {
-        String userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
-        HttpUtils.postClaimFriends("/claimFriends",  new StringCallback() {
+        userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postClaimFriendsList("/all_friends_claim", userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"onError---"+e);
+                LoadDialog.dismiss(mContext);
+                return;
             }
 
             @Override
@@ -72,8 +78,10 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
                 if(code.getCode()==200){
                     list=new ArrayList<ClaimFriends>();
                     list=code.getMsg();
+                    LoadDialog.dismiss(mContext);
                 }else {
                     T.showShort(mContext,"没有");
+                    LoadDialog.dismiss(mContext);
                 }
                 initAdapter();
             }
@@ -105,18 +113,17 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
     public boolean onButtonClaimClick(final int position, View view, int status) {
         final EditText editText=new EditText(mContext);
         new AlertDialog.Builder(mContext)
-                .setTitle("验证信息")
-                .setMessage(list.get(position).getQuestion())
+                .setTitle("验证问题")
+                .setMessage(list.get(position).getProblem_title())
                 .setView(editText)
                 .setPositiveButton("验证", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String text=editText.getText().toString();
-                        if(text.equals(list.get(position).getAnswer())){
-                            T.showShort(mContext,"认领成功");
-                        }else {
-                            T.showShort(mContext,"认领失败");
-                        }
+                        String answer=editText.getText().toString();
+                        friends_userId=list.get(position).getTu_id();
+                        LoadDialog.show(mContext);
+                        initClaim(answer);
+
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -127,5 +134,45 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
                 })
                 .show();
         return false;
+    }
+
+    /**
+     * 认领
+     * @param answer
+     */
+    private void initClaim(String answer) {
+        HttpUtils.postClaimFriends("/claim_user", userId, friends_userId, answer, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext,"OnError---"+e);
+                LoadDialog.dismiss(mContext);
+                return;
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson=new Gson();
+                Type type=new TypeToken<Code<Integer>>(){}.getType();
+                Code<Integer> code=gson.fromJson(response,type);
+                int code1=code.getCode();
+                switch (code1){
+                    case 200:
+                        T.showShort(mContext,"认领成功");
+                        LoadDialog.dismiss(mContext);
+                        break;
+                    case 0:
+                        T.showShort(mContext,"认领失败");
+                        LoadDialog.dismiss(mContext);
+                        break;
+                    case 100:
+                        T.showShort(mContext,"已认领");
+                        LoadDialog.dismiss(mContext);
+                        break;
+                    default:
+                        LoadDialog.dismiss(mContext);
+                        break;
+                }
+            }
+        });
     }
 }

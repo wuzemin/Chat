@@ -90,6 +90,7 @@ public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayou
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/vote_list------" + e);
+                return;
             }
 
             @Override

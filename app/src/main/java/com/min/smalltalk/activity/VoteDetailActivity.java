@@ -94,6 +94,8 @@ public class VoteDetailActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/vote_details------" + e);
+                LoadDialog.dismiss(mContext);
+                return;
             }
 
             @Override
@@ -185,6 +187,8 @@ public class VoteDetailActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/vote_collect------"+e);
+                LoadDialog.dismiss(mContext);
+                return;
             }
 
             @Override

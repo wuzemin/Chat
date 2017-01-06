@@ -217,6 +217,7 @@ public class UserDetailActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "deleteUser-----" + e);
+                return;
             }
 
             @Override
@@ -244,6 +245,7 @@ public class UserDetailActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/editFriendName----" + e);
+                return;
             }
 
             @Override

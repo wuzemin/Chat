@@ -136,6 +136,7 @@ public class CreateGroupActivity extends BaseActivity {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(mContext,"/create_group-----"+e);
+                    return;
                 }
 
                 @Override

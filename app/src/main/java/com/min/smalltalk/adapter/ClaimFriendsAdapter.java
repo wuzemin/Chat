@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.min.smalltalk.R;
 import com.min.smalltalk.bean.ClaimFriends;
+import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.image.CircleImageView;
 
 import java.util.List;
@@ -60,10 +61,10 @@ public class ClaimFriendsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         final ClaimFriends bean=list.get(position);
-//        holder.mHead.setImageURI(Uri.parse(bean.getPortraitUri()));
-        ImageLoader.getInstance().displayImage(bean.getPortraitUri(),holder.mHead);
-        holder.nickName.setText(bean.getNickName());
-        if(bean.getStatus()==0){
+        ImageLoader.getInstance().displayImage(HttpUtils.IMAGE_RUL+bean.getAvatar_image(),holder.mHead);
+        holder.nickName.setText(bean.getNickname());
+        holder.phone.setText(bean.getMobile());
+        if(bean.getCheck_claim()==1){
             holder.btnClaim.setVisibility(View.VISIBLE);
             holder.btnClaim.setText("已认领");
             holder.btnClaim.setTextColor(Color.GRAY);
@@ -77,7 +78,7 @@ public class ClaimFriendsAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (mOnItemButtonClick != null) {
-                    mOnItemButtonClick.onButtonClaimClick(position, v, bean.getStatus());
+                    mOnItemButtonClick.onButtonClaimClick(position, v, bean.getCheck_claim());
                 }
             }
         });

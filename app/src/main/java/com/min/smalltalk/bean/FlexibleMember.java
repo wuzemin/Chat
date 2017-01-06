@@ -9,20 +9,20 @@ import android.os.Parcelable;
 
 public class FlexibleMember implements Parcelable{
     private String tu_id;
-    private String vsername;
+    private String nickname;
     private int sex;
     private String avatar_image;
 
-    public FlexibleMember(String tu_id, String vsername, int sex, String avatar_image) {
+    public FlexibleMember(String tu_id, String nickname, int sex, String avatar_image) {
         this.tu_id = tu_id;
-        this.vsername = vsername;
+        this.nickname = nickname;
         this.avatar_image = avatar_image;
         this.sex = sex;
     }
 
     protected FlexibleMember(Parcel in) {
         tu_id = in.readString();
-        vsername = in.readString();
+        nickname = in.readString();
         avatar_image = in.readString();
         sex = in.readInt();
     }
@@ -47,12 +47,12 @@ public class FlexibleMember implements Parcelable{
         this.tu_id = tu_id;
     }
 
-    public String getVsername() {
-        return vsername;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setVsername(String vsername) {
-        this.vsername = vsername;
+    public void setNickname(String vsername) {
+        this.nickname = vsername;
     }
 
     public String getAvatar_image() {
@@ -79,7 +79,7 @@ public class FlexibleMember implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(tu_id);
-        parcel.writeString(vsername);
+        parcel.writeString(nickname);
         parcel.writeString(avatar_image);
         parcel.writeInt(sex);
     }

@@ -315,6 +315,7 @@ public class PersonSettingActivity extends BaseActivity {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(mContext,"/editUserInfo----"+e);
+                    return;
                 }
 
                 @Override
@@ -368,6 +369,7 @@ public class PersonSettingActivity extends BaseActivity {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(mContext, "/editUserInfo----" + e);
+                    return;
                 }
 
                 @Override
@@ -417,7 +419,7 @@ public class PersonSettingActivity extends BaseActivity {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        wheelMainDate.initDateTimePicker(year, month, day, hours, minute);
+        wheelMainDate.DateTimePicker(year, month, day);
         final String currentTime = wheelMainDate.getTime().toString();
         mPopupWindow.setAnimationStyle(R.style.AnimationPreview);
         mPopupWindow.setTouchable(true);

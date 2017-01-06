@@ -175,7 +175,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext,"认领答案不能为空");
                     return;
                 }
-                if (!TextUtils.isEmpty(iCord)) {
+                /*if (!TextUtils.isEmpty(iCord)) {
                     if (iCord.length() == 4) {
                         SMSSDK.submitVerificationCode("86", phone, iCord);
                         flag = false;
@@ -188,7 +188,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext, "请输入验证码");
                     etCode.requestFocus();
                     return;
-                }
+                }*/
                 LoadDialog.show(mContext);
                 initRegister();
                 break;
@@ -201,7 +201,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         HttpUtils.postRegisterRequest("/register", nickname, phone, password, question, answer,  new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/register-------onError");
+                T.showShort(mContext, "/register---"+e);
+                LoadDialog.dismiss(mContext);
+                return;
             }
 
             @Override
@@ -211,20 +213,27 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 }.getType();
                 Code<Integer> code = gson.fromJson(response, type);
                 int code1 = code.getCode();
-                if (code1 == 200) {
-                    T.showShort(mContext, "注册成功");
-                    Intent intent = new Intent(mContext, LoginActivity.class);
-                    intent.putExtra("phone", phone);
-                    intent.putExtra("password", password);
-                    setResult(RESULT_OK, intent);
-                    LoadDialog.dismiss(mContext);
-                    RegisterActivity.this.finish();
-                } else if (code1 == 0) {
-                    LoadDialog.dismiss(mContext);
-                    T.showShort(mContext, "一个号码只能注册一个用户哦");
-                } else if (code1 == 1000) {
-                    LoadDialog.dismiss(mContext);
-                    T.showShort(mContext, "数据库插入失败或连接融云失败");
+                switch (code1){
+                    case 200:
+                        T.showShort(mContext, "注册成功");
+                        Intent intent = new Intent(mContext, LoginActivity.class);
+                        intent.putExtra("phone", phone);
+                        intent.putExtra("password", password);
+                        setResult(RESULT_OK, intent);
+                        LoadDialog.dismiss(mContext);
+                        RegisterActivity.this.finish();
+                        break;
+                    case 0:
+                        LoadDialog.dismiss(mContext);
+                        T.showShort(mContext, "一个号码只能注册一个用户哦");
+                        break;
+                    case 1000:
+                        LoadDialog.dismiss(mContext);
+                        T.showShort(mContext, "数据库插入失败或连接融云失败");
+                        break;
+                    default:
+                        break;
+
                 }
             }
         });
@@ -285,12 +294,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     btnGetCord.setVisibility(View.VISIBLE);
                     Toast.makeText(RegisterActivity.this, "验证码获取失败，请重新获取", Toast.LENGTH_SHORT).show();
                     etPhone.requestFocus();
+                    LoadDialog.dismiss(mContext);
                     return;
                 } else {
                     ((Throwable) data).printStackTrace();
 //                    int resId = getStringRes(RegisterActivity.this, "smssdk_network_error");
                     Toast.makeText(RegisterActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
                     etCode.selectAll();
+                    LoadDialog.dismiss(mContext);
 //                    if (resId > 0) {
 //                        Toast.makeText(RegisterActivity.this, resId + "", Toast.LENGTH_SHORT).show();
 //                    }

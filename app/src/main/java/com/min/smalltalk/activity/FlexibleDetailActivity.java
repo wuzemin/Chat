@@ -115,6 +115,7 @@ public class FlexibleDetailActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/infoActives------"+e);
+                return;
             }
 
             @Override
@@ -136,7 +137,7 @@ public class FlexibleDetailActivity extends BaseActivity {
             @Override
             public void convert(BaseRecyclerHolder holder, FlexibleMember item, int position, boolean isScrolling) {
                 holder.setImageByUrl(R.id.siv_group_head,HttpUtils.IMAGE_RUL+item.getAvatar_image());
-                holder.setText(R.id.tv_group_name,item.getVsername());
+                holder.setText(R.id.tv_group_name,item.getNickname());
             }
         };
         rvActivityUser.setAdapter(adapter);
@@ -165,6 +166,7 @@ public class FlexibleDetailActivity extends BaseActivity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext,"/joinActives------"+e);
+                return;
             }
 
             @Override

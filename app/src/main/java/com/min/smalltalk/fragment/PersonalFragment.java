@@ -208,6 +208,8 @@ public class PersonalFragment extends Fragment {
                                 sp.edit().clear().commit();
                                 groupsDAO.delete(userId);
                                 friendInfoDAO.delete(userId);
+                                groupMemberDAO.delete(userId);
+                                ImageLoader.getInstance().clearDiskCache();
                                 getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
                                 T.showShort(getActivity(), "退出成功");
                                 getActivity().finish();

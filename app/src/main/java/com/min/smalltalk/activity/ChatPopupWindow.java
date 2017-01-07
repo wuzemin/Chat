@@ -53,8 +53,6 @@ public class ChatPopupWindow extends PopupWindow implements View.OnClickListener
                 Intent intent=new Intent(context,SelectFriendsActivity.class);
                 intent.putExtra("createGroup",true);
                 context.startActivity(intent);
-                /*context.startActivity(new Intent(context,CreateGroupActivity.class));
-                ChatPopupWindow.this.dismiss();*/
                 break;
             case R.id.ll_pop_add:
                 context.startActivity(new Intent(context,SearchFriendActivity.class));

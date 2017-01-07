@@ -136,6 +136,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 phone = etPhone.getText().toString().trim();
                 if (!TextUtils.isEmpty(phone)) {
                     if (phone.length() == 11) {
+                        LoadDialog.show(mContext,"正在请求服务器中...");
                         SMSSDK.getVerificationCode("86", phone);
                         etCode.requestFocus();
                         btnGetCord.setVisibility(View.GONE);
@@ -175,7 +176,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext,"认领答案不能为空");
                     return;
                 }
-                /*if (!TextUtils.isEmpty(iCord)) {
+                if (!TextUtils.isEmpty(iCord)) {
                     if (iCord.length() == 4) {
                         SMSSDK.submitVerificationCode("86", phone, iCord);
                         flag = false;
@@ -188,7 +189,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext, "请输入验证码");
                     etCode.requestFocus();
                     return;
-                }*/
+                }
                 LoadDialog.show(mContext);
                 initRegister();
                 break;
@@ -241,6 +242,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     //验证码送成功后提示文字
     private void reminderText() {
+        LoadDialog.dismiss(mContext);
         tvMessage.setVisibility(View.VISIBLE);
         handlerText.sendEmptyMessageDelayed(1, 1000);
     }

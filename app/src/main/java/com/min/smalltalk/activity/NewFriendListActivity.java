@@ -218,7 +218,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     }
 
     @Override
-    public boolean onButttonRefuseClick(int position, View view, int status) {
+    public boolean onButtonRefuseClick(int position, View view, int status) {
         LoadDialog.show(mContext);
         friendId = list.get(position).getUserid();
         initRequest(friendId, 0);
@@ -234,7 +234,7 @@ public class NewFriendListActivity extends BaseActivity implements NewFriendList
     }
 
     @Override
-    public boolean onButttonIgnoreClick(int position, View view, int status) {
+    public boolean onButtonIgnoreClick(int position, View view, int status) {
         LoadDialog.show(mContext);
         friendId = list.get(position).getUserid();
         initRequest(friendId, 2);

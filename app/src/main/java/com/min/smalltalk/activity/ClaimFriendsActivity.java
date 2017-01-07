@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.L;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
@@ -62,6 +63,7 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
 
     private void initData() {
         userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        L.e("----------start","");
         HttpUtils.postClaimFriendsList("/all_friends_claim", userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -75,6 +77,7 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
                 Gson gson = new Gson();
                 Type type=new TypeToken<Code<List<ClaimFriends>>>(){}.getType();
                 Code<List<ClaimFriends>> code=gson.fromJson(response,type);
+                L.e("---------end","");
                 if(code.getCode()==200){
                     list=new ArrayList<ClaimFriends>();
                     list=code.getMsg();
@@ -158,6 +161,7 @@ public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLa
                 switch (code1){
                     case 200:
                         T.showShort(mContext,"认领成功");
+                        initData();
                         LoadDialog.dismiss(mContext);
                         break;
                     case 0:

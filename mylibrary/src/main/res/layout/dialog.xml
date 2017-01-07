@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
         <ProgressBar
             android:indeterminateDrawable="@drawable/progressbar"
             android:layout_width="80dp"
@@ -19,10 +19,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:paddingRight="5dp"
-            android:text="正在加载"
+            android:text="正在加载中..."
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 

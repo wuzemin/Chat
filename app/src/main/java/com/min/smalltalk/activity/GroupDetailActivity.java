@@ -33,6 +33,7 @@ import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.DBOpenHelper;
+import com.min.smalltalk.db.GroupMemberDAOImpl;
 import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.DemoGridView;
@@ -134,6 +135,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     private DBOpenHelper dbOpenHelper;  //SQLite
     private GroupsDAOImpl sqLiteDAO;
+    private GroupMemberDAOImpl groupMemberDAO;
 
     private MyGridView adapter;
 
@@ -169,6 +171,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
         dbOpenHelper.getWritableDatabase();
         sqLiteDAO = new GroupsDAOImpl(mContext);
+        groupMemberDAO = new GroupMemberDAOImpl(mContext);
     }
 
 
@@ -242,29 +245,6 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         L.e("--------------====", mGroup + "");
     }
 
-
-
-    /*private void getGroups() {
-        HttpUtils.postGroupsRequest("/group_info", groupId,userId, new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "group_data------" + "网络连接错误");
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<Code<Groups>>() {}.getType();
-                Code<Groups> code = gson.fromJson(response, type);
-                Groups groups=code.getMsg();
-                if (code.getCode() == 200) {
-                    mGroup = new Groups(groups.getGroupId(), groups.getGroupName(),
-                            HttpUtils.IMAGE_RUL+groups.getGroupPortraitUri(), groups.getRole());
-                    initGroupData();
-                }
-            }
-        });
-    }*/
 
     //群组信息
     private void initGroupData() {
@@ -359,7 +339,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         HttpUtils.postGroupsRequest("/group_member", groupId, userId, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "group_member------" + "网络连接错误");
+                T.showShort(mContext, "group_member------" + e);
                 return;
             }
 
@@ -371,6 +351,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Code<List<GroupMember>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     mGroupMember = code.getMsg();
+
                     if (mGroupMember != null && mGroupMember.size() > 0) {
                         tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
                         adapter = new MyGridView(mContext, mGroupMember, isCreator, mGroup);
@@ -378,16 +359,6 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                     } else {
                         return;
                     }
-                    /*for (GroupMember member : mGroupMember) {
-                        String s = member.getUserId();
-                        if (userId.equals(s)) {
-                            if (!TextUtils.isEmpty(member.getDisplayName())) {
-                                tvGroupName.setText(member.getDisplayName());
-                            } else {
-                                tvGroupName.setText("无");
-                            }
-                        }
-                    }*/
                 }
             }
         });

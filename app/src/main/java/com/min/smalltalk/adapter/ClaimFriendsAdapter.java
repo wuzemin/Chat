@@ -65,10 +65,10 @@ public class ClaimFriendsAdapter extends BaseAdapter {
         holder.nickName.setText(bean.getNickname());
         holder.phone.setText(bean.getMobile());
         if(bean.getCheck_claim()==1){
+            holder.btnClaim.setClickable(false);
             holder.btnClaim.setVisibility(View.VISIBLE);
             holder.btnClaim.setText("已认领");
             holder.btnClaim.setTextColor(Color.GRAY);
-            holder.btnClaim.setClickable(false);
         }else {
             holder.btnClaim.setVisibility(View.VISIBLE);
             holder.btnClaim.setText("我要认领");

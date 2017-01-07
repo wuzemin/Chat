@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -28,6 +26,7 @@ import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.bean.LoginBean;
+import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.DBOpenHelper;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.db.GroupMemberDAOImpl;
@@ -101,11 +100,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 LoadDialog.show(mContext);
                 if(!CommonUtils.isNetConnect(mContext)){
                     T.showShort(mContext,R.string.no_network);
+                    LoadDialog.dismiss(mContext);
                     return;
                 }
                 user= et_user.getText().toString().trim();
                 password = et_pwd.getText().toString().trim();
                 login(user, password);
+//                String token = sharedPreferences.getString(Const.LOGIN_TOKEN,"");
+//                connect("tP4VqBo3VC6JYDHzpwckImu1eBnVvHicknDcpKKoK6cJhh9DWt8ZFQk0u9jwUUPlfO/lHiUGajaWcjWW9EhqA+bGduDaQtP8");
                 break;
             default:
                 break;
@@ -134,43 +136,38 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 @Override
                 public void onError(Call call, Exception e, int id) {
                     T.showShort(mContext,"/login----"+e);
+                    LoadDialog.dismiss(mContext);
                     return;
                 }
                 @Override
                 public void onResponse(String response, int id) {
                     HttpUtils.setCookie(LoginActivity.this);
                     Gson gson=new Gson();
-//                    Type type=new TypeToken<LoginResult>(){}.getType();
-//                    LoginResult loginResult=gson.fromJson(response,type);
                     Type type=new TypeToken<Code<LoginBean>>(){}.getType();
                     Code<LoginBean> code=gson.fromJson(response,type);
                     int code1=code.getCode();
                     if(code1==200){
-                        T.showShort(mContext,"登录成功");
                         uid=code.getMsg().getUserid();
                         String token=code.getMsg().getToken();
                         String nickName=code.getMsg().getNickname();
                         String portraitUri=HttpUtils.IMAGE_RUL+code.getMsg().getPortrait();
                         L.e("-----------","LoginActivity---connecting");
-                        connect(token);
                         editor.putString("user",user);
                         editor.putString("password",password);
                         editor.putBoolean("login_message",true);
-                        editor.putString("loginphone", user);
+                        editor.putString(Const.LOGIN_PHONE, user);
                         editor.putString("loginpassword", password);
-                        editor.putString("loginid",uid);
-                        editor.putString("loginToken", token);
-                        editor.putString("loginnickname",nickName);
-                        editor.putString("loginPortrait",portraitUri);
+                        editor.putString(Const.LOGIN_ID,uid);
+                        editor.putString(Const.LOGIN_TOKEN, token);
+                        editor.putString(Const.LOGIN_NICKNAME,nickName);
+                        editor.putString(Const.LOGIN_PORTRAIT,portraitUri);
                         editor.commit();
                         RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
-//                        initFriendInfo();
-                        initGroups(uid);
-//                        initData(uid);
-//                        getGroupMembers();
-//                        initGroupMember();
-                        finish();
+                        startActivity(new Intent(mContext, LogoActivity.class));
                         LoadDialog.dismiss(mContext);
+                        T.showLong(mContext,"登录成功。第一次登录有点久，请稍等一下");
+                        initGroups(uid);
+                        finish();
                     }else if(code1==0){
                         Toast.makeText(LoginActivity.this, "账号不存在！", Toast.LENGTH_SHORT).show();
                         LoadDialog.dismiss(mContext);
@@ -231,65 +228,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
             }
         });
-        LoadDialog.dismiss(mContext);
     }
-
-
-    /**
-     * 群组成员
-     */
-    private void getGroupMembers() {
-        HttpUtils.postGroupsRequest("/group_member", groupId,uid, new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "group_member------" + "网络连接错误");
-                return;
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<Code<List<GroupMember>>>() {}.getType();
-                Code<List<GroupMember>> code = gson.fromJson(response, type);
-                if (code.getCode() == 200) {
-                    mGroupMember = code.getMsg();
-                    for(GroupMember member:mGroupMember){
-                        String userId=member.getUserId();
-                        String userName=member.getUserName();
-                        String userPortraitUri=member.getUserPortraitUri();
-                        GroupMember groupMember=new GroupMember();
-                        groupMember.setUserId(userId);
-                        groupMember.setUserName(userName);
-                        groupMember.setUserPortraitUri(userPortraitUri);
-                        groupMemberDAO.save(groupMember);
-                        Log.i("-------------==-=-", "群组成员插入成功");// 用日志记录一个我们自定义的输出。可以在LogCat窗口中查看，
-                    }
-                    /*if (mGroupMember != null && mGroupMember.size() > 0) {
-                        tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
-                        mGridView.setAdapter(new MyGridView(mContext, mGroupMember, isCreator,mGroup));
-                    } else {
-                        return;
-                    }
-                    for (GroupMember member : mGroupMember) {
-                        String s = member.getUserId();
-                        if (userId.equals(s)) {
-                            if (!TextUtils.isEmpty(member.getDisplayName())) {
-                                tvGroupName.setText(member.getDisplayName());
-                            } else {
-                                tvGroupName.setText("无");
-                            }
-                        }
-                    }*/
-                }
-            }
-        });
-    }
-
-
-
 
 
     private void connect(String token) {
+        LoadDialog.show(mContext);
         final Message message=new Message();
         if(getApplicationInfo().packageName.equals(App.getCurProcessName(getApplicationContext()))){
             /**
@@ -302,6 +245,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     /*message.what=0;
                     handler.sendMessage(message);*/
                     T.showShort(mContext,"Token 错误，Token 已经过期");
+                    return;
                 }
                 //连接融云成功
                 @Override
@@ -309,10 +253,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     /*message.what=1;
                     message.obj=s;
                     handler.sendMessage(message);*/
-                    T.showShort(mContext, "--onSuccess--" + s);
-                    startActivity(new Intent(mContext, LogoActivity.class));
+                    T.showLong(mContext, "登录成功!第一次登录有点久，请稍等一下");
+                    /*startActivity(new Intent(mContext, LogoActivity.class));
                     L.e("-----------","LoginActivity---connected");
-                    finish();
+                    LoadDialog.dismiss(mContext);
+                    initGroups(uid);*/
+//                    finish();
                 }
 
                 /**
@@ -323,6 +269,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
                     T.showShort(mContext,"--"+errorCode);
+                    return;
                     /*message.what=2;
                     message.obj=errorCode;
                     handler.sendMessage(message);*/
@@ -330,27 +277,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             });
         }
     }
-    Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case 0:
-                    T.showShort(mContext,"Token 错误，Token 已经过期");
-                    break;
-                case 1:
-                    T.showShort(mContext, "--onSuccess--" + msg.obj);
-                    startActivity(new Intent(mContext, LogoActivity.class));
-                    L.e("-----------","LoginActivity---connected");
-                    finish();
-                    break;
-                case 2:
-                    T.showShort(mContext,"--"+msg.obj);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

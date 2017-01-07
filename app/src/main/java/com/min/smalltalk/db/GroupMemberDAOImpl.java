@@ -17,7 +17,7 @@ public class GroupMemberDAOImpl {
     private DBOpenHelper dbOpenHelper;
 
     public GroupMemberDAOImpl(Context context) {
-        this.dbOpenHelper = new DBOpenHelper(context, "talk.db", null, 1);
+        this.dbOpenHelper = new DBOpenHelper(context, "talk.db", null, 2);
     }
 
     public void save(GroupMember groupMember) {// 插入记录
@@ -53,7 +53,7 @@ public class GroupMemberDAOImpl {
         return groupMember;
     }
 
-    public List<GroupMember> findAll() {// 查询所有记录
+    public List<GroupMember> findAll(String userId) {// 查询所有记录
         List<GroupMember> lists = new ArrayList<GroupMember>();
         GroupMember groupMember = null;
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
@@ -61,7 +61,7 @@ public class GroupMemberDAOImpl {
         // String[]{offset.toString(),maxLength.toString()});
         // //这里支持类型MYSQL的limit分页操作
 
-        Cursor cursor = db.rawQuery("select * from t_groupMember ", null);
+        Cursor cursor = db.rawQuery("select * from t_groupMember where userId=?", new String[] {userId.toString()});
         while (cursor.moveToNext()) {
             groupMember = new GroupMember();
             groupMember.setUserId(cursor.getString(cursor.getColumnIndex("userId")));

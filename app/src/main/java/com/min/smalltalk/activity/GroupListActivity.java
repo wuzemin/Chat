@@ -9,16 +9,25 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.base.BaseRecyclerAdapter;
 import com.min.smalltalk.base.BaseRecyclerHolder;
+import com.min.smalltalk.bean.Code;
+import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.constant.Const;
+import com.min.smalltalk.db.GroupMemberDAOImpl;
 import com.min.smalltalk.db.GroupsDAOImpl;
+import com.min.smalltalk.network.HttpUtils;
 import com.min.smalltalk.wedget.ItemDivider;
+import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.rong.imkit.RongIM;
+import okhttp3.Call;
 
 /**
  * 群列表
@@ -47,11 +57,13 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
 
     private BaseRecyclerAdapter<Groups> adapter;
     private List<Groups> list = new ArrayList<>();
+    private List<GroupMember> mGroupMember=new ArrayList<>();
     private String groupName;
     private String groupId;
     private String groupPortraitUri;
 
     private GroupsDAOImpl sqLiteDAO;
+    private GroupMemberDAOImpl groupMemberDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +72,7 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
         ButterKnife.bind(this);
 
         sqLiteDAO = new GroupsDAOImpl(mContext);
+        groupMemberDAO = new GroupMemberDAOImpl(mContext);
 
         tvTitle.setText("我的群组");
         ivTitleRight.setVisibility(View.VISIBLE);
@@ -114,7 +127,35 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView parent, View view, int position) {
-                RongIM.getInstance().startGroupChat(mContext, list.get(position).getGroupId(), list.get(position).getGroupName());
+                String groupId=list.get(position).getGroupId();
+                String groupName=list.get(position).getGroupName();
+                initList(groupId,groupName);
+                RongIM.getInstance().startGroupChat(mContext, groupId, groupName);
+            }
+        });
+    }
+
+    private void initList(String groupId,String groupName) {
+        String userId=getSharedPreferences("config",MODE_PRIVATE).getString(Const.LOGIN_ID,"");
+        HttpUtils.postGroupsRequest("/group_member", groupId, userId, new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                T.showShort(mContext, "group_member------" + e);
+                return;
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<GroupMember>>>() {
+                }.getType();
+                Code<List<GroupMember>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    mGroupMember = code.getMsg();
+                    for(GroupMember groupMember:mGroupMember){
+                        groupMemberDAO.save(groupMember);
+                    }
+                }
             }
         });
     }
@@ -127,7 +168,9 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
                 GroupListActivity.this.finish();
                 break;
             case R.id.iv_title_right:
-                startActivity(new Intent(mContext, SelectFriendsActivity.class));
+                Intent intent=new Intent(mContext,SelectFriendsActivity.class);
+                intent.putExtra("createGroup",true);
+                startActivity(intent);
                 break;
         }
     }

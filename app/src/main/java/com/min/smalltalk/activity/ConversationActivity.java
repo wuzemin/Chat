@@ -25,13 +25,14 @@ import com.min.mylibrary.util.T;
 import com.min.smalltalk.AppContext;
 import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
-import com.min.smalltalk.UserInfoManager;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.FriendInfo;
+import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.UserId;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
+import com.min.smalltalk.db.GroupMemberDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -53,7 +54,7 @@ import okhttp3.Call;
 /**
  * 会话页面
  */
-public class ConversationActivity extends BaseActivity implements View.OnClickListener, RongIM.UserInfoProvider {
+public class ConversationActivity extends BaseActivity implements View.OnClickListener {
 
     /*@BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -61,7 +62,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     TextView tvTitle;
     @BindView(R.id.iv_title_right)
     ImageView ivTitleRight;*/
-    private ImageView ivTitleBack,ivTitleRight;
+    private ImageView ivTitleBack, ivTitleRight;
     private TextView tvTitle;
 
 
@@ -80,17 +81,21 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
     private SharedPreferences sp;
 
     private FriendInfoDAOImpl friendInfoDAO;
+    private GroupMemberDAOImpl groupMemberDAO;
+
+    private RongIM.IGroupMemberCallback mMentionMemberCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        friendInfoDAO= new FriendInfoDAOImpl(mContext);
+        friendInfoDAO = new FriendInfoDAOImpl(mContext);
+        groupMemberDAO = new GroupMemberDAOImpl(mContext);
 
-        ivTitleBack= (ImageView) findViewById(R.id.iv_title_back);
-        ivTitleRight= (ImageView) findViewById(R.id.iv_title_right);
-        tvTitle= (TextView) findViewById(R.id.tv_title);
+        ivTitleBack = (ImageView) findViewById(R.id.iv_title_back);
+        ivTitleRight = (ImageView) findViewById(R.id.iv_title_right);
+        tvTitle = (TextView) findViewById(R.id.tv_title);
 
         ivTitleBack.setOnClickListener(this);
         ivTitleRight.setOnClickListener(this);
@@ -138,26 +143,35 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
         AppContext.getInstance().pushActivity(this);
 
+        RongIM.getInstance().setGroupMembersProvider(new RongIM.IGroupMembersProvider() {
+            @Override
+            public void getGroupMembers(String groupId, RongIM.IGroupMemberCallback callback) {
+                getGroupMembersForMention();
+                mMentionMemberCallback = callback;
+            }
+        });
+
     }
 
     private void newFriend() {
-        final String userid=sp.getString(Const.LOGIN_ID,"");
+        final String userid = sp.getString(Const.LOGIN_ID, "");
         HttpUtils.postAddFriender("/all_unread_friends", userid, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext,"/all_unread_friends--------"+e);
+                T.showShort(mContext, "/all_unread_friends--------" + e);
                 return;
             }
 
             @Override
             public void onResponse(String response, int id) {
-                Gson gson=new Gson();
-                Type type=new TypeToken<Code<List<UserId>>>(){}.getType();
-                Code<List<UserId>> code = gson.fromJson(response,type);
-                if(code.getCode()==200){
-                    List<UserId> userIds=code.getMsg();
-                    for (int i = 0;i<userIds.size();i++){
-                        if(mTargetId != null && mTargetId.equals(userIds.get(i).getUserId())){
+                Gson gson = new Gson();
+                Type type = new TypeToken<Code<List<UserId>>>() {
+                }.getType();
+                Code<List<UserId>> code = gson.fromJson(response, type);
+                if (code.getCode() == 200) {
+                    List<UserId> userIds = code.getMsg();
+                    for (int i = 0; i < userIds.size(); i++) {
+                        if (mTargetId != null && mTargetId.equals(userIds.get(i).getUserId())) {
                             startActivity(new Intent(ConversationActivity.this, NewFriendListActivity.class));
                             return;
                         }
@@ -175,24 +189,29 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
      * 用户头像
      */
     private void initPortrait() {
-        //用户头像
-        list = new ArrayList<>();
-        String userId=sp.getString(Const.LOGIN_ID,"");
-        String name=sp.getString(Const.LOGIN_NICKNAME,"");
-        String portrait;
-        if(TextUtils.isEmpty(sp.getString(Const.LOGIN_PORTRAIT,""))){
-            portrait="http://192.168.0.209/public/effect/assets/avatars/avatar.jpg";
-        }else {
-            portrait = sp.getString(Const.LOGIN_PORTRAIT, "");
-            L.e("-----------",portrait);
+        String uid = sp.getString(Const.LOGIN_ID, "");
+        String nickName = sp.getString(Const.LOGIN_NICKNAME, "");
+        String portraitUri = sp.getString(Const.LOGIN_PORTRAIT, "");
+        RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
+    }
+
+    /**
+     * 群头像
+     */
+    private void getGroupMembersForMention() {
+        List<GroupMember> groupMembers = groupMemberDAO.findAll(mTargetId);
+                List < UserInfo > userInfos = new ArrayList<>();
+        if (groupMembers != null) {
+            for (GroupMember groupMember : groupMembers) {
+                if (groupMember != null) {
+                    UserInfo userInfo = new UserInfo(groupMember.getUserId(), groupMember.getUserName(),
+                            Uri.parse(groupMember.getUserPortraitUri()));
+                    userInfos.add(userInfo);
+                }
+            }
         }
-        String displayName="";
-        String phone=sp.getString(Const.LOGIN_PHONE,"");
-        String email=sp.getString(Const.LOGIN_EMAIL,"");
-        list.clear();
-        list=friendInfoDAO.findAll(userId);
-        list.add(new FriendInfo(userId,name,portrait,displayName,phone,email));
-        RongIM.setUserInfoProvider(this, true);
+        mMentionMemberCallback.onGetGroupMembersResult(userInfos);
+
     }
 
     /**
@@ -392,19 +411,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         return false;
     }
 
-    @Override
-    public UserInfo getUserInfo(String s) {
-        /*for (FriendInfo i : list) {
-            if (i.getUserId().equals(s)) {
-                UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
-                RongIM.getInstance().refreshUserInfoCache(userInfo);
-                return userInfo;
-            }
-        }*/
-        UserInfoManager.getInstance().getUserInfo(s);
-        return null;
-    }
-
     private void initPerssion() {
         if (Build.VERSION.SDK_INT >= 23) {
             RongIM.getInstance().setRequestPermissionListener(new RongIM.RequestPermissionsListener() {
@@ -461,6 +467,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             setTitle(R.string.de_actionbar_sub_defult);
         }
     }
+
     /**
      * 设置私聊界面 ActionBar
      */
@@ -481,6 +488,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             setTitle(targetId);
         }
     }
+
     /**
      * 设置群聊界面 ActionBar
      *
@@ -496,7 +504,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_title_back:
                 ConversationActivity.this.finish();
                 break;

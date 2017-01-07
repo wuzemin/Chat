@@ -65,7 +65,7 @@ public class NewFriendListAdapter  extends BaseAdapters {
             @Override
             public void onClick(View v) {
                 if (mOnItemButtonClick != null) {
-                    mOnItemButtonClick.onButttonRefuseClick(position, v, bean.getStatus());
+                    mOnItemButtonClick.onButtonRefuseClick(position, v, bean.getStatus());
                 }
             }
         });
@@ -73,17 +73,21 @@ public class NewFriendListAdapter  extends BaseAdapters {
             @Override
             public void onClick(View v) {
                 if (mOnItemButtonClick != null) {
-                    mOnItemButtonClick.onButttonIgnoreClick(position, v, bean.getStatus());
+                    mOnItemButtonClick.onButtonIgnoreClick(position, v, bean.getStatus());
                 }
             }
         });
 
         switch (bean.getStatus()) {
             case 0: // 已拒绝
-                holder.tvRefuse.setVisibility(View.VISIBLE);
+                /*holder.tvRefuse.setVisibility(View.VISIBLE);
                 holder.tvRefuse.setTextColor(Color.GRAY);
                 holder.tvRefuse.setText("已拒绝");
-                holder.tvRefuse.setClickable(false);
+                holder.tvRefuse.setClickable(false);*/
+                holder.tvAgree.setVisibility(View.VISIBLE);
+                holder.tvAgree.setTextColor(Color.GRAY);
+                holder.tvAgree.setClickable(false);
+                holder.tvAgree.setText("已拒绝");
                 break;
             case 1: //  已同意
                 holder.tvAgree.setVisibility(View.VISIBLE);
@@ -92,12 +96,16 @@ public class NewFriendListAdapter  extends BaseAdapters {
                 holder.tvAgree.setText("已同意");
                 break;
             case 2: // 已忽略
-                holder.tvIgnore.setVisibility(View.VISIBLE);
+                /*holder.tvIgnore.setVisibility(View.VISIBLE);
                 holder.tvIgnore.setTextColor(Color.GRAY);
                 holder.tvIgnore.setText("已忽略");
-                holder.tvIgnore.setClickable(false);
+                holder.tvIgnore.setClickable(false);*/
+                holder.tvAgree.setVisibility(View.VISIBLE);
+                holder.tvAgree.setTextColor(Color.GRAY);
+                holder.tvAgree.setClickable(false);
+                holder.tvAgree.setText("已忽略");
                 break;
-            case 3: //未读18
+            case 3: //未读
                 holder.tvRefuse.setVisibility(View.VISIBLE);
                 holder.tvRefuse.setClickable(true);
                 holder.tvAgree.setVisibility(View.VISIBLE);
@@ -128,8 +136,8 @@ public class NewFriendListAdapter  extends BaseAdapters {
 
     public interface OnItemButtonClick {
         boolean onButtonAgreeClick(int position, View view, int status);
-        boolean onButttonRefuseClick(int position, View view, int status);
-        boolean onButttonIgnoreClick(int position, View view, int status);
+        boolean onButtonRefuseClick(int position, View view, int status);
+        boolean onButtonIgnoreClick(int position, View view, int status);
 
     }
 }

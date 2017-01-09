@@ -54,10 +54,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     ClearWriteEditText etPassword;
     @BindView(R.id.btn_register)
     Button btnRegister;
-    @BindView(R.id.et_answer)
+    /*@BindView(R.id.et_answer)
     ClearWriteEditText etAnswer;
     @BindView(R.id.et_question)
-    ClearWriteEditText etQuestion;
+    ClearWriteEditText etQuestion;*/
 
     private String phone;
     private String iCord;
@@ -154,8 +154,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 password = etPassword.getText().toString();
                 phone = etPhone.getText().toString();
                 iCord = etCode.getText().toString().trim();
-                question = etQuestion.getText().toString();
-                answer = etAnswer.getText().toString();
+                /*question = etQuestion.getText().toString();
+                answer = etAnswer.getText().toString();*/
                 if (TextUtils.isEmpty(nickname)) {
                     T.showShort(mContext, "昵称不能为空");
                     return;
@@ -168,14 +168,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     T.showShort(mContext, "密码不能为空且长度不能小于4");
                     return;
                 }
-                if(TextUtils.isEmpty(question)){
+                /*if(TextUtils.isEmpty(question)){
                     T.showShort(mContext,"认领问题不能为空");
                     return;
                 }
                 if(TextUtils.isEmpty(answer)){
                     T.showShort(mContext,"认领答案不能为空");
                     return;
-                }
+                }*/
                 if (!TextUtils.isEmpty(iCord)) {
                     if (iCord.length() == 4) {
                         SMSSDK.submitVerificationCode("86", phone, iCord);

@@ -112,7 +112,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         mTargetId = intent.getData().getQueryParameter("targetId");
         //10000 为 Demo Server 加好友的 id，若 targetId 为 10000，则为加好友消息，默认跳转到 NewFriendListActivity
         // Demo 逻辑
-        newFriend();
+        newFriend();  //好友请求
 
         setActionBarTitle(mConversationType, mTargetId);
         //展示如何从 Intent 中得到 融云会话页面传递的 Uri
@@ -139,7 +139,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
 //        }
 
         // android 6.0 以上版本，监听SDK权限请求，弹出对应请求框。
-        initPerssion();
+        initPermission();
 
         AppContext.getInstance().pushActivity(this);
 
@@ -411,7 +411,7 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         return false;
     }
 
-    private void initPerssion() {
+    private void initPermission() {
         if (Build.VERSION.SDK_INT >= 23) {
             RongIM.getInstance().setRequestPermissionListener(new RongIM.RequestPermissionsListener() {
                 @RequiresApi(api = Build.VERSION_CODES.M)
@@ -530,7 +530,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
             if (TextUtils.isEmpty(mTargetId)) {
                 T.showShort(mContext, "讨论组尚未创建成功");
             }
-
 
             Intent intent = null;
             if (mConversationType == Conversation.ConversationType.GROUP) {

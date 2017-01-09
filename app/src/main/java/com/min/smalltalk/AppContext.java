@@ -258,6 +258,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
                 }
             } else {
                 context.startActivity(new Intent(context, NewFriendListActivity.class));
+//                L.e("---------------AppContent","111111111111111111");
             }
             return true;
         }
@@ -277,7 +278,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
             ContactNotificationMessage contactNotificationMessage = (ContactNotificationMessage) messageContent;
             if (contactNotificationMessage.getOperation().equals("Request")) {
                 //对方发来好友邀请
-                BroadcastManager.getInstance(mContext).sendBroadcast(AppContext.UPDATE_RED_DOT);
+//                BroadcastManager.getInstance(mContext).sendBroadcast(AppContext.UPDATE_RED_DOT);
             } else if (contactNotificationMessage.getOperation().equals("AcceptResponse")) {
                 //对方同意我的好友请求
                 ContactNotificationMessageData c = null;
@@ -285,6 +286,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
                 Gson gson=new Gson();
                 Type type=new TypeToken<ContactNotificationMessageData>(){}.getType();
                 c=gson.fromJson(contactNotificationMessage.getExtra(),type);
+
                 /*try {
 
                     c = JsonMananger.jsonToBean(contactNotificationMessage.getExtra(), ContactNotificationMessageData.class);
@@ -296,8 +298,8 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
 //                }
 //                DBManager.getInstance(mContext).getDaoSession().getFriendDao().insertOrReplace(
 //                        new FriendInfo(contactNotificationMessage.getSourceUserId(), c.getSourceUserNickname(), null, null, null, null));
-                BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_FRIEND);
-                BroadcastManager.getInstance(mContext).sendBroadcast(AppContext.UPDATE_RED_DOT);
+//                BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_FRIEND);
+//                BroadcastManager.getInstance(mContext).sendBroadcast(AppContext.UPDATE_RED_DOT);
             }
 //                // 发广播通知更新好友列表
             BroadcastManager.getInstance(mContext).sendBroadcast(UPDATE_RED_DOT);

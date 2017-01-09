@@ -18,7 +18,8 @@
         android:textSize="@dimen/font_40" />
 
     <LinearLayout
-        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:orientation="vertical"
@@ -89,7 +90,7 @@
             android:maxLength="16"
             android:inputType="textPassword"/>
         <!--认领问题-->
-        <com.min.mylibrary.widget.ClearWriteEditText
+        <!--<com.min.mylibrary.widget.ClearWriteEditText
             android:id="@+id/et_question"
             android:layout_marginBottom="20dp"
             android:hint="@string/question"
@@ -101,7 +102,7 @@
             android:layout_marginBottom="20dp"
             android:hint="@string/answer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
 
         <Button
             android:layout_marginTop="20dp"

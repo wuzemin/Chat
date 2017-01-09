@@ -54,6 +54,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private boolean isDebug;
     private Context mContext;
     public static final String EXIT = "EXIT";
+    private Conversation.ConversationType[] mConversationsTypes = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +131,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Conversation.ConversationType.PUBLIC_SERVICE, Conversation.ConversationType.APP_PUBLIC_SERVICE
         };
 
+//        RongIM.getInstance().addUnReadMessageCountChangedObserver(this, conversationTypes);
         getConversationPush();// 获取 push 的 id 和 target
         getPushMessage();
         BroadcastManager.getInstance(mContext).addAction(EXIT, new BroadcastReceiver() {
@@ -165,6 +167,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 //                    .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "false")//设置系统会话非聚合显示
                     .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "true")//系统
                     .build();
+            mConversationsTypes = new Conversation.ConversationType[] {Conversation.ConversationType.PRIVATE,
+                    Conversation.ConversationType.GROUP,
+                    Conversation.ConversationType.PUBLIC_SERVICE,
+                    Conversation.ConversationType.APP_PUBLIC_SERVICE,
+                    Conversation.ConversationType.SYSTEM};
             listFragment.setUri(uri);
             return listFragment;
         } else {
@@ -346,4 +353,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 //        Fragment fragment=getSupportFragmentManager().getFragments().get(requestCode);
 //        fragment.onActivityResult(requestCode,resultCode,data);
     }
+
 }

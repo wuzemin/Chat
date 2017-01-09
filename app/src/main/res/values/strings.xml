@@ -82,6 +82,9 @@
     <string name="vote_status">投票状态</string>
     <string name="multiselect">允许多选</string>
     <string name="voting_period">投票期限</string>
+    <string name="de_dialog_item_message_delete">删除消息</string>
+    <string name="contact_notification_someone_agree_your_request">%1$s已同意你的好友请求</string>
+    <string name="contact_notification_agree_your_request">对方已同意你的好友请求</string>
 
     <string-array name="spinners">
         <item>我的名字？</item>

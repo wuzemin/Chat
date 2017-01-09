@@ -93,7 +93,10 @@ public class App extends Application {
             Thread.setDefaultUncaughtExceptionHandler(new RongExceptionHandler(this));
 
             try {
+//                RongIM.registerMessageTemplate(new ContactNotificationMessageProvider());
                 RongIM.registerMessageTemplate(new RealTimeLocationMessageProvider());
+//                RongIM.registerMessageType(TestMessage.class);
+//                RongIM.registerMessageTemplate(new TestMessageProvider());
             } catch (Exception e) {
                 e.printStackTrace();
             }

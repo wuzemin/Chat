@@ -31,6 +31,12 @@ public class SubConversationListActivtiy extends FragmentActivity {
             }
         });
 
+        /*SubConversationListFragment fragment = new SubConversationListFragment();
+        fragment.setAdapter(new SubConversationListAdapterEx(RongContext.getInstance()));
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.subconversationlist, fragment);
+        transaction.commit();*/
+
         getActionBarTitle();
 
     }
@@ -41,19 +47,25 @@ public class SubConversationListActivtiy extends FragmentActivity {
     private void getActionBarTitle() {
 
         Intent intent = getIntent();
+        if (intent.getData() == null) {
+            return;
+        }
+        //聚合会话参数
+        String type = intent.getData().getQueryParameter("type");
 
-        type = intent.getData().getQueryParameter("type");
+        if (type == null)
+            return;
 
         if (type.equals("group")) {
-            mTitle.setText("聚合群组");
+            mTitle.setText("群组");
         } else if (type.equals("private")) {
-            mTitle.setText("聚合单聊");
+            mTitle.setText("单聊");
         } else if (type.equals("discussion")) {
-            mTitle.setText("聚合讨论组");
+            mTitle.setText("讨论组");
         } else if (type.equals("system")) {
-            mTitle.setText("聚合系统会话");
+            mTitle.setText("系统会话");
         } else {
-            mTitle.setText("聚合");
+            mTitle.setText("聊天");
         }
 
     }

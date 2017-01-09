@@ -30,7 +30,7 @@ public class GroupMemberDAOImpl {
 
     public void delete(String id) {// 删除纪录
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        db.execSQL("delete from t_groupMember where id=?", new Object[] { id.toString() });
+        db.execSQL("delete from t_groupMember where userId=?", new Object[] { id.toString() });
         db.close();
     }
 

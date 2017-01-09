@@ -154,6 +154,7 @@ public class PersonalFragment extends Fragment {
 //        bitmapUtils=new BitmapUtils(getContext());
         groupsDAO = new GroupsDAOImpl(getActivity());
         friendInfoDAO = new FriendInfoDAOImpl(getActivity());
+        groupMemberDAO = new GroupMemberDAOImpl(getActivity());
         sp = getActivity().getSharedPreferences("config", MODE_PRIVATE);
         editor = sp.edit();
         initView();

@@ -188,7 +188,7 @@ public class HttpUtils {
                 .addHeader("Connection", "close")
                 .addParams("groupId",groupId)
                 .addParams("groupName",groupName)
-                .addFile("file","",file)
+                .addFile("file","crop_file.jpg",file)
                 .build().execute(callback);
     }
     //退出群

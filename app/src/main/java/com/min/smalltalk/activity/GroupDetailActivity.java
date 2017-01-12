@@ -1,13 +1,19 @@
 package com.min.smalltalk.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -43,8 +49,14 @@ import com.min.smalltalk.wedget.SwitchButton;
 import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
@@ -139,6 +151,12 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
 
     private MyGridView adapter;
 
+    private Thread connectThread;
+    private Thread saveThread;
+
+    private static final String CACHE_PATH=
+            Environment.getExternalStorageDirectory().getAbsolutePath()+"/SmallTalk";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,12 +182,50 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             getGroupsSqlite();
             LoadDialog.dismiss(mContext);
         }
+
+        /**
+         * 图片
+         */
+        connectThread = new Thread(connectNet);
+        connectThread.start();
     }
+
+    private String mFileName;
+    private Bitmap mBitmap;
+    private Runnable connectNet = new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                String filePath = "http://img.my.csdn.net/uploads/201402/24/1393242467_3999.jpg";
+                mFileName = "robin.jpg";
+                // 取得的是inputstream，直接从inputstream生成bitmap
+                mBitmap = BitmapFactory.decodeStream(getImageStream(filePath));
+                // 发送消息，通知handler在主线程中更新ui
+                connectHanlder.sendEmptyMessage(0);
+                Log.d("---------", "set image ...");
+            } catch (Exception e) {
+                T.showShort(mContext,"无法链接网络");
+                e.printStackTrace();
+            }
+
+        }
+    };
+    private Handler connectHanlder = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d("---------", "display image");
+            // 更新UI，显示图片
+            if (mBitmap != null) {
+                sivGroupHeader.setImageBitmap(mBitmap);// display image
+            }
+        }
+    };
 
     //数据库
     private void initSQLite() {
-        dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
-        dbOpenHelper.getWritableDatabase();
+//        dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
+//        dbOpenHelper.getWritableDatabase();
         sqLiteDAO = new GroupsDAOImpl(mContext);
         groupMemberDAO = new GroupMemberDAOImpl(mContext);
     }
@@ -214,7 +270,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                                 T.showShort(mContext, "修改成功");
                                 ImageLoader.getInstance().clearDiskCache();
                                 ImageLoader.getInstance().displayImage(imageUrl,sivGroupHeader);
-//                                sqLiteDAO.updatePic(Group);
+//                                sqLiteDAO.updatePic(imageFile,groupId);
 
                             } else {
                                 T.showShort(mContext, "修改失败");
@@ -234,7 +290,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
     /**
      * 群组信息
      */
-
+    private String mSaveMessage;
+    private ProgressDialog mSaveDialog = null;
     private void getGroupsSqlite() {
         Groups groups = sqLiteDAO.find(groupId);
         groupName = groups.getGroupName();
@@ -242,17 +299,46 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         mGroup = new Groups(groups.getGroupId(), groupName,
                 groups.getGroupPortraitUri(), groups.getRole());
         initGroupData();
+//        mSaveDialog = ProgressDialog.show(mContext,
+//                "保存图片", "图片正在保存，请稍后...", true);
+        saveThread = new Thread(saveFileRunnable);
+        saveThread.start();
         L.e("--------------====", mGroup + "");
     }
+
+    private Runnable saveFileRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                saveFile(mBitmap, mFileName);
+                mSaveMessage = "图片保存成功！";
+            } catch (Exception e) {
+                mSaveMessage = "图片保存失败！";
+                e.printStackTrace();
+            }
+            messageHandler.sendMessage(messageHandler.obtainMessage());
+        }
+    };
+
+    private Handler messageHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            mSaveDialog.dismiss();
+            Log.d("-------------", mSaveMessage);
+            T.showShort(mContext,mSaveMessage);
+        }
+    };
 
 
     //群组信息
     private void initGroupData() {
-        if (TextUtils.isEmpty(mGroup.getGroupPortraitUri())) {
+        imageUrl = mGroup.getGroupPortraitUri();
+        if (TextUtils.isEmpty(imageUrl)) {
             ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(
                     groupName, mGroup.getGroupId()), sivGroupHeader, App.getOptions());
         } else {
-            ImageLoader.getInstance().displayImage(mGroup.getGroupPortraitUri(), sivGroupHeader, App.getOptions());
+            ImageLoader.getInstance().displayImage(imageUrl, sivGroupHeader, App.getOptions());
         }
         /**
          * 会话置顶
@@ -351,7 +437,6 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Code<List<GroupMember>> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     mGroupMember = code.getMsg();
-
                     if (mGroupMember != null && mGroupMember.size() > 0) {
                         tvGroupMemberSize.setText("全部成员" + "(" + mGroupMember.size() + ")");
                         adapter = new MyGridView(mContext, mGroupMember, isCreator, mGroup);
@@ -492,7 +577,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                changeMyName();
+                                String et=editText.getText().toString();
+                                changeMyName(et);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -513,9 +599,9 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         }
     }
 
-    //修改群个人你昵称
-    private void changeMyName() {
-        HttpUtils.postChangeNameGroup("/change_userName", groupId, userId, groupName, new StringCallback() {
+    //修改群个人昵称
+    private void changeMyName(String string) {
+        HttpUtils.postChangeNameGroup("/change_userName", groupId, userId, string, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
                 T.showShort(mContext, "/change_userName------" + e);
@@ -530,6 +616,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Code<Integer> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     tvMyName.setText(editText.getText());
+                    T.showShort(mContext,"修改成功");
                 } else {
                     T.showShort(mContext, "修改失败");
                 }
@@ -644,7 +731,7 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
         HttpUtils.postChangeGroupName("/change_groupName", groupId, groupName, imageFile, new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                T.showShort(mContext, "/change_groupName------网络连接错误");
+                T.showShort(mContext, "/change_groupName---"+e);
                 return;
             }
 
@@ -656,6 +743,8 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
                 Code<Groups> code = gson.fromJson(response, type);
                 if (code.getCode() == 200) {
                     tvGroupName.setText(groupName);
+                    sqLiteDAO.update(code.getMsg());
+                    T.showShort(mContext,"修改群名称成功");
                 } else {
                     T.showShort(mContext, "连接错误");
                 }
@@ -702,5 +791,38 @@ public class GroupDetailActivity extends BaseActivity implements CompoundButton.
             default:
                 break;
         }
+    }
+
+
+    private final static String ALBUM_PATH = Environment
+            .getExternalStorageDirectory() + "/SmallTalk/";
+    /*
+     * 从网络获取图片
+     */
+    protected InputStream getImageStream(String path) throws Exception {
+        URL url = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(10 * 1000);
+        conn.setRequestMethod("GET");
+        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            return conn.getInputStream();
+        }
+        return null;
+    }
+
+    /*
+     * 保存文件
+     */
+    protected void saveFile(Bitmap bm, String fileName) throws IOException {
+        File dirFile = new File(ALBUM_PATH);
+        if (!dirFile.exists()) {
+            dirFile.mkdir();
+        }
+        File myCaptureFile = new File(ALBUM_PATH + fileName);
+        BufferedOutputStream bos = new BufferedOutputStream(
+                new FileOutputStream(myCaptureFile));
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bos.flush();
+        bos.close();
     }
 }

@@ -177,7 +177,6 @@
                 android:resource="@xml/rc_file_path" />
         </provider>
 
-        <activity android:name=".activity.AmapActivity" />
         <activity android:name=".activity.ClaimFriendsActivity"></activity>
     </application>
 

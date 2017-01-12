@@ -54,7 +54,7 @@ import io.rong.imlib.model.UserInfo;
 import okhttp3.Call;
 
 /**
- * 选择好友建群
+ * 选择好友---建群--添加群好友
  */
 public class SelectFriendsActivity extends BaseActivity implements View.OnClickListener {
 

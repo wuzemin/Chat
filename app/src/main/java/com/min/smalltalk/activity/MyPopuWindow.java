@@ -13,6 +13,7 @@ import com.min.smalltalk.utils.CameraUtils;
 
 /**
  * Created by Min on 2016/12/19.
+ *  相册--照片--popupwindow
  */
 
 public class MyPopuWindow extends BasePopup {

@@ -40,6 +40,9 @@ import butterknife.OnClick;
 import io.rong.imlib.model.Conversation;
 import okhttp3.Call;
 
+/**
+ * 投票活动
+ */
 public class GroupVoteActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.iv_title_back)

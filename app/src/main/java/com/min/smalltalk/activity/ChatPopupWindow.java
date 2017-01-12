@@ -13,7 +13,7 @@ import com.min.smalltalk.R;
 
 /**
  * Created by Min on 2016/11/24.
- *
+ *  添加好友，创建群组下拉框
  */
 
 public class ChatPopupWindow extends PopupWindow implements View.OnClickListener {
@@ -49,12 +49,12 @@ public class ChatPopupWindow extends PopupWindow implements View.OnClickListener
                 context.startActivity(new Intent(context, MainActivity.class));
                 ChatPopupWindow.this.dismiss();
                 break;*/
-            case R.id.ll_pop_group:
+            case R.id.ll_pop_group:    //创建群组
                 Intent intent=new Intent(context,SelectFriendsActivity.class);
                 intent.putExtra("createGroup",true);
                 context.startActivity(intent);
                 break;
-            case R.id.ll_pop_add:
+            case R.id.ll_pop_add:   //添加好友
                 context.startActivity(new Intent(context,SearchFriendActivity.class));
                 ChatPopupWindow.this.dismiss();
                 break;

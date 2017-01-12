@@ -37,6 +37,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
+/**
+ * 新的好友列表
+ */
 public class NewFriendListActivity extends BaseActivity implements NewFriendListAdapter.OnItemButtonClick {
 
     @BindView(R.id.iv_title_back)

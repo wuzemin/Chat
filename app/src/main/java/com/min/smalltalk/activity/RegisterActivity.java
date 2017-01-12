@@ -36,6 +36,9 @@ import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import okhttp3.Call;
 
+/**
+ * 注册页面
+ */
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.textView)

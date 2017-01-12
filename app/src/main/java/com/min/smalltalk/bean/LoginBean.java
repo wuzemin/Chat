@@ -12,6 +12,14 @@ public class LoginBean implements Parcelable{
     private String token;
     private String nickname;
     private String portrait;
+    private int sex;
+    private String phone;
+    private String address;
+    private String birthday;
+    private int age;
+    private String email;
+
+
 
 
     public LoginBean(String userid, String token, String nickname, String portrait) {
@@ -39,6 +47,54 @@ public class LoginBean implements Parcelable{
             return new LoginBean[size];
         }
     };
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     public String getUserid() {
         return userid;

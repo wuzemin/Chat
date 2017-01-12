@@ -33,6 +33,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
+/**
+ * 认领好友
+ */
 public class ClaimFriendsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, ClaimFriendsAdapter.OnItemButtonClick {
 
     @BindView(R.id.iv_title_back)

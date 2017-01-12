@@ -17,7 +17,6 @@ import io.rong.imlib.RongIMClient;
 
 /**
  * 加载页
- *
  */
 public class LogoActivity extends BaseActivity {
     private SharedPreferences sharedPreferences;

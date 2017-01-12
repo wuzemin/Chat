@@ -26,6 +26,7 @@ import static com.min.mylibrary.util.PhotoUtils.INTENT_TAKE;
 
 /**
  * Created by Min on 2016/12/19.
+ *  选择图片
  */
 
 public class SelectPicPopupWindow  extends Activity implements View.OnClickListener {

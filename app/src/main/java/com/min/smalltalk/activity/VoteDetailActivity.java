@@ -39,6 +39,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
+/**
+ * 投票详情
+ */
 public class VoteDetailActivity extends BaseActivity {
 
     @BindView(R.id.listView)

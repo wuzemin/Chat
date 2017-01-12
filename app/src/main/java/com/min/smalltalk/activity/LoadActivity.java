@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 首次进入页
+ * 广告页面
  */
 public class LoadActivity extends BaseActivity {
     private ImageView[] imageViews = new ImageView[4];

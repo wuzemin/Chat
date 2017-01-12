@@ -12,7 +12,7 @@ public class Const {
     public static final String LOGIN_TOKEN ="loginToken";
     public static final String LOGIN_NICKNAME ="loginnickname";
     public static final String LOGIN_PORTRAIT ="loginPortrait";
-    public static final String LOGIN_PHONE ="loginphone";
+    public static final String LOGIN_PHONE ="phone";
     public static final String LOGIN_PASSWORD ="password";
     public static final String LOGIN_SEX ="sex";
     public static final String LOGIN_BIRTHDAY ="birthday";

@@ -166,7 +166,7 @@ public class PersonalFragment extends Fragment {
         nickName = sp.getString(Const.LOGIN_NICKNAME, "");
         phone = sp.getString(Const.LOGIN_PHONE, "");
         userPortraitUri = sp.getString(Const.LOGIN_PORTRAIT, "");
-        sex1 = sp.getString(Const.LOGIN_SEX, "");
+        sex = sp.getInt(Const.LOGIN_SEX, 0);
         birthday = sp.getString(Const.LOGIN_BIRTHDAY, "");
         age = sp.getInt(Const.LOGIN_AGE, 0);
         address = sp.getString(Const.LOGIN_ADDRESS, "");
@@ -174,7 +174,13 @@ public class PersonalFragment extends Fragment {
 
         tvUserid.setText(userId);
         tvNickname.setText(nickName);
-        tvSex.setText(sex1);
+        if(sex==1){
+            tvSex.setText("男");
+        }else if(sex==2){
+            tvSex.setText("女");
+        }else {
+            tvSex.setText("保密");
+        }
         tvBirthday.setText(birthday);
         tvAge.setText(age + "岁");
         tvAddress.setText(address);
@@ -398,7 +404,7 @@ public class PersonalFragment extends Fragment {
                                 LoadDialog.dismiss(getActivity());
                                 break;
                             case 2:   //性别
-                                editor.putString(Const.LOGIN_SEX, sex1);
+                                editor.putInt(Const.LOGIN_SEX, sex);
                                 editor.commit();
                                 tvSex.setText(sex1);
                                 T.showShort(getActivity(), "修改性别成功");

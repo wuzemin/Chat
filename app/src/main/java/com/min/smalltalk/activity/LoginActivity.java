@@ -71,19 +71,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         dbOpenHelper = new DBOpenHelper(mContext, "talk.db", null, 2);// 创建数据库文件
         dbOpenHelper.getWritableDatabase();
-        groupsDAO= new GroupsDAOImpl(mContext);
-        friendInfoDAO=new FriendInfoDAOImpl(mContext);
-        groupMemberDAO=new GroupMemberDAOImpl(mContext);
+        groupsDAO = new GroupsDAOImpl(mContext);
+        friendInfoDAO = new FriendInfoDAOImpl(mContext);
+        groupMemberDAO = new GroupMemberDAOImpl(mContext);
 
-        sharedPreferences=getSharedPreferences("config",this.MODE_PRIVATE);
-        editor=sharedPreferences.edit();
+        sharedPreferences = getSharedPreferences("config", this.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         initView();
     }
 
     private void initView() {
         et_user = (AutoCompleteTextView) findViewById(R.id.user);
         et_pwd = (EditText) findViewById(R.id.password);
-        tv_register= (TextView) findViewById(R.id.tv_register);
+        tv_register = (TextView) findViewById(R.id.tv_register);
         btn_login = (Button) findViewById(R.id.sign_in_button);
         tv_register.setOnClickListener(this);
         btn_login.setOnClickListener(this);
@@ -91,19 +91,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_register:
-                Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivityForResult(intent,0);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivityForResult(intent, 0);
                 break;
             case R.id.sign_in_button:
                 LoadDialog.show(mContext);
-                if(!CommonUtils.isNetConnect(mContext)){
-                    T.showShort(mContext,R.string.no_network);
+                if (!CommonUtils.isNetConnect(mContext)) {
+                    T.showShort(mContext, R.string.no_network);
                     LoadDialog.dismiss(mContext);
                     return;
                 }
-                user= et_user.getText().toString().trim();
+                user = et_user.getText().toString().trim();
                 password = et_pwd.getText().toString().trim();
                 login(user, password);
 //                String token = sharedPreferences.getString(Const.LOGIN_TOKEN,"");
@@ -117,71 +117,87 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==0){
-            if(resultCode==RESULT_OK){
-                Bundle bundle=data.getExtras();
-                String phone=bundle.getString("phone");
-                String password=bundle.getString("password");
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                String phone = bundle.getString("phone");
+                String password = bundle.getString("password");
                 et_user.setText(phone);
                 et_pwd.setText(password);
             }
         }
     }
 
+    /**
+     * 登录
+     * @param user
+     * @param password
+     */
     private void login(final String user, final String password) {
-        if("".equals(user) || "".equals(password)) {
-            Toast.makeText(LoginActivity.this,"用户名和密码不能为空",Toast.LENGTH_SHORT).show();
-        }else if(user!=null && password!=null) {   ///?phone=18819493906&password=123456
+        if ("".equals(user) || "".equals(password)) {
+            Toast.makeText(LoginActivity.this, "用户名和密码不能为空", Toast.LENGTH_SHORT).show();
+        } else if (user != null && password != null) {   ///?phone=18819493906&password=123456
             HttpUtils.postLoginRequest("/login", user, password, new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
-                    T.showShort(mContext,"/login----"+e);
+                    T.showShort(mContext, "/login----" + e);
                     LoadDialog.dismiss(mContext);
                     return;
                 }
+
                 @Override
                 public void onResponse(String response, int id) {
                     HttpUtils.setCookie(LoginActivity.this);
-                    Gson gson=new Gson();
-                    Type type=new TypeToken<Code<LoginBean>>(){}.getType();
-                    Code<LoginBean> code=gson.fromJson(response,type);
-                    int code1=code.getCode();
-                    if(code1==200){
-                        uid=code.getMsg().getUserid();
-                        String token=code.getMsg().getToken();
-                        String nickName=code.getMsg().getNickname();
-                        String portraitUri=HttpUtils.IMAGE_RUL+code.getMsg().getPortrait();
-                        L.e("-----------","LoginActivity---connecting");
-                        editor.putString("user",user);
-                        editor.putString("password",password);
-                        editor.putBoolean("login_message",true);
-                        editor.putString(Const.LOGIN_PHONE, user);
-                        editor.putString("loginpassword", password);
-                        editor.putString(Const.LOGIN_ID,uid);
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<Code<LoginBean>>() {
+                    }.getType();
+                    Code<LoginBean> code = gson.fromJson(response, type);
+                    int code1 = code.getCode();
+                    if (code1 == 200) {
+                        LoginBean bean = code.getMsg();
+                        uid = bean.getUserid();
+                        String token = bean.getToken();
+                        String nickName = bean.getNickname();
+                        String portraitUri = HttpUtils.IMAGE_RUL + bean.getPortrait();
+                        int sex = bean.getSex();
+                        String phone = bean.getPhone();
+                        String address = bean.getAddress();
+                        String birthday = bean.getBirthday();
+                        int age = bean.getAge();
+                        L.e("-----------", "LoginActivity---connecting");
+                        editor.putString("user", user);
+                        editor.putString(Const.LOGIN_PASSWORD, password);
+                        editor.putBoolean("login_message", true);
+                        editor.putString(Const.LOGIN_ID, uid);
                         editor.putString(Const.LOGIN_TOKEN, token);
-                        editor.putString(Const.LOGIN_NICKNAME,nickName);
-                        editor.putString(Const.LOGIN_PORTRAIT,portraitUri);
+                        editor.putString(Const.LOGIN_NICKNAME, nickName);
+                        editor.putString(Const.LOGIN_PORTRAIT, portraitUri);
+                        editor.putString(Const.LOGIN_BIRTHDAY,birthday);
+                        editor.putInt(Const.LOGIN_SEX,sex);
+                        editor.putString(Const.LOGIN_ADDRESS,address);
+                        editor.putInt(Const.LOGIN_AGE,age);
+                        editor.putString(Const.LOGIN_PHONE,phone);
                         editor.commit();
                         RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
                         startActivity(new Intent(mContext, LogoActivity.class));
                         LoadDialog.dismiss(mContext);
-                        T.showLong(mContext,"登录成功。第一次登录有点久，请稍等一下");
+                        T.showLong(mContext, "登录成功。第一次登录有点久，请稍等一下");
                         initGroups(uid);
                         finish();
-                    }else if(code1==0){
+                    } else if (code1 == 0) {
                         Toast.makeText(LoginActivity.this, "账号不存在！", Toast.LENGTH_SHORT).show();
                         LoadDialog.dismiss(mContext);
-                    }else if(code1==1001){
-                        T.showShort(mContext,"密码错误");
+                    } else if (code1 == 1001) {
+                        T.showShort(mContext, "密码错误");
                         LoadDialog.dismiss(mContext);
-                    }else if(code1==1000){
-                        T.showShort(mContext,"账号禁止登录");
+                    } else if (code1 == 1000) {
+                        T.showShort(mContext, "账号禁止登录");
                         LoadDialog.dismiss(mContext);
                     }
                 }
             });
-        }else {
-            Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -208,10 +224,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 if (code.getCode() == 200) {
                     List<Groups> groups = code.getMsg();
                     for (Groups groups1 : groups) {
-                        groupId=groups1.getGroupId();
-                        String groupName=groups1.getGroupName();
-                        String groupPort=HttpUtils.IMAGE_RUL + groups1.getGroupPortraitUri();
-                        String role=groups1.getRole();
+                        groupId = groups1.getGroupId();
+                        String groupName = groups1.getGroupName();
+                        String groupPort = HttpUtils.IMAGE_RUL + groups1.getGroupPortraitUri();
+                        String role = groups1.getRole();
 //                        list.add(new Groups(groupid, groupName, groupPort));
                         Groups groups2 = new Groups();
                         groups2.setUserId(userId);
@@ -233,8 +249,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void connect(String token) {
         LoadDialog.show(mContext);
-        final Message message=new Message();
-        if(getApplicationInfo().packageName.equals(App.getCurProcessName(getApplicationContext()))){
+        final Message message = new Message();
+        if (getApplicationInfo().packageName.equals(App.getCurProcessName(getApplicationContext()))) {
             /**
              * IMKit SDK调用第二步,建立与服务器的连接
              */
@@ -244,9 +260,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 public void onTokenIncorrect() {
                     /*message.what=0;
                     handler.sendMessage(message);*/
-                    T.showShort(mContext,"Token 错误，Token 已经过期");
+                    T.showShort(mContext, "Token 错误，Token 已经过期");
                     return;
                 }
+
                 //连接融云成功
                 @Override
                 public void onSuccess(String s) {
@@ -268,7 +285,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                  */
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
-                    T.showShort(mContext,"--"+errorCode);
+                    T.showShort(mContext, "--" + errorCode);
                     return;
                     /*message.what=2;
                     message.obj=errorCode;
@@ -280,7 +297,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount()==0){  //按下的如果是BACK，同时没有重复
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {  //按下的如果是BACK，同时没有重复
             LoginActivity.this.finish();
             return true;
         }

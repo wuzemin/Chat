@@ -12,6 +12,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,7 +32,10 @@ public class PhotoUtils {
     //相册
     public static final int INTENT_SELECT=4;
 
-    public static final String CROP_FILE_NAME="crop_file.jpg";
+    private SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyyMMddHHmm");
+    private Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+    private String str = simpleDateFormat.format(curDate);
+    public static final String CROP_FILE_NAME="str"+".jpg";
 
     /**
      * PhotoUtils 对象
@@ -149,11 +154,13 @@ public class PhotoUtils {
      * 构建uri
      */
     private Uri buildUri(Activity activity){
+        String str = simpleDateFormat.format(curDate);
         if(CommonUtils.checkSDCard()){
-            return Uri.fromFile(
-                    Environment.getExternalStorageDirectory()).buildUpon().appendPath(CROP_FILE_NAME).build();
+            File file =new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/SmallTalk/");
+            return Uri.fromFile(file).buildUpon().appendPath(str+".jpg").build();
+//                    Environment.getExternalStorageDirectory()).buildUpon().appendPath(CROP_FILE_NAME).build();
         }else{
-            return Uri.fromFile(activity.getCacheDir()).buildUpon().appendPath(CROP_FILE_NAME).build();
+            return Uri.fromFile(activity.getCacheDir()).buildUpon().appendPath(str+".jpg").build();
         }
     }
 

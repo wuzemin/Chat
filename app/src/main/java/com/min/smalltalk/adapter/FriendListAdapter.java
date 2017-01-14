@@ -9,11 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 import com.min.smalltalk.App;
 import com.min.smalltalk.R;
 import com.min.smalltalk.bean.FriendInfo;
+import com.min.smalltalk.utils.file.image.MyBitmapUtils;
 import com.min.smalltalk.wedget.Generate;
+import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
 
 import java.util.List;
 
@@ -28,10 +29,12 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
     private Context context;
 
     private List<FriendInfo> list;
+    private MyBitmapUtils myBitmapUtils;
 
     public FriendListAdapter(Context context, List<FriendInfo> list) {
         this.context = context;
         this.list = list;
+        myBitmapUtils = new MyBitmapUtils();
     }
 
 
@@ -83,21 +86,17 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
         } else {
             viewHolder.tvLetter.setVisibility(View.GONE);
         }
-        /*if (mContent.isExitsDisplayName()) {
-            viewHolder.tvTitle.setText(this.list.get(position).getDisplayName());
-        } else {
-            viewHolder.tvTitle.setText(this.list.get(position).getName());
-        }*/
         if(TextUtils.isEmpty(list.get(position).getDisplayName())){
             viewHolder.tvTitle.setText(this.list.get(position).getName());
         }else {
             viewHolder.tvTitle.setText(this.list.get(position).getDisplayName());
         }
-        if (TextUtils.isEmpty(list.get(position).getPortraitUri())) {
+        String url=list.get(position).getPortraitUri();
+        if (TextUtils.isEmpty(url)) {
             String s = Generate.generateDefaultAvatar(list.get(position).getName(), list.get(position).getUserId());
             ImageLoader.getInstance().displayImage(s, viewHolder.mImageView, App.getOptions());
         } else {
-            ImageLoader.getInstance().displayImage(list.get(position).getPortraitUri(), viewHolder.mImageView, App.getOptions());
+            myBitmapUtils.disPlay(viewHolder.mImageView, url);
         }
         if (context.getSharedPreferences("config", Context.MODE_PRIVATE).getBoolean("isDebug", false)) {
             viewHolder.tvUserId.setVisibility(View.VISIBLE);

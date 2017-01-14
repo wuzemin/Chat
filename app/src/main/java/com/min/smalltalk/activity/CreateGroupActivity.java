@@ -27,6 +27,7 @@ import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.DBOpenHelper;
 import com.min.smalltalk.db.GroupsDAOImpl;
 import com.min.smalltalk.network.HttpUtils;
+import com.min.smalltalk.utils.file.image.MyBitmapUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
@@ -71,6 +72,8 @@ public class CreateGroupActivity extends BaseActivity {
     private DBOpenHelper dbOpenHelper;  //SQLite
     private GroupsDAOImpl sqLiteDAO;
 
+    private MyBitmapUtils myBitmapUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,7 @@ public class CreateGroupActivity extends BaseActivity {
 
             }
         }
+        myBitmapUtils  = new MyBitmapUtils();
     }
 
     private void setPortraitChangListener() {
@@ -106,6 +110,7 @@ public class CreateGroupActivity extends BaseActivity {
                     imageUrl=selectUri.toString();
                     ImageLoader.getInstance().clearDiskCache();
                     ImageLoader.getInstance().displayImage(imageUrl,imgGroupPortrait);
+//                    myBitmapUtils.disPlay(imgGroupPortrait,imageUrl);
                     LoadDialog.dismiss(mContext);
                 }
             }
@@ -150,6 +155,7 @@ public class CreateGroupActivity extends BaseActivity {
                         groups.setUserId(userid);
                         groups.setGroupId(groupId);  //groupId
                         groups.setGroupName(groupName);  //groupName
+                        imageUrl = imageUrl.substring(imageUrl.lastIndexOf("/")+1,imageUrl.length());
                         groups.setGroupPortraitUri(imageUrl);
                         groups.setRole("1");
                         sqLiteDAO.save(groups);

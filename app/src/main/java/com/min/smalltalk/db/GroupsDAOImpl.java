@@ -38,17 +38,17 @@ public class GroupsDAOImpl {
         db.close();
     }
 
-    public void update(Groups groups) {// 修改群名称
+    public void update(String groupName,String groupId) {// 修改群名称
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         db.execSQL("update t_groupInfo set groupName=? where" + " groupId=?",
-                new Object[] { groups.getGroupName(), groups.getGroupId() });
+                new Object[] { groupName, groupId });
         db.close();
     }
 
-    public void updatePic(String groupPortraitUri,String getGroupId) {// 修改图片
+    public void updatePic(String file, String getGroupId) {// 修改图片
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         db.execSQL("update t_groupInfo set groupPortraitUri = ? where" + " groupId=?",
-                new Object[] { groupPortraitUri, getGroupId });
+                new Object[] { file, getGroupId });
         db.close();
     }
 

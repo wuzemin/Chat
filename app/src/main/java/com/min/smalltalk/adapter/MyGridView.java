@@ -20,6 +20,7 @@ import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.network.HttpUtils;
+import com.min.smalltalk.utils.file.image.MyBitmapUtils;
 import com.min.smalltalk.wedget.CharacterParser;
 import com.min.smalltalk.wedget.Generate;
 import com.min.smalltalk.wedget.image.SelectableRoundedImageView;
@@ -45,6 +46,7 @@ public class MyGridView extends BaseAdapter {
     private String groupName;
     private String groupPortraitUri;
     private Groups groups;
+    private MyBitmapUtils myBitmapUtils;
 
     public MyGridView(Context context, List<GroupMember> list, boolean isCreated, Groups groups) {
         this.context = context;
@@ -56,6 +58,8 @@ public class MyGridView extends BaseAdapter {
         this.isCreated=isCreated;
         this.groups=groups;
         this.inflater=inflater.from(context);
+        myBitmapUtils = new MyBitmapUtils();
+
     }
 
     @Override
@@ -127,7 +131,8 @@ public class MyGridView extends BaseAdapter {
             if (TextUtils.isEmpty(bean.getUserPortraitUri())) {
                 ImageLoader.getInstance().displayImage(Generate.generateDefaultAvatar(bean.getUserName(), bean.getUserId()), holder.sivGroupDetails, App.getOptions());
             } else {
-                ImageLoader.getInstance().displayImage(HttpUtils.IMAGE_RUL+bean.getUserPortraitUri(), holder.sivGroupDetails, App.getOptions());
+                myBitmapUtils.disPlay(holder.sivGroupDetails,HttpUtils.IMAGE_RUL+bean.getUserPortraitUri());
+//                ImageLoader.getInstance().displayImage(HttpUtils.IMAGE_RUL+bean.getUserPortraitUri(), holder.sivGroupDetails, App.getOptions());
             }
             holder.sivGroupDetails.setOnClickListener(new View.OnClickListener() {
                 @Override

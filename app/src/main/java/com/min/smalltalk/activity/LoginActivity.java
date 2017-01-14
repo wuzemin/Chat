@@ -181,7 +181,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
                         startActivity(new Intent(mContext, LogoActivity.class));
                         LoadDialog.dismiss(mContext);
-                        T.showLong(mContext, "登录成功。第一次登录有点久，请稍等一下");
+                        T.showLong(mContext, "登录成功。第一次登录有点久，请稍等...");
                         initGroups(uid);
                         finish();
                     } else if (code1 == 0) {

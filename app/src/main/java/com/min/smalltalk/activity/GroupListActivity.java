@@ -14,9 +14,8 @@ import com.google.gson.reflect.TypeToken;
 import com.min.mylibrary.util.T;
 import com.min.mylibrary.widget.dialog.LoadDialog;
 import com.min.smalltalk.R;
+import com.min.smalltalk.adapter.GroupListAdapter;
 import com.min.smalltalk.base.BaseActivity;
-import com.min.smalltalk.base.BaseRecyclerAdapter;
-import com.min.smalltalk.base.BaseRecyclerHolder;
 import com.min.smalltalk.bean.Code;
 import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.bean.Groups;
@@ -55,7 +54,8 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
     @BindView(R.id.swipeRefresh)
     SwipeRefreshLayout swipeRefresh;
 
-    private BaseRecyclerAdapter<Groups> adapter;
+//    private BaseRecyclerAdapter<Groups> adapter;
+    private GroupListAdapter adapter;
     private List<Groups> list = new ArrayList<>();
     private List<GroupMember> mGroupMember=new ArrayList<>();
     private String groupName;
@@ -102,18 +102,7 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
     }
 
     private void initAdapter() {
-        adapter = new BaseRecyclerAdapter<Groups>(mContext, list, R.layout.item_group) {
-            @Override
-            public void convert(BaseRecyclerHolder holder, Groups item, int position, boolean isScrolling) {
-//                groupPortraitUri=list.get(position).getGroupPortraitUri();
-                if (list.get(position).getGroupPortraitUri() != null) {
-                    holder.setImageByUrl(R.id.siv_group_head, list.get(position).getGroupPortraitUri());
-                } else {
-                    holder.setImageResource(R.id.siv_group_head, R.mipmap.default_chatroom);
-                }
-                holder.setText(R.id.tv_group_name, list.get(position).getGroupName());
-            }
-        };
+        adapter = new GroupListAdapter(mContext,list);
         rvGroupList.setAdapter(adapter);
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvGroupList.setLayoutManager(lm);
@@ -124,13 +113,13 @@ public class GroupListActivity extends BaseActivity implements SwipeRefreshLayou
     }
 
     private void initListItemClick() {
-        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new GroupListAdapter.OnRecyclerViewItemClickListener() {
             @Override
-            public void onItemClick(RecyclerView parent, View view, int position) {
-                String groupId=list.get(position).getGroupId();
-                String groupName=list.get(position).getGroupName();
+            public void onItemClick(View view, Groups groups) {
+                String groupId=groups.getGroupId();
+                String groupName=groups.getGroupName();
                 initList(groupId,groupName);
-                RongIM.getInstance().startGroupChat(mContext, groupId, groupName);
+                RongIM.getInstance().startGroupChat(mContext,groupId,groupName);
             }
         });
     }

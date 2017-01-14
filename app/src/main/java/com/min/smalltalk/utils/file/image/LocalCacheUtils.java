@@ -5,8 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.min.mylibrary.util.MD5Util;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,7 +15,7 @@ import java.io.FileOutputStream;
  */
 public class LocalCacheUtils {
     private static final String CACHE_PATH=
-            Environment.getExternalStorageDirectory().getAbsolutePath()+"/SmallTalk";
+            Environment.getExternalStorageDirectory().getAbsolutePath()+"/SmallTalk/";
 
     /**
      * 从本地读取图片
@@ -26,8 +24,7 @@ public class LocalCacheUtils {
     public Bitmap getBitmapFromLocal(String url){
         String fileName = null;//把图片的url当做文件名,并进行MD5加密
         try {
-            fileName = MD5Util.encode(url);
-            File file=new File(CACHE_PATH,fileName);
+            File file = new File(CACHE_PATH,url);
             Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
 
             return bitmap;
@@ -45,8 +42,8 @@ public class LocalCacheUtils {
      */
     public void setBitmapToLocal(String url,Bitmap bitmap){
         try {
-            String fileName = MD5Util.encode(url);//把图片的url当做文件名,并进行MD5加密
-            File file=new File(CACHE_PATH,fileName);
+//            String fileName = MD5Util.encode(url);//把图片的url当做文件名,并进行MD5加密
+            File file=new File(CACHE_PATH,url);
             Log.e("-=-==-=-=-=-=",CACHE_PATH);
 
             //通过得到文件的父文件,判断父文件是否存在

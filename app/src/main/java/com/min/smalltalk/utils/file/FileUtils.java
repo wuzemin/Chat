@@ -1,7 +1,8 @@
 package com.min.smalltalk.utils.file;
 
 import android.os.Environment;
-import android.util.Log;
+
+import com.min.mylibrary.util.L;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,27 +70,27 @@ public class FileUtils {
                 return null;
             }
             creatSDDir(path);
-            String[]	fileNames=fileName.split("/");
-            for (int i = 0; i < fileNames.length-1; i++) {
+//            String[] fileNames=fileName.split("/");
+            /*for (int i = 0; i < fileNames.length-1; i++) {
                 path+="/"+fileNames[i];
                 creatSDDir(path);
-            }
+            }*/
             byte buffer [] = new byte[1024];
             int len  = 0;
             //如果下载成功就开往SD卡里些数据
             while((len =input.read(buffer))  != -1){
-                file = creatSDFile(path+"/"+ fileNames[fileNames.length-1]);
+                file = creatSDFile(path+"/"+ fileName);
                 if (output==null) {
                     output = new FileOutputStream(file);
                 }
                 output.write(buffer,0,len);
             }
             output.flush();
-            //Log.e("writeToSDFromInput", "保存图片到SD卡成功");
+            L.e("--------writeToSDFromInput", "保存图片到SD卡成功");
             input.close();
             output.close();
         }catch(Exception e){
-            Log.e("writeToSDFromInput", "保存图片到SD卡失败", e);
+            L.e("--------writeToSDFromInput", "保存图片到SD卡失败:"+e);
         }
         return file;
     }

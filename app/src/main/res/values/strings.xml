@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">艾聊</string>
+    <string name="app_name">社群联盟</string>
     <string name="login">登录</string>
     <string name="register">注册</string>
     <string name="prompt_user">账号</string>
@@ -90,4 +90,6 @@
         <item>我的名字？</item>
         <item>我的手机号？</item>
     </string-array>
+
+    <string name="recommend">推荐</string>
 </resources>

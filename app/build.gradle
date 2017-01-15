@@ -34,6 +34,14 @@ android {
            keyPassword "ike123"
        }
    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
+    dexOptions{
+        javaMaxHeapSize "2g"
+    }
          /*//发布版的keystore
         *//*release {
             storeFile file("keystore文件所用位置")
@@ -43,6 +51,7 @@ android {
         }*//*
     }*/
 }
+
 
 repositories {
     flatDir {
@@ -71,5 +80,12 @@ dependencies {
     compile project(':libzxing')
     compile 'com.facebook.stetho:stetho:1.4.2'
     compile 'com.android.support:support-v4:24.2.0'
+
     compile 'com.android.support:multidex:1.0.1'
+    compile files('libs/ShareSDK-Core-2.8.0.jar')
+    compile files('libs/ShareSDK-Email-2.8.0.jar')
+    compile files('libs/ShareSDK-QQ-2.8.0.jar')
+    compile files('libs/ShareSDK-ShortMessage-2.8.0.jar')
+    compile files('libs/ShareSDK-Wechat-2.8.0.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.8.0.jar')
 }

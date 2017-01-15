@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.min.smalltalk.activity.ChatPopupWindow;
 import com.min.smalltalk.activity.LoginActivity;
 import com.min.smalltalk.activity.NewFriendListActivity;
+import com.min.smalltalk.activity.RecommendActivity;
 import com.min.smalltalk.base.BaseActivity;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.fragment.FriendFragment;
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ImageView chatMore;
     private ImageView mImageInfo, mImageFriend, mImageDynamic;
     private TextView mTextInfo, mTextFriend, mTextDynamic;
+    private TextView tv_recommend;
 
     /**
      * 会话列表的fragment
@@ -101,6 +103,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         rlFriend.setOnClickListener(this);
         rlDynamic.setOnClickListener(this);
         chatMore.setOnClickListener(this);
+
+        tv_recommend = (TextView) findViewById(R.id.tv_recommend);
+        tv_recommend.setOnClickListener(this);
     }
     private void initMainViewPager() {
         Fragment conversationList = initConversationList();
@@ -255,6 +260,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case chat_more:  //
                 ChatPopupWindow chatPopupWindow =new ChatPopupWindow(mContext);
                 chatPopupWindow.showPopupWindow(chatMore);
+                break;
+            case R.id.tv_recommend:
+                startActivity(new Intent(mContext, RecommendActivity.class));
                 break;
             default:
                 break;

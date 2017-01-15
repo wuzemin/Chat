@@ -46,7 +46,7 @@ import io.rong.message.RichContentMessage;
 
 public class AppContext implements RongIMClient.ConnectionStatusListener,
          RongIM.ConversationBehaviorListener, RongIM.ConversationListBehaviorListener
-        ,RongIMClient.OnReceiveMessageListener, RongIM.LocationProvider, RongIM.UserInfoProvider {
+        ,RongIMClient.OnReceiveMessageListener, RongIM.LocationProvider {
 
     public static final String UPDATE_FRIEND = "update_friend";
     public static final String UPDATE_RED_DOT = "update_red_dot";
@@ -103,7 +103,7 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
      */
     private void initListener() {
         RongIM.setConversationBehaviorListener(this);//设置会话界面操作的监听器。
-        RongIM.setUserInfoProvider(this,true);  //用户信息提供者
+//        RongIM.setUserInfoProvider(this,true);  //用户信息提供者
         RongIM.setConversationListBehaviorListener(this);  //会话列表界面
 //        RongIM.setGroupInfoProvider(this, true);  //群组用户提供者
         RongIM.setLocationProvider(this);//设置地理位置提供者,不用位置的同学可以注掉此行代码
@@ -340,9 +340,4 @@ public class AppContext implements RongIMClient.ConnectionStatusListener,
         this.mLastLocationCallback = lastLocationCallback;
     }
 
-    @Override
-    public UserInfo getUserInfo(String s) {
-        UserInfoManager.getInstance().getUserInfo(s);
-        return null;
-    }
 }

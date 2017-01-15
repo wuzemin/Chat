@@ -12,6 +12,7 @@ import com.min.smalltalk.bean.GroupMember;
 import com.min.smalltalk.constant.Const;
 import com.min.smalltalk.db.FriendInfoDAOImpl;
 import com.min.smalltalk.db.GroupMemberDAOImpl;
+import com.min.smalltalk.wedget.Generate;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -47,10 +48,41 @@ public class UserInfoManager {
         groupMemberDAO = new GroupMemberDAOImpl(mContext);
         initPortrait();
         handler = new Handler();
+        setUserInfoEngineListener();
     }
     public static void init(Context context) {
         L.e(TAG, "UserInfoManager init");
         sInstance = new UserInfoManager(context);
+    }
+
+    /**
+     * 需要 rongcloud connect 成功后设置的 listener
+     */
+    public void setUserInfoEngineListener() {
+        UserInfoEngine.getInstance(mContext).setListener(new UserInfoEngine.UserInfoListener() {
+            @Override
+            public void onResult(UserInfo info) {
+                if (info != null && RongIM.getInstance() != null) {
+                    if (TextUtils.isEmpty(String.valueOf(info.getPortraitUri()))) {
+                        info.setPortraitUri(Uri.parse(Generate.generateDefaultAvatar(info.getName(), info.getUserId())));
+                    }
+                    L.e(TAG, "SealUserInfoManager getUserInfo from network " + info.getUserId() + " " + info.getName() + " " + info.getPortraitUri());
+                    RongIM.getInstance().refreshUserInfoCache(info);
+                }
+            }
+        });
+        /*GroupInfoEngine.getInstance(mContext).setmListener(new GroupInfoEngine.GroupInfoListeners() {
+            @Override
+            public void onResult(Group info) {
+                if (info != null && RongIM.getInstance() != null) {
+                    NLog.d(TAG, "SealUserInfoManager getGroupInfo from network " + info.getId() + " " + info.getName() + " " + info.getPortraitUri());
+                    if (TextUtils.isEmpty(String.valueOf(info.getPortraitUri()))) {
+                        info.setPortraitUri(Uri.parse(RongGenerate.generateDefaultAvatar(info.getName(), info.getId())));
+                    }
+                    RongIM.getInstance().refreshGroupInfoCache(info);
+                }
+            }
+        });*/
     }
 
     private void initPortrait() {
@@ -132,6 +164,7 @@ public class UserInfoManager {
                     RongIM.getInstance().refreshUserInfoCache(userInfo);
                     return;
                 }
+                UserInfoEngine.getInstance(mContext).startEngine(userId);
             }
         });
 

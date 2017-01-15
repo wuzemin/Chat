@@ -401,6 +401,12 @@ public class PersonalFragment extends Fragment {
                                 editor.commit();
                                 tvNickname.setText(nickName);
                                 T.showShort(getActivity(), "修改昵称成功，请在好友界面进行刷新");
+                                RongIM.getInstance().refreshUserInfoCache(new UserInfo(
+                                        sp.getString(Const.LOGIN_ID, ""), nickName,
+                                        Uri.parse(sp.getString(Const.LOGIN_PORTRAIT, ""))));
+                                RongIM.getInstance().setCurrentUserInfo(new UserInfo(
+                                        sp.getString(Const.LOGIN_ID, ""), nickName,
+                                        Uri.parse(sp.getString(Const.LOGIN_PORTRAIT, ""))));
                                 LoadDialog.dismiss(getActivity());
                                 break;
                             case 2:   //性别

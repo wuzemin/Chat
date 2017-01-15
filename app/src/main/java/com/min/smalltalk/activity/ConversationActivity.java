@@ -54,7 +54,7 @@ import okhttp3.Call;
 /**
  * 会话页面
  */
-public class ConversationActivity extends BaseActivity implements View.OnClickListener {
+public class ConversationActivity extends BaseActivity implements View.OnClickListener, RongIM.UserInfoProvider {
 
     /*@BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -103,7 +103,6 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         sp = getSharedPreferences("config", MODE_PRIVATE);
 
         Intent intent = getIntent();
-
         initPortrait();   //头像
 
         if (intent == null || intent.getData() == null)
@@ -192,7 +191,14 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         String uid = sp.getString(Const.LOGIN_ID, "");
         String nickName = sp.getString(Const.LOGIN_NICKNAME, "");
         String portraitUri = sp.getString(Const.LOGIN_PORTRAIT, "");
+        list = new ArrayList<>();
+        list.add(new FriendInfo(uid,nickName,portraitUri))
+        ;list.clear();
+        list=friendInfoDAO.findAll(uid);
+
         RongIM.getInstance().refreshUserInfoCache(new UserInfo(uid, nickName, Uri.parse(portraitUri)));
+        L.e("-------sss----",list.toString());
+        RongIM.setUserInfoProvider(this, true);
     }
 
     /**
@@ -547,13 +553,15 @@ public class ConversationActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-   /* @OnClick({R.id.iv_title_back, R.id.iv_title_right})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_title_back:
-                break;
-            case R.id.iv_title_right:
-                break;
+    @Override
+    public UserInfo getUserInfo(String s) {
+        for (FriendInfo i : list) {
+            if (i.getUserId().equals(s)) {
+                UserInfo userInfo = new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
+                return userInfo;
+            }
         }
-    }*/
+//        UserInfoManager.getInstance().getUserInfo(s);
+        return null;
+    }
 }

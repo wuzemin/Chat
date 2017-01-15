@@ -10,6 +10,7 @@ import com.min.mylibrary.util.CommonUtils;
 import com.min.mylibrary.util.T;
 import com.min.smalltalk.MainActivity;
 import com.min.smalltalk.R;
+import com.min.smalltalk.UserInfoManager;
 import com.min.smalltalk.base.BaseActivity;
 
 import io.rong.imkit.RongIM;
@@ -56,6 +57,7 @@ public class LogoActivity extends BaseActivity {
                     @Override
                     public void onSuccess(String s) {
                         getSharedPreferences("config",MODE_PRIVATE).edit().putString("loginid",s).apply();
+                        UserInfoManager.getInstance().setUserInfoEngineListener();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
